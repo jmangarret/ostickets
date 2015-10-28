@@ -38,9 +38,11 @@ define('ADMIN_EMAIL','lordbta@gmail.com');
 # Database Options
 # ---------------------------------------------------
 # Mysql Login info
+
+
 define('DBTYPE','mysql');
 define('DBHOST','localhost');
-define('DBNAME','osticket1911');
+define('DBNAME','osticket1911test');
 define('DBUSER','osticket');
 define('DBPASS','0571ck37');
 
