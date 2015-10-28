@@ -256,6 +256,31 @@ foreach ($_POST as $key => $value) {
         }
     });
 
+    $("tr:eq(4) td:eq(1)").append("<div id='repeat' style='display:none;color:#F00;'><big><br>El ticket no puede ser creado. Localizador duplicado. Contacte a su asesor.<br><br></big></div>");
+    $('input:eq(2),select:eq(0),select:eq(1),select:eq(2)').change(function(){
+        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != ""){
+            $.ajax({
+                data: { menu : "localizador", localizador : $('input:eq(2)').val(), gds : $('select:eq(2)').val() },
+                type: "POST",
+                url: 'include/client/ajax_login.php',
+                success: function(response){
+                    if(response == 1){
+                        $("#repeat").show("slow");
+                        $("#create").hide();
+                    }
+                    else{
+                        $("#repeat").hide();
+                        $("#create").show();
+                    }
+                }
+            });
+        }
+        else{
+            $("#repeat").hide();
+        }
+    });
+
+
     // if($("select:eq(0)").val() == 19){
     //     $("tr:eq(4)").show("slow");
     //     $("select:eq(2)").prop('required',true);
@@ -295,10 +320,12 @@ foreach ($_POST as $key => $value) {
     // }
 
     $("#create").click(function(){
-        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(8).text() == ""){
-            $("div").eq(8).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
+        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(9).text() == ""){
+            $("div").eq(9).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
         }
     });
+
+    $("input:eq(2)").attr("pattern","[A-Za-z0-9]{6}");
         
 </script>
 

@@ -8,23 +8,43 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-$string = '<option value="">— Select —</option>';
+if($_REQUEST["menu"] == "localizador"){
 
-$query = "	SELECT 
-				a.submenu_id,a.submenu_value 
-			FROM  
-				`ost_list_items_custom` a,
-				ost_list_items b
-			WHERE 
-				a.submenu_id = b.id
-				AND a.menu_id = ".$_REQUEST["menu"]." 
-			ORDER BY b.sort ASC";
-$result = $mysqli->query($query);
+	$query	= "	SELECT CAST( localizador AS CHAR( 100 ) CHARSET utf8 )
+				FROM  `ost_ticket__cdata` 
+				WHERE UPPER(CAST( localizador AS CHAR( 100 ) CHARSET utf8 )) =  '".strtoupper($_REQUEST["localizador"])."'
+					AND CAST( subject AS CHAR( 100 ) CHARSET utf8 ) = 19
+					AND CAST( gds AS CHAR( 100 ) CHARSET utf8 ) LIKE  '".$_REQUEST["gds"]."%'";
+	$result = $mysqli->query($query);
+	$row = $result->num_rows;
 
-while($row = $result->fetch_array()){
-	$string .= '<option value="'.$row[0].'">'.$row[1].'</option>';
+	if($row > 0)
+		echo 1;
+	else
+		echo 0;
+
 }
+else{
 
-echo $string;
+	$string = '<option value="">— Select —</option>';
+
+	$query = "	SELECT 
+					a.submenu_id,a.submenu_value 
+				FROM  
+					`ost_list_items_custom` a,
+					ost_list_items b
+				WHERE 
+					a.submenu_id = b.id
+					AND a.menu_id = ".$_REQUEST["menu"]." 
+				ORDER BY b.sort ASC";
+	$result = $mysqli->query($query);
+
+	while($row = $result->fetch_array()){
+		$string .= '<option value="'.$row[0].'">'.$row[1].'</option>';
+	}
+
+	echo $string;
+
+}
 
 ?>
