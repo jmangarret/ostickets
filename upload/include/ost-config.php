@@ -42,7 +42,7 @@ define('ADMIN_EMAIL','lordbta@gmail.com');
 
 define('DBTYPE','mysql');
 define('DBHOST','localhost');
-define('DBNAME','osticket1911test');
+define('DBNAME','osticket1911');
 define('DBUSER','osticket');
 define('DBPASS','0571ck37');
 
