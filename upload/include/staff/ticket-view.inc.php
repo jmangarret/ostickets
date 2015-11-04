@@ -364,7 +364,10 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     echo $a->getField()->get('label');
                     ?>:</th>
                     <td><?php
-    echo $v;
+    if ($a->getField()->get('label') == "Localizador")
+        echo strtoupper($v);
+    else
+        echo $v;
                     ?></td>
                 </tr>
                 <?php } ?>
@@ -375,6 +378,37 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $idx++;
     } ?>
 </table>
+
+<?php
+
+    include("../ost-config.php");
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+
+?>
+
+<div style='text-align:right;display:block;background-color:#F4FAFF;'><b>L&iacute;mite de Cr&eacute;dito</b>: <?=$limite?></div>
+
 <div class="clear"></div>
 <h2 style="padding:10px 0 5px 0; font-size:11pt;"><?php echo Format::htmlchars($ticket->getSubject()); ?></h2>
 <?php

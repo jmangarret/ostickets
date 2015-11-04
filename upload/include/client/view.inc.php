@@ -101,6 +101,36 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
 <?php } ?>
 </tr>
 </table>
+
+<?php
+
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+
+?>
+
+<div style='text-align:right;display:block;background-color:#F4FAFF;'>L&iacute;mite de Cr&eacute;dito: <b><?=$limite?></b></div>
+
 <br>
 <div class="subject"><?php echo __('Subject'); ?>: <strong><?php echo Format::htmlchars($ticket->getSubject()); ?></strong></div>
 <div id="ticketThread">
