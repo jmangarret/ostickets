@@ -347,8 +347,8 @@ foreach ($_POST as $key => $value) {
     // }
 
     $("#create").click(function(){
-        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(9).text() == ""){
-            $("div").eq(9).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
+        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(10).text() == ""){
+            $("div").eq(10).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
         }
     });
 
