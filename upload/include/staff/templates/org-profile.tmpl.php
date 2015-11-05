@@ -22,7 +22,7 @@ if ($info['error']) {
         ><i class="icon-fixed-width icon-cogs faded"></i>&nbsp;<?php
         echo __('Settings'); ?></a></li>
 </ul>
-<form method="post" class="org" action="<?php echo $action; ?>">
+<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>">
 
 <div class="tab_content" id="tab-profile" style="margin:5px;">
 <?php
@@ -39,6 +39,55 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     ?>
     </table>
 </div>
+
+<script>
+
+    function formatoNumero(numero, decimales, separadorDecimal, separadorMiles) {
+        var partes, array;
+        if ( !isFinite(numero) || isNaN(numero = parseFloat(numero)) ) {
+            return "";
+        }
+        if (typeof separadorDecimal==="undefined") {
+            separadorDecimal = ",";
+        }
+        if (typeof separadorMiles==="undefined") {
+            separadorMiles = "";
+        }
+        // Redondeamos
+        if ( !isNaN(parseInt(decimales)) ) {
+            if (decimales >= 0) {
+                numero = numero.toFixed(decimales);
+            } else {
+                numero = (
+                    Math.round(numero / Math.pow(10, Math.abs(decimales))) * Math.pow(10, Math.abs(decimales))
+                ).toFixed();
+            }
+        } else {
+            numero = numero.toString();
+        }
+        // Damos formato
+        partes = numero.split(".", 2);
+        array = partes[0].split("");
+        for (var i=array.length-3; i>0 && array[i-1]!=="-"; i-=3) {
+            array.splice(i, 0, separadorMiles);
+        }
+        numero = array.join("");
+        if (partes.length>1) {
+            numero += separadorDecimal + partes[1];
+        }
+        return numero;
+    }
+
+    $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
+
+    $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto.");
+    $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto.</small>");
+
+    $("#org_informacion").change(function(){
+        $("#org_informacion input:eq(3)").val("BsF "+formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
+    });
+
+</script>
 
 <div class="tab_content" id="contact-settings" style="display:none;margin:5px;">
     <table style="width:100%">
