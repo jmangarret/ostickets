@@ -22,7 +22,7 @@ if ($info['error']) {
         ><i class="icon-fixed-width icon-cogs faded"></i>&nbsp;<?php
         echo __('Settings'); ?></a></li>
 </ul>
-<form method="post" class="org" action="<?php echo $action; ?>">
+<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>">
 
 <div class="tab_content" id="tab-profile" style="margin:5px;">
 <?php
@@ -78,10 +78,13 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
         return numero;
     }
 
-    $("#org_informacion input:eq(2)").attr("pattern","[0-9.]{6}");
+    $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
+
+    $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto.");
+    $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto.</small>");
 
     $("#org_informacion").change(function(){
-        $("#org_informacion input:eq(2)").val("BsF "+formatoNumero($("#org_informacion input:eq(2)").val(),2,",","."));
+        $("#org_informacion input:eq(3)").val("BsF "+formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
     });
 
 </script>
