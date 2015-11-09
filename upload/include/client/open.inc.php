@@ -125,7 +125,34 @@ foreach ($_POST as $key => $value) {
   </p>
 </form>
 
+<?php
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+?>
+
 <script type="text/javascript">
+
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito: <b><?=$limite?></b></div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");
@@ -320,8 +347,8 @@ foreach ($_POST as $key => $value) {
     // }
 
     $("#create").click(function(){
-        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(9).text() == ""){
-            $("div").eq(9).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
+        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(10).text() == ""){
+            $("div").eq(10).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
         }
     });
 
