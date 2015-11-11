@@ -386,11 +386,14 @@ if ($results) {
                 <th width="60" <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
+            <?php
+            }
+            ?>
             <th width="60">
                     <a <?php echo $status_sort; ?> href=""
                         title="<?php echo sprintf(__('Sort by %s %s'), "Organización", __($negorder)); ?>">Organización</a></th>
             <?php
-            }
+            
 
             if($showassigned ) {
                 //Closed by
