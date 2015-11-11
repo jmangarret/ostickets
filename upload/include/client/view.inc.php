@@ -104,6 +104,14 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
 
 <?php
 
+    /*
+    /* Nombre: Anthony Parisi
+    /* Fecha: 11-11-2015
+    /* Descripción: Se agrega el siguiente código para visualizar los campos Límite de Crédito Total y Disponible de la Organización
+    /* 
+    /* INICIO
+    */
+
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     /* check connection */
     if (mysqli_connect_errno()) {
@@ -125,11 +133,52 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
                     AND c.id = ".$_SESSION["_auth"]["user"]["id"];
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
-    $limite = $filas[0];
+    $limite = "BsF ".number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite2 = "BsF ".number_format($filas[0],2,",",".");
 
 ?>
 
-<div style='text-align:right;display:block;background-color:#F4FAFF;'>L&iacute;mite de Cr&eacute;dito: <b><?=$limite?></b></div>
+<div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
+    <table align="right">
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Total</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite;?>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Disponible</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite2;?>
+            </td>   
+        </tr>
+    </table>
+</div>
+
+<?php
+    /*
+    /* FINAL
+    */
+?>
 
 <br>
 <div class="subject"><?php echo __('Subject'); ?>: <strong><?php echo Format::htmlchars($ticket->getSubject()); ?></strong></div>

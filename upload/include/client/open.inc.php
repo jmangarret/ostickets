@@ -146,13 +146,29 @@ foreach ($_POST as $key => $value) {
                     AND c.id = ".$_SESSION["_auth"]["user"]["id"];
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
-    $limite = $filas[0];
+    $limite = "BsF ".number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite2 = "BsF ".number_format($filas[0],2,",",".");
 ?>
 
 <script type="text/javascript">
 
     $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito: <b><?=$limite?></b></div>");
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b><br>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite2?></b></div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");

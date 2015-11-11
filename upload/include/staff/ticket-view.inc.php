@@ -381,6 +381,14 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 
 <?php
 
+    /*
+    /* Nombre: Anthony Parisi
+    /* Fecha: 11-11-2015
+    /* Descripción: Se agrega el siguiente código para visualizar los campos Límite de Crédito Total y Disponible de la Organización
+    /* 
+    /* INICIO
+    */
+
     include("../ost-config.php");
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     /* check connection */
@@ -403,11 +411,52 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                     AND c.id = ".$user->getId();
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
-    $limite = $filas[0];
+    $limite = number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite2 = number_format($filas[0],2,",",".");
 
 ?>
 
-<div style='text-align:right;display:block;background-color:#F4FAFF;'><b>L&iacute;mite de Cr&eacute;dito</b>: <?=$limite?></div>
+<div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
+    <table align="right">
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Total</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite;?>
+            </td>   
+        </tr>
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Disponible</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite2;?>
+            </td>   
+        </tr>
+    </table>
+</div>
+
+<?php
+    /*
+    /* FINAL
+    */
+?>
 
 <div class="clear"></div>
 <h2 style="padding:10px 0 5px 0; font-size:11pt;"><?php echo Format::htmlchars($ticket->getSubject()); ?></h2>

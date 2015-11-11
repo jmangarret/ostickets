@@ -107,7 +107,7 @@ if ($_POST)
         } ?>
         <tr>    
             <td>
-                L&iacute;mite de Cr&eacute;dito:
+                L&iacute;mite de Cr&eacute;dito Total:
             </td>
             <td>
 <?php
@@ -135,11 +135,48 @@ if(isset($_REQUEST["uid"])){
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite = $filas[0];
-    echo $limite;
+    echo "BsF ".number_format($limite,2,",",".");
 }
 
 ?>
+            </td>
+        </tr>
+        <tr>    
+            <td>
+                L&iacute;mite de Cr&eacute;dito Disponible:
+            </td>
+            <td>
+<?php
 
+if(isset($_REQUEST["uid"])){
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_REQUEST["uid"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+    echo "BsF ".number_format($limite,2,",",".");
+}
+
+?>
+            </td>
+        </tr>
     </tbody>
     <tbody>
         <tr>

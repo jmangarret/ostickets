@@ -42,50 +42,71 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
 
 <script>
 
-    function formatoNumero(numero, decimales, separadorDecimal, separadorMiles) {
-        var partes, array;
-        if ( !isFinite(numero) || isNaN(numero = parseFloat(numero)) ) {
-            return "";
+    // function formatoNumero(numero, decimales, separadorDecimal, separadorMiles) {
+    //     var partes, array;
+    //     if ( !isFinite(numero) || isNaN(numero = parseFloat(numero)) ) {
+    //         return "";
+    //     }
+    //     if (typeof separadorDecimal==="undefined") {
+    //         separadorDecimal = ",";
+    //     }
+    //     if (typeof separadorMiles==="undefined") {
+    //         separadorMiles = "";
+    //     }
+    //     // Redondeamos
+    //     if ( !isNaN(parseInt(decimales)) ) {
+    //         if (decimales >= 0) {
+    //             numero = numero.toFixed(decimales);
+    //         } else {
+    //             numero = (
+    //                 Math.round(numero / Math.pow(10, Math.abs(decimales))) * Math.pow(10, Math.abs(decimales))
+    //             ).toFixed();
+    //         }
+    //     } else {
+    //         numero = numero.toString();
+    //     }
+    //     // Damos formato
+    //     partes = numero.split(".", 2);
+    //     array = partes[0].split("");
+    //     for (var i=array.length-3; i>0 && array[i-1]!=="-"; i-=3) {
+    //         array.splice(i, 0, separadorMiles);
+    //     }
+    //     numero = array.join("");
+    //     if (partes.length>1) {
+    //         numero += separadorDecimal + partes[1];
+    //     }
+    //     return numero;
+    // }
+
+    // $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
+
+    $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
+    $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
+    $("#org_informacion input:eq(4)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
+    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
+
+    $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
+        if(event.shiftKey){
+            event.preventDefault();
         }
-        if (typeof separadorDecimal==="undefined") {
-            separadorDecimal = ",";
-        }
-        if (typeof separadorMiles==="undefined") {
-            separadorMiles = "";
-        }
-        // Redondeamos
-        if ( !isNaN(parseInt(decimales)) ) {
-            if (decimales >= 0) {
-                numero = numero.toFixed(decimales);
-            } else {
-                numero = (
-                    Math.round(numero / Math.pow(10, Math.abs(decimales))) * Math.pow(10, Math.abs(decimales))
-                ).toFixed();
+        if (event.keyCode == 46 || event.keyCode == 8)    {}
+        else {
+            if (event.keyCode < 95) {
+                if (event.keyCode < 48 || event.keyCode > 57) {
+                    event.preventDefault();
+                }
+            } 
+            else {
+                if (event.keyCode != 190) {
+                    event.preventDefault();
+                }
             }
-        } else {
-            numero = numero.toString();
         }
-        // Damos formato
-        partes = numero.split(".", 2);
-        array = partes[0].split("");
-        for (var i=array.length-3; i>0 && array[i-1]!=="-"; i-=3) {
-            array.splice(i, 0, separadorMiles);
-        }
-        numero = array.join("");
-        if (partes.length>1) {
-            numero += separadorDecimal + partes[1];
-        }
-        return numero;
-    }
-
-    $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
-
-    $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto.");
-    $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto.</small>");
-
-    $("#org_informacion").change(function(){
-        $("#org_informacion input:eq(3)").val("BsF "+formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
     });
+
+    // $("#org_informacion").change(function(){
+    //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
+    // });
 
 </script>
 
