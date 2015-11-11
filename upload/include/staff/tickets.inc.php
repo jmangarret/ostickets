@@ -555,7 +555,7 @@ if (mysqli_connect_errno()) {
 }
 
 $query2 = " SELECT 
-                CAST(localizador AS char(100) CHARACTER SET utf8),
+                UPPER(CAST(localizador AS char(100) CHARACTER SET utf8)),
                 CAST(status_loc AS char(100) CHARACTER SET utf8) 
             FROM `ost_ticket__cdata` 
             WHERE ticket_id = ".$row['ticket_id'];
