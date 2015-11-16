@@ -262,6 +262,14 @@ foreach ($_POST as $key => $value) {
             $("select:eq(3)").removeAttr('required');
             $("select:eq(3)").val("");
         }
+        if($("select:eq(1)").val() == 31){
+            $("input:eq(2)").removeAttr('required');
+            $("select:eq(2)").removeAttr('required');
+        }
+         else{
+            $("input:eq(2)").prop('required',true);
+            $("select:eq(2)").prop('required',true);
+        }
     });
 
     $('select:eq(3)').change(function(){
