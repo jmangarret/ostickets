@@ -166,6 +166,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
         <tr>
             <td align="right">
                 <b>Disponible</b>:
+                
             </td>
             <td align="left">
                 BsF <?=$limite2;?>
