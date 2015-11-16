@@ -97,7 +97,7 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
                 }
             } 
             else {
-                if (event.keyCode != 190) {
+                if (event.keyCode != 190 && event.keyCode != 189) {
                     event.preventDefault();
                 }
             }

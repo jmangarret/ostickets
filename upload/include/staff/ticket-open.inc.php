@@ -143,7 +143,7 @@ if(isset($_REQUEST["uid"])){
         </tr>
         <tr>    
             <td>
-                L&iacute;mite de Cr&eacute;dito Disponible:
+                Disponible:
             </td>
             <td>
 <?php

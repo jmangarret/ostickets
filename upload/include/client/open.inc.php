@@ -168,7 +168,7 @@ foreach ($_POST as $key => $value) {
 <script type="text/javascript">
 
     $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b><br>L&iacute;mite de Cr&eacute;dito Disponible: <b><?=$limite2?></b></div>");
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b><br>Disponible: <b><?=$limite2?></b></div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");

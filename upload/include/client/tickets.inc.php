@@ -630,7 +630,30 @@ $row2 = $result2->fetch_array();
 </table>
 <?php
 if($res && $num>0) {
-    echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;</div>';
+
+    if((($pageNav->getPage())-1) <= 0)
+        $pagea = 1;
+    else
+        $pagea = ($pageNav->getPage())-1;
+
+    if((($pageNav->getPage())+1) >= $pageNav->getNumPages())
+        $pages = $pageNav->getNumPages();
+    else
+        $pages = ($pageNav->getPage())+1;
+
+    $primero   = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+    $anterior  = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+    $siguiente = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+    $ultimo    = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+
+    echo '  <div>
+                &nbsp;'.__('Page').': 
+                <a href="'.$primero.'">Primero</a>&nbsp;
+                <a href="'.$anterior.'">Anterior</a>&nbsp;
+                '.$pageNav->getPageLinks().'&nbsp;
+                <a href="'.$siguiente.'">Siguiente</a>&nbsp;
+                <a href="'.$ultimo.'">Ultimo</a>&nbsp;
+            </div>';
 }
 
 ?>
