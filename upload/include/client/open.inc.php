@@ -224,6 +224,14 @@ foreach ($_POST as $key => $value) {
             $("select:eq(2)").prop('required',true);
             $("input:eq(9)").val("Pendiente");
         }
+        else if($("select:eq(0)").val() == 20){
+            $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
+            $("input:eq(9),input:eq(7),input:eq(6),input:eq(5),input:eq(4),input:eq(3),input:eq(2)").val("");
+            $("input").removeAttr('required');
+            $("#codigo").remove();
+            $("select:eq(2)").val("");
+            $("select:eq(2)").removeAttr('required');
+        }
         else{
             $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
             $("input:eq(7),input:eq(6),input:eq(5),input:eq(4),input:eq(3),input:eq(9)").val("");
@@ -269,6 +277,10 @@ foreach ($_POST as $key => $value) {
          else{
             $("input:eq(2)").prop('required',true);
             $("select:eq(2)").prop('required',true);
+        }
+        if($("select:eq(0)").val() == 20){
+            $("input:eq(2)").removeAttr('required');
+            $("select:eq(2)").removeAttr('required');
         }
     });
 
