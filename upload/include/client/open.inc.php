@@ -278,7 +278,7 @@ foreach ($_POST as $key => $value) {
             $("input:eq(2)").prop('required',true);
             $("select:eq(2)").prop('required',true);
         }
-        if($("select:eq(0)").val() == 20){
+        if($("select:eq(0)").val() != 19){
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
         }
