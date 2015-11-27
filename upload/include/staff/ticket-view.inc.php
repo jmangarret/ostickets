@@ -459,7 +459,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 ?>
 
 <div class="clear"></div>
-<h2 style="padding:10px 0 5px 0; font-size:11pt;"><?php echo Format::htmlchars($ticket->getSubject()); ?></h2>
+<h2 style="padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:#F4FAFF"><big><big>Detalle: <?php echo Format::htmlchars($ticket->getSubject()); ?></big></big></h2>
 <?php
 $tcount = $ticket->getThreadCount();
 $tcount+= $ticket->getNumNotes();
