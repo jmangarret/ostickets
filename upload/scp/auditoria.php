@@ -23,6 +23,14 @@
 
 ?>
 
+<script type="text/javascript">
+	$("#nav .inactive:eq(5) ul").remove();
+	$("#nav .inactive:eq(5)").addClass("active");
+	$("#nav .inactive:eq(5)").removeClass("inactive");
+
+	$("#sub_nav").append('<li><a class="users active" href="auditoria.php" title="" id="subnav0">L&iacute;mite de Cr&eacute;dito</a></li>');
+</script>
+
 <div class="pull-left" style="width:700px;padding-top:5px;padding-bottom:2px;">
     <h2>L&iacute;mite de Cr&eacute;dito:</h2>
 </div>
