@@ -113,7 +113,7 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
-        <input type="submit" value="<?php echo __('Create Ticket');?>" id="create">
+        <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -162,13 +162,52 @@ foreach ($_POST as $key => $value) {
                     AND c.id = ".$_SESSION["_auth"]["user"]["id"];
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
-    $limite2 = "BsF ".number_format($filas[0],2,",",".");
+    $limiteDisponible = $filas[0];
+
+    if($limiteDisponible <= 0){ 
+
+        $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente.</font>";
+
+        ?>
+
+        <script>
+            $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
+            $("#create").fadeOut("fast");
+            $("select:eq(0)").change(function(){
+                if($("select:eq(0)").val() != 19){
+                    $("#create").fadeIn('slow');
+                }
+                else{
+                    $("#create").fadeOut("fast");
+                }
+            });
+        </script>
+
+        <?php
+    }
+    else{
+
+        $limite2 = "BsF ".number_format($filas[0],2,",",".");
+        
+        ?>
+
+        <script>
+            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+        </script>
+
+        <?php
+    }
 ?>
 
 <script type="text/javascript">
 
     $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b><br>Disponible: <b><?=$limite2?></b></div>");
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend(
+        "<div style='text-align:right;display:block;'>"+
+            "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
+            "<br>"+
+            "Disponible: <b><?=$limite2?></b>"+
+        "</div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");
@@ -233,6 +272,7 @@ foreach ($_POST as $key => $value) {
             $("select:eq(2)").removeAttr('required');
             $("select:eq(2)").val("");
         }
+
     });
 
     $("select:eq(1)").change(function(){
@@ -330,45 +370,6 @@ foreach ($_POST as $key => $value) {
             $("#repeat").hide();
         }
     });
-
-
-    // if($("select:eq(0)").val() == 19){
-    //     $("tr:eq(4)").show("slow");
-    //     $("select:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(4)").hide("slow");
-    //     $("select:eq(2)").removeAttr('required');
-    //     $("select:eq(2)").val("");
-    // }        
-    // if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
-    //     $("tr:eq(3)").show("slow");
-    //     $("input:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(3)").hide("slow");
-    //     $("input:eq(2)").removeAttr('required');
-    //     $("input:eq(2)").val("");
-    // }
-    // if($("select:eq(1)").val() == 19 || $("select:eq(1)").val() == 26){
-    //     $("tr:eq(5)").show("slow");
-    //     $("select:eq(3)").prop('required',true);
-    // }
-    //  else{
-    //     $("tr:eq(5)").hide("slow");
-    //     $("select:eq(3)").removeAttr('required');
-    //     $("select:eq(3)").val("");
-    // }
-    // if($('select:eq(3)').val() == 14){
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
-    //     $("td:eq(10)").append("<small>Para c&oacute;digo de seguridad de TDC, proporcionarlo por tel&eacute;fono.</small>");
-    // }
-    // else{
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").val("");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").removeAttr('required');
-    // }
 
     $("#create").click(function(){
         if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(10).text() == ""){
