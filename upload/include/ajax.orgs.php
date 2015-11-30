@@ -69,6 +69,23 @@ class OrgsAjaxAPI extends AjaxController {
     function updateOrg($id, $profile=false) {
         global $thisstaff;
 
+        include("../include/ost-config.php");
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
+
+        $i = 0;
+        foreach ($_POST as $key => $value) {
+            $i++;
+            if($i == 4) $total = $value;
+            if($i == 5) $disponible = $value;
+        }
+
+        $mysqli->query("INSERT INTO ost_auditoria_limite_credito VALUES (NULL, '".$_SESSION["_auth"]["staff"]["id"]."', '$id', '$total', '$disponible',NOW());");
+
         if(!$thisstaff)
             Http::response(403, 'Login Required');
         elseif(!($org = Organization::lookup($id)))
