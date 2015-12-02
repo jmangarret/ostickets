@@ -113,7 +113,7 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
-        <input type="submit" value="<?php echo __('Create Ticket');?>" id="create">
+        
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -162,13 +162,53 @@ foreach ($_POST as $key => $value) {
                     AND c.id = ".$_SESSION["_auth"]["user"]["id"];
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
-    $limite2 = "BsF ".number_format($filas[0],2,",",".");
+    $limiteDisponible = $filas[0];
+
+    if($limiteDisponible <= 0){ 
+
+        $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente.</font>";
+
+        ?>
+
+        <script>
+            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+            $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
+            $("#create").fadeOut("fast");
+            $("select:eq(0)").change(function(){
+                if($("select:eq(0)").val() != 19){
+                    $("#create").fadeIn('slow');
+                }
+                else{
+                    $("#create").fadeOut("fast");
+                }
+            });
+        </script>
+
+        <?php
+    }
+    else{
+
+        $limite2 = "BsF ".number_format($filas[0],2,",",".");
+        
+        ?>
+
+        <script>
+            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+        </script>
+
+        <?php
+    }
 ?>
 
 <script type="text/javascript">
 
     $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend("<div style='text-align:right;display:block;'>L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b><br>Disponible: <b><?=$limite2?></b></div>");
+    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend(
+        "<div style='text-align:right;display:block;'>"+
+            "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
+            "<br>"+
+            "Disponible: <b><?=$limite2?></b>"+
+        "</div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");
@@ -321,7 +361,7 @@ foreach ($_POST as $key => $value) {
 
     $("tr:eq(4) td:eq(1)").append("<div id='repeat' style='display:none;color:#F00;'><big><br>El ticket no puede ser creado. Localizador duplicado. Contacte a su asesor.<br><br></big></div>");
     $('input:eq(2),select:eq(0),select:eq(1),select:eq(2)').change(function(){
-        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != ""){
+        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != "" && parseFloat("<?=$limiteDisponible;?>") > 0){
             $.ajax({
                 data: { menu : "localizador", localizador : $('input:eq(2)').val(), gds : $('select:eq(2)').val() },
                 type: "POST",
