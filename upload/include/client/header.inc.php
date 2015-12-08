@@ -138,3 +138,45 @@ if (($all_langs = Internationalization::availableLanguages())
          <?php }elseif($warn) { ?>
             <div id="msg_warning"><?php echo $warn; ?></div>
          <?php } ?>
+
+<?php
+
+if(isset($_SESSION["_auth"]["user"]["id"])){
+
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $open = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept.ispublic, cdata.subject,dept_name, status.name 
+                as status, status.state, ticket.source, ticket.created ,count(attach_id) as attachments FROM ost_ticket ticket 
+                LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
+                ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
+                LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
+                LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
+                AND status.state IN ('open') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
+                GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
+    $result_open = $mysqli->query($open);
+    $n_abiertos = mysqli_num_rows($result_open);
+
+
+    $close = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept.ispublic, cdata.subject,dept_name, status.name 
+                as status, status.state, ticket.source, ticket.created ,count(attach_id) as attachments FROM ost_ticket ticket 
+                LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
+                ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
+                LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
+                LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
+                AND status.state IN ('closed') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
+                GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
+    $result_close = $mysqli->query($close);
+    $n_cerrados = mysqli_num_rows($result_close);
+
+}
+
+?>
+
+<script type="text/javascript">
+    $("#nav li a:eq(2)").text("Tickets (<?=($n_cerrados+$n_abiertos)?>)");
+</script>   

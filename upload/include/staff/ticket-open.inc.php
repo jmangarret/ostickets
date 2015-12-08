@@ -498,5 +498,8 @@ $(function() {
     <?php
     } ?>
 });
+
+$("td:contains('Status Localizador:')").parent().hide(0);
+
 </script>
 

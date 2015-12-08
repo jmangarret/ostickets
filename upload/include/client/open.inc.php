@@ -260,7 +260,7 @@ foreach ($_POST as $key => $value) {
             }
         });
         if($("select:eq(0)").val() == 19){
-            $("tr:eq(3)").show("slow");
+            //$("tr:eq(3)").show("slow");
             $("select:eq(2)").prop('required',true);
             $("input:eq(9)").val("Pendiente");
         }
@@ -288,6 +288,7 @@ foreach ($_POST as $key => $value) {
             if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
                 $("tr:eq(11)").show("slow");
                 $("input:eq(2)").prop('required',true);
+                $("tr:eq(3)").show("slow");
             }
             else{
                 $("input:eq(2)").removeAttr('required');
@@ -313,6 +314,8 @@ foreach ($_POST as $key => $value) {
         if($("select:eq(1)").val() == 31){
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
+            $("tr:eq(3)").hide(0);
+            $("tr:eq(4)").hide(0);
         }
          else{
             $("input:eq(2)").prop('required',true);
