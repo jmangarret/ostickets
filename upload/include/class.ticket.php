@@ -2001,7 +2001,7 @@ class Ticket {
                     $variables + array('recipient' => $this->getOwner()));
 
             $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
-            var_dump($msg);
+            //var_dump($msg);
             $email->send($this->getOwner(), $msg['subj'], $msg['body'], $attachments,
                 $options);
             
