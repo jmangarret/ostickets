@@ -193,6 +193,7 @@ if(isset($_REQUEST["uid"])){
                     <option value="Phone" selected="selected"><?php echo __('Phone'); ?></option>
                     <option value="Email" <?php echo ($info['source']=='Email')?'selected="selected"':''; ?>><?php echo __('Email'); ?></option>
                     <option value="Whatapp El Rosal" <?php echo ($info['source']=='Whatapp El Rosal')?'selected="selected"':''; ?>><?php echo __('Whatapp El Rosal'); ?></option>
+                    <option value="Pop-up WEB" <?php echo ($info['source']=='Pop-up WEB')?'selected="selected"':''; ?>><?php echo __('Pop-up WEB'); ?></option>
                     <option value="Other" <?php echo ($info['source']=='Other')?'selected="selected"':''; ?>><?php echo __('Other'); ?></option>
                 </select>
                 &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['source']; ?></font>
