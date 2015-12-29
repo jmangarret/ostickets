@@ -22,7 +22,7 @@ if ($info['error']) {
         ><i class="icon-fixed-width icon-cogs faded"></i>&nbsp;<?php
         echo __('Settings'); ?></a></li>
 </ul>
-<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>">
+<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>" onsubmit="">
 
 <div class="tab_content" id="tab-profile" style="margin:5px;">
 <?php
@@ -108,7 +108,8 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
     // });
 
-    jQuery(function($) {
+    $(function($){
+        // Set up the number formatting.
         $("#org_informacion input:eq(3)").autoNumeric('init');
         $("#org_informacion input:eq(4)").autoNumeric('init');
     });
