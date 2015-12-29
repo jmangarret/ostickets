@@ -22,7 +22,7 @@ if ($info['error']) {
         ><i class="icon-fixed-width icon-cogs faded"></i>&nbsp;<?php
         echo __('Settings'); ?></a></li>
 </ul>
-<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>" onsubmit="">
+<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>">
 
 <div class="tab_content" id="tab-profile" style="margin:5px;">
 <?php
@@ -108,10 +108,14 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
     // });
 
-    $(function($){
-        // Set up the number formatting.
-        $("#org_informacion input:eq(3)").autoNumeric('init');
-        $("#org_informacion input:eq(4)").autoNumeric('init');
+    jQuery(function($) {
+        $("#org_informacion input:eq(3)").autoNumeric( 'init' , { aSign: 'BsF ' });
+        $("#org_informacion input:eq(4)").autoNumeric( 'init' , { aSign: 'BsF ' });
+    });
+
+    $("form").submit(function(){
+        $("#org_informacion input:eq(3)").autoNumeric('get');
+        $("#org_informacion input:eq(4)").autoNumeric('get');
     });
 
 </script>
