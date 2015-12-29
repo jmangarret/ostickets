@@ -107,3 +107,5 @@ $(function() {
     });
 });
 </script>
+
+<script type="text/javascript" src="/ostickets/upload/js/autoNumeric.js"></script>

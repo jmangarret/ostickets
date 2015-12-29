@@ -85,28 +85,33 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     $("#org_informacion input:eq(4)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
     $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
 
-    $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
-        if(event.shiftKey){
-            event.preventDefault();
-        }
-        if (event.keyCode == 46 || event.keyCode == 8)    {}
-        else {
-            if (event.keyCode < 95) {
-                if (event.keyCode < 48 || event.keyCode > 57) {
-                    event.preventDefault();
-                }
-            } 
-            else {
-                if (event.keyCode != 190 && event.keyCode != 189) {
-                    event.preventDefault();
-                }
-            }
-        }
-    });
+    // $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
+    //     if(event.shiftKey){
+    //         event.preventDefault();
+    //     }
+    //     if (event.keyCode == 46 || event.keyCode == 8)    {}
+    //     else {
+    //         if (event.keyCode < 95) {
+    //             if (event.keyCode < 48 || event.keyCode > 57) {
+    //                 event.preventDefault();
+    //             }
+    //         } 
+    //         else {
+    //             if (event.keyCode != 190 && event.keyCode != 189) {
+    //                 event.preventDefault();
+    //             }
+    //         }
+    //     }
+    // });
 
     // $("#org_informacion").change(function(){
     //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
     // });
+
+    jQuery(function($) {
+        $("#org_informacion input:eq(3)").autoNumeric('init');
+        $("#org_informacion input:eq(4)").autoNumeric('init');
+    });
 
 </script>
 
