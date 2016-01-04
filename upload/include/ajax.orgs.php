@@ -79,7 +79,6 @@ class OrgsAjaxAPI extends AjaxController {
 
         $i = 0;
         foreach ($_POST as $key => $value) {
-            echo "$key => $value<br>";
             $i++;
             if($i == 4) {
                 $total = $value;
