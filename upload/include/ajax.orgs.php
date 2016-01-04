@@ -79,9 +79,16 @@ class OrgsAjaxAPI extends AjaxController {
 
         $i = 0;
         foreach ($_POST as $key => $value) {
+            echo "$key => $value<br>";
             $i++;
-            if($i == 4) $total = $value;
-            if($i == 5) $disponible = $value;
+            if($i == 4) {
+                $total = $value;
+                $_POST["$key"] = str_replace(',','',$value);
+            }
+            if($i == 5) {
+                $disponible = $value;
+                $_POST["$key"] = str_replace(',','',$value);
+            }
         }
 
         $mysqli->query("INSERT INTO ost_auditoria_limite_credito VALUES (NULL, '".$_SESSION["_auth"]["staff"]["id"]."', '$id', '$total', '$disponible',NOW());");
