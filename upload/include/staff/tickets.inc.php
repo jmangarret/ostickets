@@ -67,7 +67,7 @@ $qwhere ='';
 */
 
 $depts=$thisstaff->getDepts();
-$qwhere =' WHERE ( '
+$qwhere =' LEFT JOIN ost_ticket_thread thread ON (thread.ticket_id=ticket.ticket_id) WHERE ( '
         .'  ( ticket.staff_id='.db_input($thisstaff->getId())
         .' AND status.state="open") ';
 
@@ -128,6 +128,30 @@ if($search):
     if($searchTerm){
         $qs += array('query' => $searchTerm);
         $queryterm=db_real_escape($searchTerm,false); //escape the term ONLY...no quotes.
+
+//Anthony Inicio 04/01/2015
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
+        $aguja = explode(" ",$queryterm);
+        $pajar = "";
+        for($i=0;$i<=strlen($aguja)+1;$i++){
+            if($i == 0)
+                $pajar .= " body LIKE '%".$aguja[$i]."%'";
+            else
+                $pajar .= " AND body LIKE '%".$aguja[$i]."%'";
+        }
+        $comentario_sql =  "SELECT id
+                            FROM `ost_ticket_thread` 
+                            WHERE ".$pajar;
+
+        $comentario_res = $mysqli->query($comentario_sql);
+        $comentario_row = mysqli_num_rows($comentario_res);
+//Anthony Final 04/01/2015
+
         if (is_numeric($searchTerm)) {
             $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
         } elseif (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
@@ -135,6 +159,20 @@ if($search):
             # XXX: What about searching for email addresses in the body of
             #      the thread message
             $qwhere.=" AND email.address='$queryterm'";
+
+//Anthony Inicio 04/01/2015
+        } elseif ($comentario_row > 0) {
+            $aguja = explode(" ",$queryterm);
+            $pajar = "";
+            for($i=0;$i<=strlen($aguja)+1;$i++){
+                if($i == 0)
+                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+                else
+                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+            }
+            $qwhere.=$pajar;
+//Anthony Final 04/01/2015
+
         } else {//Deep search!
             //This sucks..mass scan! search anything that moves!
             require_once(INCLUDE_DIR.'ajax.tickets.php');
@@ -316,7 +354,8 @@ if ($results) {
     <input type="hidden" name="a" value="search">
     <table>
         <tr>
-            <td><input type="text" id="basic-ticket-search" name="query"
+            <td>
+                <input type="text" id="basic-ticket-search" name="query"
             size=30 value="<?php echo Format::htmlchars($_REQUEST['query'],
             true); ?>"
                 autocomplete="off" autocorrect="off" autocapitalize="off"></td>
