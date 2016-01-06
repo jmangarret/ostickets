@@ -195,11 +195,13 @@ if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
     $ticket_ids = implode(',', db_input($_SESSION['adv_'.$_REQUEST['advsid']]));
     $qs += array('advsid' => $_REQUEST['advsid']);
 
-    $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.')';
+    $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.') ';
     // Thanks, http://stackoverflow.com/a/1631794
     $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
     $order = ' ';
 }
+
+$qwhere .= ' GROUP BY thread.ticket_id ';
 
 $sortOptions=array('date'=>'effective_date','ID'=>'ticket.`number`*1',
     'pri'=>'pri.priority_urgency','name'=>'user.name','subj'=>'cdata.subject',
@@ -276,7 +278,7 @@ if($search && $deep_search) {
 }
 
 //get ticket count based on the query so far..
-$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin $qwhere");
+$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id")));
 //pagenate
 $pagelimit=($_GET['limit'] && is_numeric($_GET['limit']))?$_GET['limit']:PAGE_LIMIT;
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;
@@ -306,7 +308,6 @@ $qfrom.=' LEFT JOIN '.TICKET_LOCK_TABLE.' tlock ON (ticket.ticket_id=tlock.ticke
 TicketForm::ensureDynamicDataView();
 
 $query="$qselect $qfrom $qwhere ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-
 $hash = md5($query);
 $_SESSION['search_'.$hash] = $query;
 //QUERRY QUE LISTA LOS RESULTADOS
