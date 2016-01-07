@@ -216,7 +216,12 @@ if ($_REQUEST['clean'] == 1) {//Si la variable GET es 1 entonces...
 }
 /*------------------------------------------------------------*/
 
-$total=db_count('SELECT count(DISTINCT ticket.ticket_id) '.$qfrom.' '.$qwhere. ' '.$_SESSION['more']);//Aplicando la sesión PHP en la sentencia
+$total=db_count("SELECT COUNT(ticket.ticket_id) FROM ost_ticket ticket 
+            LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
+            ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
+            LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
+            LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
+            AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%'");//Aplicando la sesión PHP en la sentencia
 
 $pageNav=new Pagenate($total, $page, PAGE_LIMIT);
 $qstr = '&amp;'. Http::build_query($qs);
@@ -238,7 +243,8 @@ if($search)
 
 /*MICOD: Buscamos el número de registros para los tickets abiertos y cerrados y los mostramos al lado de los botones en el menú*/
 $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
@@ -300,7 +306,7 @@ $n_cerrados = mysqli_num_rows($result_close);
     </script>
 <!--//////////////////////////////////////////////////////////////////--> 
             <!--MICOD: Nuevo menú de opciones de tickets abiertos y cerrados-->   
-            <ul id="nav" class="flush-left" style="margin-top: -20px;">
+            <ul id="nav2" class="flush-left" style="margin-top: -20px;">
                 <li></li>
                 <li><a class="tickets" id="open" href="tickets.php?est%5B%5D=open&des=&has=&loc=">Abiertos (<?=$n_abiertos?>)</a></li>
                 <li><a class="tickets" id="closer" href="tickets.php?est%5B%5D=closed&des=&has=&loc=">Cerrados (<?=$n_cerrados?>)</a></li>
@@ -367,14 +373,6 @@ $n_cerrados = mysqli_num_rows($result_close);
                 <select name="est[]" multiple>
 <?php
 
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
-
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
-
     $query = "  SELECT status.state,status.name
                 FROM ost_ticket ticket 
                     LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) 
@@ -433,14 +431,6 @@ $n_cerrados = mysqli_num_rows($result_close);
             <td style="width: 35%;">
                 <select name="dep[]" multiple>
 <?php
-
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
-
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
 
     $query = "  SELECT department.dept_id,department.dept_name
                 FROM ost_ticket ticket 
@@ -598,14 +588,6 @@ $n_cerrados = mysqli_num_rows($result_close);
                 </td>
                 <td>&nbsp;<?php echo Format::truncate($dept,30); ?></td>
 <?php
-
-$mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
-
-/* check connection */
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
-}
 
 $query2 = " SELECT 
                 CAST(localizador AS char(100) CHARACTER SET utf8),

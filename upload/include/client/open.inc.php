@@ -113,7 +113,11 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
+<<<<<<< HEAD
         <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
+=======
+        
+>>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -171,6 +175,10 @@ foreach ($_POST as $key => $value) {
         ?>
 
         <script>
+<<<<<<< HEAD
+=======
+            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+>>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
             $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
             $("#create").fadeOut("fast");
             $("select:eq(0)").change(function(){
@@ -259,9 +267,17 @@ foreach ($_POST as $key => $value) {
             }
         });
         if($("select:eq(0)").val() == 19){
-            $("tr:eq(3)").show("slow");
+            //$("tr:eq(3)").show("slow");
             $("select:eq(2)").prop('required',true);
             $("input:eq(9)").val("Pendiente");
+        }
+        else if($("select:eq(0)").val() == 20){
+            $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
+            $("input:eq(9),input:eq(7),input:eq(6),input:eq(5),input:eq(4),input:eq(3),input:eq(2)").val("");
+            $("input").removeAttr('required');
+            $("#codigo").remove();
+            $("select:eq(2)").val("");
+            $("select:eq(2)").removeAttr('required');
         }
         else{
             $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
@@ -280,6 +296,7 @@ foreach ($_POST as $key => $value) {
             if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
                 $("tr:eq(11)").show("slow");
                 $("input:eq(2)").prop('required',true);
+                $("tr:eq(3)").show("slow");
             }
             else{
                 $("input:eq(2)").removeAttr('required');
@@ -305,10 +322,16 @@ foreach ($_POST as $key => $value) {
         if($("select:eq(1)").val() == 31){
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
+            $("tr:eq(3)").hide(0);
+            $("tr:eq(4)").hide(0);
         }
          else{
             $("input:eq(2)").prop('required',true);
             $("select:eq(2)").prop('required',true);
+        }
+        if($("select:eq(0)").val() != 19){
+            $("input:eq(2)").removeAttr('required');
+            $("select:eq(2)").removeAttr('required');
         }
     });
 
@@ -349,7 +372,7 @@ foreach ($_POST as $key => $value) {
 
     $("tr:eq(4) td:eq(1)").append("<div id='repeat' style='display:none;color:#F00;'><big><br>El ticket no puede ser creado. Localizador duplicado. Contacte a su asesor.<br><br></big></div>");
     $('input:eq(2),select:eq(0),select:eq(1),select:eq(2)').change(function(){
-        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != ""){
+        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != "" && parseFloat("<?=$limiteDisponible;?>") > 0){
             $.ajax({
                 data: { menu : "localizador", localizador : $('input:eq(2)').val(), gds : $('select:eq(2)').val() },
                 type: "POST",

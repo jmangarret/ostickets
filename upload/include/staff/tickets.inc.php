@@ -28,11 +28,11 @@ $status=null;
 switch(strtolower($_REQUEST['status'])){ //Status is overloaded
     case 'open':
         $status='open';
-		$results_type=__('Open Tickets');
+        $results_type=__('Open Tickets');
         break;
     case 'closed':
         $status='closed';
-		$results_type=__('Closed Tickets');
+        $results_type=__('Closed Tickets');
         $showassigned=true; //closed by.
         break;
     case 'overdue':
@@ -67,7 +67,7 @@ $qwhere ='';
 */
 
 $depts=$thisstaff->getDepts();
-$qwhere =' WHERE ( '
+$qwhere =' LEFT JOIN ost_ticket_thread thread ON (thread.ticket_id=ticket.ticket_id) WHERE ( '
         .'  ( ticket.staff_id='.db_input($thisstaff->getId())
         .' AND status.state="open") ';
 
@@ -128,6 +128,30 @@ if($search):
     if($searchTerm){
         $qs += array('query' => $searchTerm);
         $queryterm=db_real_escape($searchTerm,false); //escape the term ONLY...no quotes.
+
+//Anthony Inicio 04/01/2015
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
+        $aguja = explode(" ",$queryterm);
+        $pajar = "";
+        for($i=0;$i<=strlen($aguja)+1;$i++){
+            if($i == 0)
+                $pajar .= " body LIKE '%".$aguja[$i]."%'";
+            else
+                $pajar .= " AND body LIKE '%".$aguja[$i]."%'";
+        }
+        $comentario_sql =  "SELECT id
+                            FROM `ost_ticket_thread` 
+                            WHERE ".$pajar;
+
+        $comentario_res = $mysqli->query($comentario_sql);
+        $comentario_row = mysqli_num_rows($comentario_res);
+//Anthony Final 04/01/2015
+
         if (is_numeric($searchTerm)) {
             $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
         } elseif (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
@@ -135,6 +159,20 @@ if($search):
             # XXX: What about searching for email addresses in the body of
             #      the thread message
             $qwhere.=" AND email.address='$queryterm'";
+
+//Anthony Inicio 04/01/2015
+        } elseif ($comentario_row > 0) {
+            $aguja = explode(" ",$queryterm);
+            $pajar = "";
+            for($i=0;$i<=strlen($aguja)+1;$i++){
+                if($i == 0)
+                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+                else
+                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+            }
+            $qwhere.=$pajar;
+//Anthony Final 04/01/2015
+
         } else {//Deep search!
             //This sucks..mass scan! search anything that moves!
             require_once(INCLUDE_DIR.'ajax.tickets.php');
@@ -157,11 +195,13 @@ if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
     $ticket_ids = implode(',', db_input($_SESSION['adv_'.$_REQUEST['advsid']]));
     $qs += array('advsid' => $_REQUEST['advsid']);
 
-    $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.')';
+    $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.') ';
     // Thanks, http://stackoverflow.com/a/1631794
     $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
     $order = ' ';
 }
+
+$qwhere .= ' GROUP BY thread.ticket_id ';
 
 $sortOptions=array('date'=>'effective_date','ID'=>'ticket.`number`*1',
     'pri'=>'pri.priority_urgency','name'=>'user.name','subj'=>'cdata.subject',
@@ -238,7 +278,7 @@ if($search && $deep_search) {
 }
 
 //get ticket count based on the query so far..
-$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin $qwhere");
+$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id")));
 //pagenate
 $pagelimit=($_GET['limit'] && is_numeric($_GET['limit']))?$_GET['limit']:PAGE_LIMIT;
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;
@@ -268,7 +308,6 @@ $qfrom.=' LEFT JOIN '.TICKET_LOCK_TABLE.' tlock ON (ticket.ticket_id=tlock.ticke
 TicketForm::ensureDynamicDataView();
 
 $query="$qselect $qfrom $qwhere ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-
 $hash = md5($query);
 $_SESSION['search_'.$hash] = $query;
 //QUERRY QUE LISTA LOS RESULTADOS
@@ -316,7 +355,8 @@ if ($results) {
     <input type="hidden" name="a" value="search">
     <table>
         <tr>
-            <td><input type="text" id="basic-ticket-search" name="query"
+            <td>
+                <input type="text" id="basic-ticket-search" name="query"
             size=30 value="<?php echo Format::htmlchars($_REQUEST['query'],
             true); ?>"
                 autocomplete="off" autocorrect="off" autocapitalize="off"></td>
@@ -362,32 +402,32 @@ if ($results) {
     <thead>
         <tr>
             <?php if($thisstaff->canManageTickets()) { ?>
-	        <th width="8px">&nbsp;</th>
+            <th width="8px">&nbsp;</th>
             <?php } ?>
-	        <th width="70">
+            <th width="70">
                 <a <?php echo $id_sort; ?> href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Ticket ID'), __($negorder)); ?>"><?php echo __('Ticket'); ?></a></th>
-	        <th width="70">
+            <th width="70">
                 <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
-	        <th width="280">
+            <th width="280">
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
                 <a <?php echo $name_sort; ?> href="tickets.php?sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                      title="<?php echo sprintf(__('Sort by %s %s'), __('Name'), __($negorder)); ?>"><?php echo __('From');?></a></th>
             <?php
-            if($search && !$status) { ?>
+            //if($search && !$status) { ?>
                 <th width="60">
                     <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
             <?php
-            } else { ?>
+            //} else { ?>
                 <th width="60" <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
-            }
+            //}
             ?>
             <th width="60">
                     <a <?php echo $status_sort; ?> href=""
@@ -418,13 +458,14 @@ if ($results) {
                 Localizador
             </th>
 
-            <th width="60">
-                <a <?php echo $status_sort; ?> href=""
-                title="<?php echo sprintf(__('Sort by %s %s'), "Finalizado", __($negorder)); ?>">Finalizado</a>
+            <th style="color: #184E81;padding: 3px;">
+                <!-- <a <?php echo $status_sort; ?> href=""
+                title="<?php echo sprintf(__('Sort by %s %s'), "Finalizado", __($negorder)); ?>">Finalizado</a> -->
+                Status_Loc
             </th>
             
             <th style="color: #184E81;padding: 3px;">
-                Status
+                Tiempo
             </th>
         </tr>
      </thead>
@@ -532,16 +573,16 @@ $organizacion = $result3->fetch_array();
                 <td>&nbsp;<?php echo Format::htmlchars(
                         Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
                 <?php
-                if($search && !$status){
+                //if($search && !$status){
                     $displaystatus=ucfirst($row['status']);
                     if(!strcasecmp($row['state'],'open'))
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
-                } else { ?>
+                //} else { ?>
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
                 <?php
-                }
+                //}
                 ?>
                 <!--MICOD: Impresión de las organizaciones en el listado-->
                 <td>&nbsp;<?=$organizacion[1]?></td>
@@ -549,7 +590,8 @@ $organizacion = $result3->fetch_array();
                 <td>&nbsp;<?php echo $lc; ?></td>
 <?php
 
-$mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
 
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -564,66 +606,89 @@ $query2 = " SELECT
             WHERE ticket_id = ".$row['ticket_id'];
 $result2 = $mysqli->query($query2);
 $row2 = $result2->fetch_array();
+
 //print_r($query2);
 /*MICOD------------------------------------------------------------------------------------
 Éste código consulta las fechas de creación y cierre de un ticket, calcula el tiempo que
 duró abierto el ticket y lo renderiza en la tabla de tickets*/
-$query_time = "SELECT created, closed FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
-$result_time = $mysqli->query($query_time);
-$row_time = $result_time->fetch_array();
+// $query_time = "SELECT created, closed FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
+// $result_time = $mysqli->query($query_time);
+// $row_time = $result_time->fetch_array();
 
-$year_created = substr($row_time['created'], 0,4);
-$month_created = substr($row_time['created'], 5,2);
-$year_closed = substr($row_time['closed'], 0,4);
-$month_closed = substr($row_time['closed'], 5,2);
+// $year_created = substr($row_time['created'], 0,4);
+// $month_created = substr($row_time['created'], 5,2);
+// $year_closed = substr($row_time['closed'], 0,4);
+// $month_closed = substr($row_time['closed'], 5,2);
 
-if(isset($row_time['closed'])){
-    $query_timedif = " SELECT created, closed, SEC_TO_TIME(TIMESTAMPDIFF(SECOND, closed, created)) HORAS 
-                    FROM ost_ticket WHERE ticket_id = ".$row['ticket_id']." 
-                    AND YEAR(created) = ".$year_created." AND MONTH(created) = ".$month_created." 
-                    AND YEAR(closed) = ".$year_closed." AND MONTH(closed) = ".$month_closed;
+// if(isset($row_time['closed'])){
+//     $query_timedif = " SELECT created, closed, SEC_TO_TIME(TIMESTAMPDIFF(SECOND, closed, created)) HORAS 
+//                     FROM ost_ticket WHERE ticket_id = ".$row['ticket_id']." 
+//                     AND YEAR(created) = ".$year_created." AND MONTH(created) = ".$month_created." 
+//                     AND YEAR(closed) = ".$year_closed." AND MONTH(closed) = ".$month_closed;
                     
-    $result_timedif = $mysqli->query($query_timedif);
-    $row_timedif = $result_timedif->fetch_array();
+//     $result_timedif = $mysqli->query($query_timedif);
+//     $row_timedif = $result_timedif->fetch_array();
 
-    $hora = substr($row_timedif['HORAS'], 1,2);
-    $minuto = substr($row_timedif['HORAS'], 4,2);
-    $segundo = substr($row_timedif['HORAS'], 7,2);
+//     $hora = substr($row_timedif['HORAS'], 1,2);
+//     $minuto = substr($row_timedif['HORAS'], 4,2);
+//     $segundo = substr($row_timedif['HORAS'], 7,2);
 
-    $respuesta = 0;
-    if ($segundo != "00") {
-        $respuesta = 1;
-    }if ($minuto != "00") {
-        $respuesta = 2;
-    }if ($hora != "00") {
-        $respuesta = 3;
-    }
-    switch ($respuesta) {
-        case '1':
-            $duracion = "En unos seg";
-            break;
-        case '2':
-            $duracion = "En ".$minuto." min";
-            break;
-        case '3':
-            if ($hora == "01") {
-                $duracion = "En ".$hora." hora";
-            }else{
-                $duracion = "En ".$hora." horas";
-            }
-            break;
-        default:
-            $duracion = "Activo";
-            break;
-    }
-}else{
-    $duracion = "Activo";
-}
+//     $respuesta = 0;
+//     if ($segundo != "00") {
+//         $respuesta = 1;
+//     }if ($minuto != "00") {
+//         $respuesta = 2;
+//     }if ($hora != "00") {
+//         $respuesta = 3;
+//     }
+//     switch ($respuesta) {
+//         case '1':
+//             $duracion = "0m";
+//             break;
+//         case '2':
+//             $duracion = $minuto."m";
+//             break;
+//         case '3':
+//             if ($hora == "01") {
+//                 $duracion = $hora."h";
+//             }else{
+//                 $duracion = $hora."h";
+//             }
+//             break;
+//         default:
+//             $duracion = "Activo";
+//             break;
+//     }
+// }else{
+//     $duracion = "Activo";
+// }
 /*MICOD------------------------------------------------------------------------------------*/
+
+if(isset($row_time['closed']))
+    $query_timedif = "  SELECT created, closed FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
+else
+    $query_timedif = "  SELECT created, NOW() FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
+
+$result_timedif = $mysqli->query($query_timedif);
+$row_timedif = $result_timedif->fetch_array();
+
 ?>
                 <td>&nbsp;<?=$row2[0]?></td>
-                <td>&nbsp;<?=$duracion?></td><!--MICOD: nueva columna-->
                 <td>&nbsp;<?=$row2[1]?></td>
+                <td>&nbsp;<?php 
+
+                    $fecha1 = new DateTime($row_timedif[0]);
+                    $fecha2 = new DateTime($row_timedif[1]);
+                    $fecha = $fecha1->diff($fecha2);
+
+                    if($fecha->y > 0)      printf('%dA, %dM, %dd, %dh, %dm', $fecha->y, $fecha->m, $fecha->d, $fecha->h, $fecha->i);
+                    else if($fecha->m > 0) printf('%dM, %dd, %dh, %dm', $fecha->m, $fecha->d, $fecha->h, $fecha->i);
+                    else if($fecha->d > 0) printf('%dd, %dh, %dm', $fecha->d, $fecha->h, $fecha->i);
+                    else if($fecha->h > 0) printf('%dh, %dm', $fecha->h, $fecha->i);
+                    else if($fecha->i > 0) printf('%dm', $fecha->i);
+                    else echo ('0m');
+
+                ?></td><!--MICOD: nueva columna-->
                 
             </tr>
             <?php
@@ -634,7 +699,7 @@ if(isset($row_time['closed'])){
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="11">
+        <td colspan="12">
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;

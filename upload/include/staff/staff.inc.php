@@ -90,7 +90,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     if(isset($_POST["ci"]))
         $mysqli->query("UPDATE ost_staff SET ci = '".$_POST["ci"]."' WHERE staff_id = ".$info['id']);
 
-    $query = "SELECT ci FROM ost_staff WHERE staff_id = ".$info['id'];
+    $query = "SELECT ci FROM ost_staff WHERE staff_id = '".$info['id']."'";
     $result = $mysqli->query($query);
     $row = $result->fetch_array();
     $ci = $row[0];

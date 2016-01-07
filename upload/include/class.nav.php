@@ -212,6 +212,7 @@ class AdminNav extends StaffNav{
             $tabs['manage']=array('desc'=>__('Manage'),'href'=>'helptopics.php','title'=>__('Manage Options'));
             $tabs['emails']=array('desc'=>__('Emails'),'href'=>'emails.php','title'=>__('Email Settings'));
             $tabs['staff']=array('desc'=>__('Agents'),'href'=>'staff.php','title'=>__('Manage Agents'));
+            $tabs['auditoria']=array('desc'=>__('Auditoria'),'href'=>'auditoria.php','title'=>__('Auditorias'));
             if (count($this->getRegisteredApps()))
                 $tabs['apps']=array('desc'=>__('Applications'),'href'=>'apps.php','title'=>__('Applications'));
             $this->tabs=$tabs;
@@ -265,6 +266,9 @@ class AdminNav extends StaffNav{
                     $subnav[]=array('desc'=>__('Groups'),'href'=>'groups.php','iconclass'=>'groups');
                     $subnav[]=array('desc'=>__('Departments'),'href'=>'departments.php','iconclass'=>'departments');
                     //$subnav[]=array('desc'=>__('Users'),'href'=>'users_staffs.php','iconclass'=>'teams');
+                    break;
+                case 'auditoria':
+                    $subnav[]=array('desc'=>__('L&iacute;mite de Cr&eacute;dito'),'href'=>'auditoria.php','iconclass'=>'users');
                     break;
                 case 'apps':
                     foreach ($this->getRegisteredApps() as $app)

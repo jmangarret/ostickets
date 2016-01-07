@@ -2001,8 +2001,10 @@ class Ticket {
                     $variables + array('recipient' => $this->getOwner()));
 
             $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
+            //var_dump($msg);
             $email->send($this->getOwner(), $msg['subj'], $msg['body'], $attachments,
                 $options);
+            
         }
 
         if($vars['emailcollab'])
@@ -2900,7 +2902,7 @@ class Ticket {
 
         if(!$thisstaff || !$thisstaff->canCreateTickets()) return false;
 
-        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','other')))
+        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','whatapp el rosal','pop-up web','other')))
             $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
 
         if (!$vars['uid']) {
