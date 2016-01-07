@@ -276,7 +276,7 @@ if($search && $deep_search) {
 }
 
 //get ticket count based on the query so far..
-$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin $qwhere");
+$total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id")));
 //pagenate
 $pagelimit=($_GET['limit'] && is_numeric($_GET['limit']))?$_GET['limit']:PAGE_LIMIT;
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;
