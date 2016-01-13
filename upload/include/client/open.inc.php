@@ -164,14 +164,14 @@ foreach ($_POST as $key => $value) {
     $filas  = $result->fetch_array();
     $limiteDisponible = $filas[0];
 
-    if($limiteDisponible <= 0){ 
+    if($limiteDisponible <= 0){
 
         $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente.</font>";
 
         ?>
 
         <script>
-            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+            //$("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
             $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
             $("#create").fadeOut("fast");
             $("select:eq(0)").change(function(){
@@ -192,9 +192,9 @@ foreach ($_POST as $key => $value) {
         
         ?>
 
-        <script>
+        <!--<script>
             $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
-        </script>
+        </script>-->
 
         <?php
     }
