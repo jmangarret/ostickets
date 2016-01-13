@@ -113,11 +113,7 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
-<<<<<<< HEAD
         <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
-=======
-        
->>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -175,10 +171,7 @@ foreach ($_POST as $key => $value) {
         ?>
 
         <script>
-<<<<<<< HEAD
-=======
             $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
->>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
             $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
             $("#create").fadeOut("fast");
             $("select:eq(0)").change(function(){
