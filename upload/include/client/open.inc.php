@@ -113,7 +113,11 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
+<<<<<<< HEAD
+        <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
+=======
         
+>>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -171,7 +175,10 @@ foreach ($_POST as $key => $value) {
         ?>
 
         <script>
+<<<<<<< HEAD
+=======
             $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+>>>>>>> 52200f27354dcc0b9f4c21a8e2da2c57db24ed36
             $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
             $("#create").fadeOut("fast");
             $("select:eq(0)").change(function(){
@@ -281,6 +288,7 @@ foreach ($_POST as $key => $value) {
             $("select:eq(2)").removeAttr('required');
             $("select:eq(2)").val("");
         }
+
     });
 
     $("select:eq(1)").change(function(){
@@ -385,45 +393,6 @@ foreach ($_POST as $key => $value) {
             $("#repeat").hide();
         }
     });
-
-
-    // if($("select:eq(0)").val() == 19){
-    //     $("tr:eq(4)").show("slow");
-    //     $("select:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(4)").hide("slow");
-    //     $("select:eq(2)").removeAttr('required');
-    //     $("select:eq(2)").val("");
-    // }        
-    // if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
-    //     $("tr:eq(3)").show("slow");
-    //     $("input:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(3)").hide("slow");
-    //     $("input:eq(2)").removeAttr('required');
-    //     $("input:eq(2)").val("");
-    // }
-    // if($("select:eq(1)").val() == 19 || $("select:eq(1)").val() == 26){
-    //     $("tr:eq(5)").show("slow");
-    //     $("select:eq(3)").prop('required',true);
-    // }
-    //  else{
-    //     $("tr:eq(5)").hide("slow");
-    //     $("select:eq(3)").removeAttr('required');
-    //     $("select:eq(3)").val("");
-    // }
-    // if($('select:eq(3)').val() == 14){
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
-    //     $("td:eq(10)").append("<small>Para c&oacute;digo de seguridad de TDC, proporcionarlo por tel&eacute;fono.</small>");
-    // }
-    // else{
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").val("");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").removeAttr('required');
-    // }
 
     $("#create").click(function(){
         if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(10).text() == ""){

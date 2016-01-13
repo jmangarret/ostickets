@@ -82,11 +82,13 @@ class OrgsAjaxAPI extends AjaxController {
             $i++;
             if($i == 4) {
                 $total = $value;
-                $_POST["$key"] = str_replace(',','',$value);
+                $_POST["$key"] = str_replace('.','',substr($value,0,strlen($value)-3)).substr($value,strlen($value)-3,strlen($value));
+                $_POST["$key"] = str_replace(',','.',$_POST["$key"]);
             }
             if($i == 5) {
                 $disponible = $value;
-                $_POST["$key"] = str_replace(',','',$value);
+                $_POST["$key"] = str_replace('.','',substr($value,0,strlen($value)-3)).substr($value,strlen($value)-3,strlen($value));
+                $_POST["$key"] = str_replace(',','.',$_POST["$key"]);
             }
         }
 

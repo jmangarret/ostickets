@@ -91,8 +91,10 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     // $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
 
     jQuery(function($) {
-        $("#org_informacion input:eq(3)").autoNumeric('init');
-        $("#org_informacion input:eq(4)").autoNumeric('init');
+        // $("#org_informacion input:eq(3)").replace(".",",");
+        // $("#org_informacion input:eq(4)").replace(".",",");
+        $("#org_informacion input:eq(3)").autoNumeric({aSep: '.', aDec: ','});
+        $("#org_informacion input:eq(4)").autoNumeric({aSep: '.', aDec: ','});
     });
 
     $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");

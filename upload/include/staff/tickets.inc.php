@@ -28,11 +28,11 @@ $status=null;
 switch(strtolower($_REQUEST['status'])){ //Status is overloaded
     case 'open':
         $status='open';
-		$results_type=__('Open Tickets');
+        $results_type=__('Open Tickets');
         break;
     case 'closed':
         $status='closed';
-		$results_type=__('Closed Tickets');
+        $results_type=__('Closed Tickets');
         $showassigned=true; //closed by.
         break;
     case 'overdue':
@@ -402,15 +402,15 @@ if ($results) {
     <thead>
         <tr>
             <?php if($thisstaff->canManageTickets()) { ?>
-	        <th width="8px">&nbsp;</th>
+            <th width="8px">&nbsp;</th>
             <?php } ?>
-	        <th width="70">
+            <th width="70">
                 <a <?php echo $id_sort; ?> href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Ticket ID'), __($negorder)); ?>"><?php echo __('Ticket'); ?></a></th>
-	        <th width="70">
+            <th width="70">
                 <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
-	        <th width="280">
+            <th width="280">
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
