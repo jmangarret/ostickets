@@ -1010,9 +1010,71 @@ class Ticket {
             //Alert admin??
             if($cfg->alertAdminONNewTicket()) {
                 $alert = $this->replaceVars($msg, array('recipient' => 'Admin'));
-                $email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
+                //$email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
                 $sentlist[]=$cfg->getAdminEmail();
             }
+
+            // Anthony 2016-01-15
+
+            $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+            $query_weekend = "SELECT value FROM `ost_config` WHERE `namespace` = 'core'AND `key` = 'weekend'";
+            $resul_weekend = $mysqli->query($query_weekend);
+            $filas_weekend = $resul_weekend->fetch_array();
+
+            if($filas_weekend[0] == 1){
+
+                $query_alert = "SELECT
+                                    `email` 
+                                FROM  
+                                    `ost_staff` 
+                                WHERE  
+                                    `weekend_alert` = '1'";
+                $resul_alert = $mysqli->query($query_alert);
+                while($row = $resul_alert->fetch_array()) $rows[] = $row;
+                foreach($rows as $row) $string = $string.$row[0].",";
+
+                $query_weekend_core = " SELECT
+                                            `value` 
+                                        FROM  
+                                            `ost_config` 
+                                        WHERE  
+                                            `namespace` =  'core'
+                                            AND  `key` IN ( '1weekend_dia',  
+                                                            '1weekend_hora',  
+                                                            '1weekend_minutos',  
+                                                            '1weekend_turno',  
+                                                            '2weekend_dia',  
+                                                            '2weekend_hora',  
+                                                            '2weekend_minutos',  
+                                                            '2weekend_turno')
+                                        ORDER BY id";
+
+                $resul_weekend_core = $mysqli->query($query_weekend_core);
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia1 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora1 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos1 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno1 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia2 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora2 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos2 = $filas_weekend_core[0];
+                $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno2 = $filas_weekend_core[0];
+                
+                if($weekend_turno1 == "pm") $weekend_hora1 += 12;
+                if($weekend_turno2 == "pm") $weekend_hora2 += 12;
+
+                if( date("w") >= $weekend_dia1 && date("w") <= $weekend_dia2 ){
+                    if(date("w") == $weekend_dia1 && date("H") >= $weekend_hora1 && date("i") >= $weekend_minutos1)
+                        $email->sendAlert(substr($string,0,strlen($string)-1), $alert['subj'], $alert['body'], null, $options);
+                    elseif (date("w") == $weekend_dia2 && date("H") <= $weekend_hora2 && date("i") <= $weekend_minutos2)
+                        $email->sendAlert(substr($string,0,strlen($string)-1), $alert['subj'], $alert['body'], null, $options);
+                    else
+                        $email->sendAlert(substr($string,0,strlen($string)-1), $alert['subj'], $alert['body'], null, $options);
+                }
+
+            }
+
+            // Anthony 2016-01-15
 
             //Only alerts dept members if the ticket is NOT assigned.
             if($cfg->alertDeptMembersONNewTicket() && !$this->isAssigned()) {
