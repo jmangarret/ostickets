@@ -280,6 +280,7 @@ function search() {
                     sprintf(_N('%d ticket', '%d tickets', count($tickets)), count($tickets)
                 ))
                 . " - <a href='tickets.php?advsid=$uid'>".__('view')."</a>";
+                
         } else {
             $result['fail']=__('No tickets found matching your search criteria.');
         }
