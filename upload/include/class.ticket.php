@@ -1010,7 +1010,7 @@ class Ticket {
             //Alert admin??
             if($cfg->alertAdminONNewTicket()) {
                 $alert = $this->replaceVars($msg, array('recipient' => 'Admin'));
-                //$email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
+                $email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
                 $sentlist[]=$cfg->getAdminEmail();
             }
 
