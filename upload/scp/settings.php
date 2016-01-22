@@ -48,6 +48,27 @@ if($page && $_POST && !$errors) {
     }
 }
 
+//Anthony 2016-01-14
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+if(isset($_POST["weekend"]) && $_POST["weekend"] == "1"){
+    $mysqli->query("UPDATE ost_config SET `value` = '1',`updated` = NOW() WHERE `namespace` = 'core' AND `key` = 'weekend';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["1weekend_dia"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '1weekend_dia';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["1weekend_hora"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '1weekend_hora';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["1weekend_minutos"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '1weekend_minutos';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["1weekend_turno"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '1weekend_turno';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["2weekend_dia"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '2weekend_dia';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["2weekend_hora"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '2weekend_hora';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["2weekend_minutos"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '2weekend_minutos';");
+    $mysqli->query("UPDATE ost_config SET `value` = '".$_POST["2weekend_turno"]."', updated = NOW() WHERE `namespace` = 'core' AND `key` = '2weekend_turno';");
+}
+if(isset($_POST["weekend"]) && $_POST["weekend"] == "2"){
+    $mysqli->query("UPDATE ost_config SET `value` = '2',`updated` = NOW() WHERE `namespace` = 'core' AND `key` = 'weekend';");
+}
+
+//Anthony 2016-01-14
+
 $config=($errors && $_POST)?Format::input($_POST):Format::htmlchars($cfg->getConfigInfo());
 $ost->addExtraHeader('<meta name="tip-namespace" content="'.$page[1].'" />',
     "$('#content').data('tipNamespace', '".$page[1]."');");

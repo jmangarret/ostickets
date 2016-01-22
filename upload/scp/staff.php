@@ -22,14 +22,23 @@ if($_REQUEST['id'] && !($staff=Staff::lookup($_REQUEST['id'])))
 if($_POST){
     switch(strtolower($_POST['do'])){
         case 'update':
-            if(isset($_REQUEST["change_passwd"])){
-                $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
-                if (mysqli_connect_errno()) {
-                    printf("Connect failed: %s\n", mysqli_connect_error());
-                    exit();
-                }
-                $mysqli->query("UPDATE ost_staff SET change_passwd = '1' WHERE staff_id = ".$_REQUEST["id"]);
+
+            // Anthony 2016-01-18
+
+            $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+            if (mysqli_connect_errno()) {
+                printf("Connect failed: %s\n", mysqli_connect_error());
+                exit();
             }
+            if(isset($_REQUEST["change_passwd"]))
+                $mysqli->query("UPDATE ost_staff SET change_passwd = '1' WHERE staff_id = ".$_REQUEST["id"]);
+            if(isset($_REQUEST["weekend"]))
+                $mysqli->query("UPDATE ost_staff SET weekend_alert = '1' WHERE staff_id = ".$_REQUEST["id"]);
+            else
+                $mysqli->query("UPDATE ost_staff SET weekend_alert = '0' WHERE staff_id = ".$_REQUEST["id"]);
+
+            // Anthony 2016-01-18
+            
             if(!$staff){
                 $errors['err']=sprintf(__('%s: Unknown or invalid'), __('agent'));
             }elseif($staff->update($_POST,$errors)){

@@ -208,6 +208,141 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <?php echo __('Allow clients to update ticket details via the web portal'); ?>
             </td>
         </tr>
+        <!-- Anthony 2016-01-13 -->
+        <tr>
+            <td>Notificaciones Fines de Semana:</td>
+            <td>
+<?php
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+$query_weekend = "SELECT value FROM `ost_config` WHERE `namespace` = 'core'AND `key` = 'weekend'";
+$resul_weekend = $mysqli->query($query_weekend);
+$filas_weekend = $resul_weekend->fetch_array();
+
+?>
+                <input type="radio" name="weekend" value="1" id="weekend1" <?php echo ($filas_weekend[0] == "1") ? 'checked' : ''; ?>> Si &nbsp;
+                <input type="radio" name="weekend" value="2" id="weekend2" <?php echo ($filas_weekend[0] == "2") ? 'checked' : ''; ?>> No <br>
+                <span id="span_weekend" <?php echo ($filas_weekend[0] == 2) ? 'style="display:none;"' : ''; ?>>
+                    <br>
+                    <table style="display:block;">
+                        <tr>
+                            <td>
+                                Desde:
+                            </td>
+                            <td>
+                                Día
+                                <select name="1weekend_dia" id="1weekend_dia" value="Mon">
+                                    <option value="">-</option>
+                                    <option value="1">Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miercoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                    <option value="0">Domingo</option>
+                                </select>
+                            </td>
+                            <td>
+                                Hora
+                                <select name="1weekend_hora" id="1weekend_hora">
+                                    <option value="">-</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>                                
+                            </td>
+                            <td>
+                                :
+                            </td>
+                            <td>
+                                <select name="1weekend_minutos" id="1weekend_minutos">
+                                    <option value="">-</option>
+                                    <option value="00">00</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="1weekend_turno" id="1weekend_turno">
+                                    <option value="">-</option>
+                                    <option value="am">am</option>
+                                    <option value="pm">pm</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Hasta:
+                            </td>
+                            <td>
+                                Día
+                                <select name="2weekend_dia" id="2weekend_dia">
+                                    <option value="">-</option>
+                                    <option value="1">Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miercoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                    <option value="0">Domingo</option>
+                                </select>
+                            </td>
+                            <td>
+                                Hora
+                                <select name="2weekend_hora" id="2weekend_hora">
+                                    <option value="">-</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>                                
+                            </td>
+                            <td>
+                                :
+                            </td>
+                            <td>
+                                <select name="2weekend_minutos" id="2weekend_minutos">
+                                    <option value="">-</option>
+                                    <option value="00">00</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="2weekend_turno" id="2weekend_turno">
+                                    <option value="">-</option>
+                                    <option value="am">am</option>
+                                    <option value="pm">pm</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </span>
+            </td>
+        </tr>
+        <!-- Anthony 2016-01-13 -->
         <tr>
             <th colspan="2">
                 <em><b><?php echo __('Attachments');?></b>:  <?php echo __('Size and maximum uploads setting mainly apply to web tickets.');?></em>
@@ -305,4 +440,77 @@ $(function() {
     $('[name=sequence_id]').on('change', update_example);
     $('[name=number_format]').on('keyup', update_example);
 });
+</script>
+
+<?php
+
+//Anthony 2016-01-14
+
+$query_weekend_core = " SELECT
+                            `value` 
+                        FROM  
+                            `ost_config` 
+                        WHERE  
+                            `namespace` =  'core'
+                            AND  `key` IN ( '1weekend_dia',  
+                                            '1weekend_hora',  
+                                            '1weekend_minutos',  
+                                            '1weekend_turno',  
+                                            '2weekend_dia',  
+                                            '2weekend_hora',  
+                                            '2weekend_minutos',  
+                                            '2weekend_turno')
+                        ORDER BY id";
+$resul_weekend_core = $mysqli->query($query_weekend_core);
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia1 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora1 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos1 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno1 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia2 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora2 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos2 = $filas_weekend_core[0];
+$filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno2 = $filas_weekend_core[0];
+
+//Anthony 2016-01-14
+
+?>
+
+<script>
+
+//Anthony 2016-01-14
+
+$("#1weekend_dia").val('<?=$weekend_dia1?>');
+$("#1weekend_hora").val('<?=$weekend_hora1?>');
+$("#1weekend_minutos").val('<?=$weekend_minutos1?>');
+$("#1weekend_turno").val('<?=$weekend_turno1?>');
+$("#2weekend_dia").val('<?=$weekend_dia2?>');
+$("#2weekend_hora").val('<?=$weekend_hora2?>');
+$("#2weekend_minutos").val('<?=$weekend_minutos2?>');
+$("#2weekend_turno").val('<?=$weekend_turno2?>');
+
+$("#weekend1").click(function(){
+    $("#span_weekend").show("slow");
+    $("#1weekend_dia").prop('required',true);
+    $("#1weekend_hora").prop('required',true);
+    $("#1weekend_minutos").prop('required',true);
+    $("#1weekend_turno").prop('required',true);
+    $("#2weekend_dia").prop('required',true);
+    $("#2weekend_hora").prop('required',true);
+    $("#2weekend_minutos").prop('required',true);
+    $("#2weekend_turno").prop('required',true);
+});
+$("#weekend2").click(function(){
+    $("#span_weekend").hide("slow");
+    $("#1weekend_dia").prop('required',false);
+    $("#1weekend_hora").prop('required',false);
+    $("#1weekend_minutos").prop('required',false);
+    $("#1weekend_turno").prop('required',false);
+    $("#2weekend_dia").prop('required',false);
+    $("#2weekend_hora").prop('required',false);
+    $("#2weekend_minutos").prop('required',false);
+    $("#2weekend_turno").prop('required',false);
+});
+
+//Anthony 2016-01-14
+
 </script>
