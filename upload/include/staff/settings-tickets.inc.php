@@ -223,7 +223,7 @@ $filas_weekend = $resul_weekend->fetch_array();
 ?>
                 <input type="radio" name="weekend" value="1" id="weekend1" <?php echo ($filas_weekend[0] == "1") ? 'checked' : ''; ?>> Si &nbsp;
                 <input type="radio" name="weekend" value="2" id="weekend2" <?php echo ($filas_weekend[0] == "2") ? 'checked' : ''; ?>> No <br>
-                <span id="span_weekend" <?php echo ($filas_weekend[0] == 2) ? 'style="display:none;"' : ''; ?>>
+                <span id="span_weekend" style="display:none;">
                     <br>
                     <table style="display:block;">
                         <tr>
@@ -253,6 +253,7 @@ $filas_weekend = $resul_weekend->fetch_array();
                                     <option value="04">04</option>
                                     <option value="05">05</option>
                                     <option value="06">06</option>
+                                    <option value="07">07</option>
                                     <option value="08">08</option>
                                     <option value="09">09</option>
                                     <option value="10">10</option>
@@ -309,6 +310,7 @@ $filas_weekend = $resul_weekend->fetch_array();
                                     <option value="04">04</option>
                                     <option value="05">05</option>
                                     <option value="06">06</option>
+                                    <option value="07">07</option>
                                     <option value="08">08</option>
                                     <option value="09">09</option>
                                     <option value="10">10</option>
@@ -479,37 +481,37 @@ $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno2 = $fil
 
 //Anthony 2016-01-14
 
-$("#1weekend_dia").val('<?=$weekend_dia1?>');
-$("#1weekend_hora").val('<?=$weekend_hora1?>');
-$("#1weekend_minutos").val('<?=$weekend_minutos1?>');
-$("#1weekend_turno").val('<?=$weekend_turno1?>');
-$("#2weekend_dia").val('<?=$weekend_dia2?>');
-$("#2weekend_hora").val('<?=$weekend_hora2?>');
-$("#2weekend_minutos").val('<?=$weekend_minutos2?>');
-$("#2weekend_turno").val('<?=$weekend_turno2?>');
+// $("#1weekend_dia").val('<?=$weekend_dia1?>');
+// $("#1weekend_hora").val('<?=$weekend_hora1?>');
+// $("#1weekend_minutos").val('<?=$weekend_minutos1?>');
+// $("#1weekend_turno").val('<?=$weekend_turno1?>');
+// $("#2weekend_dia").val('<?=$weekend_dia2?>');
+// $("#2weekend_hora").val('<?=$weekend_hora2?>');
+// $("#2weekend_minutos").val('<?=$weekend_minutos2?>');
+// $("#2weekend_turno").val('<?=$weekend_turno2?>');
 
-$("#weekend1").click(function(){
-    $("#span_weekend").show("slow");
-    $("#1weekend_dia").prop('required',true);
-    $("#1weekend_hora").prop('required',true);
-    $("#1weekend_minutos").prop('required',true);
-    $("#1weekend_turno").prop('required',true);
-    $("#2weekend_dia").prop('required',true);
-    $("#2weekend_hora").prop('required',true);
-    $("#2weekend_minutos").prop('required',true);
-    $("#2weekend_turno").prop('required',true);
-});
-$("#weekend2").click(function(){
-    $("#span_weekend").hide("slow");
-    $("#1weekend_dia").prop('required',false);
-    $("#1weekend_hora").prop('required',false);
-    $("#1weekend_minutos").prop('required',false);
-    $("#1weekend_turno").prop('required',false);
-    $("#2weekend_dia").prop('required',false);
-    $("#2weekend_hora").prop('required',false);
-    $("#2weekend_minutos").prop('required',false);
-    $("#2weekend_turno").prop('required',false);
-});
+// $("#weekend1").click(function(){
+//     $("#span_weekend").show("slow");
+//     $("#1weekend_dia").prop('required',true);
+//     $("#1weekend_hora").prop('required',true);
+//     $("#1weekend_minutos").prop('required',true);
+//     $("#1weekend_turno").prop('required',true);
+//     $("#2weekend_dia").prop('required',true);
+//     $("#2weekend_hora").prop('required',true);
+//     $("#2weekend_minutos").prop('required',true);
+//     $("#2weekend_turno").prop('required',true);
+// });
+// $("#weekend2").click(function(){
+//     $("#span_weekend").hide("slow");
+//     $("#1weekend_dia").prop('required',false);
+//     $("#1weekend_hora").prop('required',false);
+//     $("#1weekend_minutos").prop('required',false);
+//     $("#1weekend_turno").prop('required',false);
+//     $("#2weekend_dia").prop('required',false);
+//     $("#2weekend_hora").prop('required',false);
+//     $("#2weekend_minutos").prop('required',false);
+//     $("#2weekend_turno").prop('required',false);
+// });
 
 //Anthony 2016-01-14
 

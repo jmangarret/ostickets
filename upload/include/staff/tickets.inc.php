@@ -532,6 +532,19 @@ if ($results) {
                 if(!strcasecmp($row['state'],'open') && !$row['isanswered'] && !$row['lock_id']) {
                     $tid=sprintf('<b>%s</b>',$tid);
                 }
+                /*INICIO
+                Anthony Parisi
+                2016-02-03
+                Las siguientes lineas de código definiran el color de fondo de las filas de acuerdo al crierio del tipo de solicitud.
+                Rojo para: Cambios, Cancelar Itinerario y Anular Aereo.
+                Rosa para: Emitir Localizador.
+                */
+                $color_rojo = "Cancelar itinerario,Anular Aereo,Cambios";
+                $color_rosa = "Emitir localizador";
+                if(strpos($color_rojo,$subject)!==false) $color_tr = 'style="background:#FFACAC;"';
+                elseif(strpos($color_rosa,$subject)!==false) $color_tr = "style='background:#77FF6F'";
+                else $color_tr ="";
+                /*FIN*/
                 ?>
             <tr id="<?php echo $row['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
@@ -540,7 +553,7 @@ if ($results) {
                     if($ids && in_array($row['ticket_id'], $ids))
                         $sel=true;
                     ?>
-                <td align="center" class="nohover">
+                <td align="center" class="nohover" <?=$color_tr?>>
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $row['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
@@ -580,12 +593,12 @@ $organizacion = $result3->fetch_array();
 /*----------------------------------------------------------------*/
 
 ?>
-                <td title="<?php echo $row['email']; ?>">
+                <td title="<?php echo $row['email']; ?>" <?=$color_tr?>>
                   <a style="<?=$color?>" class="Icon <?php echo strtolower($row['source']); ?>Ticket ticketPreview"
                     title="<?php echo __('Preview Ticket'); ?>"
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $tid; ?></a></td>
-                <td align="center"><?php echo Format::db_datetime($row['effective_date']); ?></td>
-                <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
+                <td align="center" <?=$color_tr?>><?php echo Format::db_datetime($row['effective_date']); ?></td>
+                <td <?=$color_tr?>><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
                      <?php
                         if ($threadcount>1)
@@ -597,24 +610,24 @@ $organizacion = $result3->fetch_array();
                             echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                     ?>
                 </td>
-                <td>&nbsp;<?php echo Format::htmlchars(
+                <td <?=$color_tr?>>&nbsp;<?php echo Format::htmlchars(
                         Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
                 <?php
                 //if($search && !$status){
                     $displaystatus=ucfirst($row['status']);
                     if(!strcasecmp($row['state'],'open'))
                         $displaystatus="<b>$displaystatus</b>";
-                    echo "<td>$displaystatus</td>";
+                    echo "<td $color_tr>$displaystatus</td>";
                 //} else { ?>
-                <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
+                <td class="nohover" align="center" <?php echo ($color_tr!="")?$color_tr:'style="background-color:'.$row['priority_color'].';\"'; ?>>
                     <?php echo $row['priority_desc']; ?></td>
                 <?php
                 //}
                 ?>
                 <!--MICOD: Impresión de las organizaciones en el listado-->
-                <td>&nbsp;<?=$organizacion[1]?></td>
+                <td <?=$color_tr?>>&nbsp;<?=$organizacion[1]?></td>
                 <!--/////////////////////////////////////////////-->
-                <td>&nbsp;<?php echo $lc; ?></td>
+                <td <?=$color_tr?>>&nbsp;<?php echo $lc; ?></td>
 <?php
 
 
@@ -737,14 +750,16 @@ $row_timedif = $result_timedif->fetch_array();
 
 ?>
 
+
 <!--Inicio Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$gds[1];?></td> <!--Lleno la columna gds con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$row2[0]?></td> <!--Lleno la columna localizador con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$row2[1]?></td> <!--Lleno la columna estatus con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$pago[1];?></td> <!--Lleno la columna tipo de pago con los datos traidos desde la base de datos-->
+                <td <?=$color_tr?>>&nbsp;<?=$gds[1];?></td> <!--Lleno la columna gds con los datos traidos desde la base de datos-->
+                <td <?=$color_tr?>>&nbsp;<?=$row2[0]?></td> <!--Lleno la columna localizador con los datos traidos desde la base de datos-->
+                <td <?=$color_tr?>>&nbsp;<?=$row2[1]?></td> <!--Lleno la columna estatus con los datos traidos desde la base de datos-->
+                <td <?=$color_tr?>>&nbsp;<?=$pago[1];?></td> <!--Lleno la columna tipo de pago con los datos traidos desde la base de datos-->
 <!--Fin Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->
 
-                <td>&nbsp;<?php 
+                <td <?=$color_tr?>>&nbsp;<?php 
+
 
                     $fecha1 = new DateTime($row_timedif[0]);
                     $fecha2 = new DateTime($row_timedif[1]);
