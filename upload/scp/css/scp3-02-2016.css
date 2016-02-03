@@ -491,17 +491,9 @@ table.list tbody td {
 }
 
 table.list tbody td { background: #fff; padding: 1px 3px; vertical-align: top; }
-
-/*Inicio Billy 3/02/2016 Quitar efecto de cebra de la tabla ticket*/
 table.list tbody tr:nth-child(2n+1) td { background-color: #f0faff; }
-/*Fin Billy 3/02/2016 Quitar efecto de cebra de la tabla ticket*/
-
-table.list tbody tr:hover td { background: #ffe; } 
-
-/*Inicio Billy 3/02/2016 Quitar efecto de cebra de la tabla ticket*/
+table.list tbody tr:hover td { background: #ffe; }
 table.list tbody tr:nth-child(2n+1):hover td { background: #ffd; }
-/*Fin Billy 3/02/2016 Quitar efecto de cebra de la tabla ticket*/
-
 /* row highlighting on hover + select */
 table.list tbody tr:hover td, table.list tbody tr.highlight td {  background: #FFFFDD; }
 /* disabled highlighting on nohover */

@@ -1,11 +1,3 @@
-<!--Inicio Billy 25/01/2016-->
-
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.min.css">
-<script src="/ticket.tuagencia24.com/upload/css/bootstrap.min.js"></script>
-
-<!--Fin Billy 25/01/2016-->
-
-
 <?php
 if(!defined('OSTCLIENTINC') || !is_object($thisclient) || !$thisclient->isValid()) die('Access Denied');
 
@@ -105,7 +97,7 @@ if($search):
         } elseif (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
             $qwhere.=" AND email.address='$queryterm'";
         } else {
-            $qwhere.=" AND UPPER (CAST( cdata.localizador AS CHAR( 100 ) CHARSET utf8 )) LIKE '%".strtoupper($searchTerm)."%'"; /*Billy 1/02/2016 Busca el localizador en el buscador general indiferentemente si es mayuscula o minuscula*/
+            $qwhere.=" AND cdata.`localizador` LIKE '$searchTerm%'";
         }
    }
    endif;
@@ -139,7 +131,7 @@ if($search) {
 
 if(isset($_GET["des"]) && $_GET["des"] != "")
     $qwhere .= " AND ticket.created >= '".$_GET["des"]." 00:00:00' AND ticket.created <= '".$_GET["has"]." 24:59:59'";
-if(isset($_GET["loc"]) && $_GET["loc"] != "" )
+if(isset($_GET["loc"]) && $_GET["loc"] != "")
     $qwhere .= " AND cast(cdata.localizador as char(100) charset utf8) LIKE '%".$_GET["loc"]."%'";
 
 TicketForm::ensureDynamicDataView();
@@ -153,8 +145,8 @@ $qgroup=' GROUP BY ticket.ticket_id';
 $more = "";
 $nume = 0;
 
-if(isset($_GET["est"]) and $_GET["est"]!=""){ //Billy 1/02/2016 Se agrego la condicion que el campo estatus fuese diferente de vacio ya que ahora la busqueda es con select//
-    /*$i=0;
+if(isset($_GET["est"])){
+    $i=0;
     $str="";
     foreach ($_GET['est'] as $selected) {
         if ($i > 0) {
@@ -164,11 +156,11 @@ if(isset($_GET["est"]) and $_GET["est"]!=""){ //Billy 1/02/2016 Se agrego la con
         }
         $i++;
     }
-    $more .= " AND status.state IN ('$str')";*/
-$more .= " AND status.state IN ('".$_GET['est']."')"; //Billy 1/02/2016 Se guarda el valor del GET en la variable more//
+    $more .= " AND status.state IN ('$str')";
 }
-if(isset($_GET["top"]) and $_GET["top"]!=""){ //Billy 1/02/2016 Se agrego la condicion que el campo top fuese diferente de vacio ya que ahora la busqueda es con select//
-    /*$i=0;
+
+if(isset($_GET["top"])){
+    $i=0;
     $str="";
     foreach ($_GET['top'] as $selected) {
         if ($i > 0) {
@@ -178,11 +170,10 @@ if(isset($_GET["top"]) and $_GET["top"]!=""){ //Billy 1/02/2016 Se agrego la con
         }
         $i++;
     }
-    $more .= " AND ticket.topic_id IN ('$str')";*/
-    $more .= " AND ticket.topic_id IN ('".$_GET['top']."')"; //Billy 1/02/2016 Se guarda el valor del GET en la variable more//
+    $more .= " AND ticket.topic_id IN ('$str')";
 }
-if(isset($_GET["dep"]) and $_GET["dep"]!=""){  //Billy 1/02/2016 Se agrego la condicion que el campo dep fuese diferente de vacio ya que ahora la busqueda es con select//
-    /*$i=0;
+if(isset($_GET["dep"])){
+    $i=0;
     $str="";
     foreach ($_GET['dep'] as $selected) {
         if ($i > 0) {
@@ -192,11 +183,10 @@ if(isset($_GET["dep"]) and $_GET["dep"]!=""){  //Billy 1/02/2016 Se agrego la co
         }
         $i++;
     }
-    $more .= " AND ticket.dept_id IN ('$str')";*/
-    $more .= " AND ticket.dept_id IN ('".$_GET['dep']."')"; //Billy 1/02/2016 Se guarda el valor del GET en la variable more//
+    $more .= " AND ticket.dept_id IN ('$str')";
 }
-if(isset($_GET["sta"]) and $_GET["sta"]!=""){ //Billy 1/02/2016 Se agrego la condicion que el campo sta fuese diferente de vacio ya que ahora la busqueda es con select//
-    /*$i=0;
+if(isset($_GET["sta"])){
+    $i=0;
     $str="";
     foreach ($_GET['sta'] as $selected) {
         if ($i > 0) {
@@ -206,14 +196,13 @@ if(isset($_GET["sta"]) and $_GET["sta"]!=""){ //Billy 1/02/2016 Se agrego la con
         }
         $i++;
     }
-    $more .= " AND cast(cdata.status_loc as char(100) charset utf8) IN ('$str')";*/
-    $more .= " AND cast(cdata.status_loc as char(100) charset utf8) IN ('".$_GET['sta']."')"; //Billy 1/02/2016 Se guarda el valor del GET en la variable more//
+    $more .= " AND cast(cdata.status_loc as char(100) charset utf8) IN ('$str')";
 }
 if(isset($_GET["des"]) && $_GET["des"] != "")
     $more .= " AND ticket.created >= '".$_GET["des"]." 01:01:01'";
 if(isset($_GET["has"]) && $_GET["has"] != "")
     $more .= " AND ticket.created <= '".$_GET["has"]." 23:59:59'";
-if(isset($_GET["loc"]) && $_GET["loc"] != "") //se agrego que el localizador sea diferente de vacio para que muestre todo
+if(isset($_GET["loc"]))
     $more .= " AND cast(cdata.localizador as char(100) charset utf8) LIKE '%".$_GET["loc"]."%'";
 
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;//Conteo de la página actual
@@ -241,9 +230,9 @@ $pageNav->setURL('tickets.php', $qs);
 $query="$qselect $qfrom $qwhere $more $qgroup ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
 //echo $query;
 //echo $_GET["sta"];
+
 $res = db_query($query);
-$showing=($res
- && db_num_rows($res))?$pageNav->showing():"";
+$showing=($res && db_num_rows($res))?$pageNav->showing():"";
 if(!$results_type)
 {
     $results_type=ucfirst($status).' Tickets';
@@ -267,7 +256,7 @@ $open = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept
             ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
             LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
             LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
-            AND status.state IN ('open') 
+            AND status.state IN ('open') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
             GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
 $result_open = $mysqli->query($open);
 $n_abiertos = mysqli_num_rows($result_open);
@@ -279,7 +268,7 @@ $close = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dep
             ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
             LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
             LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
-            AND status.state IN ('closed')
+            AND status.state IN ('closed') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
             GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
 $result_close = $mysqli->query($close);
 $n_cerrados = mysqli_num_rows($result_close);
@@ -366,38 +355,25 @@ $n_cerrados = mysqli_num_rows($result_close);
     <input type="submit" value="<?php echo __('Go');?>">
 </form>
 
+<!--No tocar, dejarlo así--> 
+<a style="padding-left:10px;cursor:pointer;" id="advanced-search">[Busqueda Avanzada]</a>
+<a style="padding-left:10px;cursor:pointer; display: none;" id="advanced-search2">[Busqueda Avanzada]</a>
+<br>
 
-<!--////////////////////////////inicio 25/01/2016 Billy Modal para busqueda avanzada////////////////////////////////////////////-->
+<a class="refresh" href="tickets.php"><?php echo __('Refresh'); ?></a>
 
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.css">
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-1.12.0.js"></script>
-  <script src="/ticket.tuagencia24.com/upload/js/bootstrap.min.js"></script>
+<form action="tickets.php" id="advancedsearch" method="get" style="display:none;"> 
+    <br>
+    <table width="100%" style="border-collapse: separate; border-spacing:  3px;" id="search_advanced">
+        <tr>
+            <th style="text-align: right; width: 15%; border-bottom: 5px;">
+                Estado:
+            </th>
+            <td style="width: 35%; border-spacing: 10px 20px; border-collapse: separate">
+                <select name="est[]" multiple>
+<?php
 
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h3 class="modal-title">Búsqueda Avanzada</h3>
-        </div>
-
-        <!--Body del Modal-->
-        <div class="modal-body">
-
-        <form action="tickets.php" id="advancedsearch" method="get" style="display:none;"> 
-         <table class="table">
-            <tr>
-            <th><b>Estado</b></th>
-            <td>
-                <select name="est"> <!--Billy 1/02/2016 Se convirtio en un select-->
-                <option value="">Seleccione</option> <!--Billy 1/02/2016 Opcion seleccione del campo estado-->
-                <?php
-
-                $query = "  SELECT status.state,status.name
+    $query = "  SELECT status.state,status.name
                 FROM ost_ticket ticket 
                     LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) 
                     LEFT JOIN ost_ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id) 
@@ -410,18 +386,19 @@ $n_cerrados = mysqli_num_rows($result_close);
                 ORDER BY 
                     status.name ASC";
 
-                $result = $mysqli->query($query);
+    $result = $mysqli->query($query);
 
-                while($row = $result->fetch_array())
-                 echo '      <option value="'.$row[0].'">'.$row[1].'</option>';
+    while($row = $result->fetch_array())
+        echo '      <option value="'.$row[0].'">'.$row[1].'</option>';
 
-                ?>
+?>
                 </select>
             </td>
-            <th><b>Temas de Ayuda</b></th>
-            <td>
-                <select name="top"> <!--Billy 1/02/2016 Se convirtio en un select-->
-                <option value="">Seleccione</option> <!--Billy 1/02/2016 Opcion seleccione del campo tema de ayuda-->
+            <th style="text-align: right; width: 15%;">
+                Temas de Ayuda:
+            </th>
+            <td style="width: 35%;">
+                <select name="top[]" multiple>
 <?php
 
     $query = "  SELECT topic.topic_id,topic.topic
@@ -448,10 +425,11 @@ $n_cerrados = mysqli_num_rows($result_close);
             </td>
         </tr>
         <tr>
-            <th><b>Departamento</b></th>
-            <td>
-                <select name="dep"> <!--Billy 1/02/2016 Se convirtio en un select-->
-                <option value="">Seleccione</option> <!--Billy 1/02/2016 Opcion seleccione del campo departamento-->
+            <th style="text-align: right; width: 15%;">
+                Departamento:
+            </th>
+            <td style="width: 35%;">
+                <select name="dep[]" multiple>
 <?php
 
     $query = "  SELECT department.dept_id,department.dept_name
@@ -476,10 +454,11 @@ $n_cerrados = mysqli_num_rows($result_close);
 ?>
                 </select>
             </td>
-            <th><b>Status Localizador</b></th>
-            <td>
-                <select name="sta"> <!--Billy 1/02/2016 Se convirtio en un select-->
-                <option value="">Seleccione</option> <!--Billy 1/02/2016 Opcion seleccione del campo status localizador-->
+            <th style="text-align: right; width: 15%;">
+                Status Localizador:
+            </th>
+            <td style="width: 35%;">
+                <select name="sta[]" multiple>
 <?php
 
     $query = "  SELECT cast(cdata.status_loc as char(100) charset utf8)
@@ -506,106 +485,77 @@ $n_cerrados = mysqli_num_rows($result_close);
             </td>
         </tr>
         <tr>
-            <th><b>Desde</b></th>
+            <th style="text-align: right;">
+                Desde:
+            </th>
             <td>
-            <input type="text" id ="datepicker" name="des"> <!--Billy 1/02/2016 Input para el datepicker desde-->
-                        </td>
-            <th><b>Hasta</b></th>
-            <td>
-                <input type="text" id ="datepicker2" name="has"> <!--Billy 1/02/2016 Input para el datepicker hasta-->
+                <input type="date" name="des">
+            </td>
+            <th style="text-align: right;">
+                Hasta:
+            </th>
+            <td width="25%">
+                <input type="date" name="has">
             </td>
         </tr>
         <tr>
-            <th><b>Localizador</b></th>
-            <td>
-                <input type="text" name="loc" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="off">
-            </td>
-
-            <th></th>
+            <th style="text-align: right;">
+                Localizador:
+            </th>
             <td >
+                <input type="text" name="loc" maxlength="6">
             </td>
-
+            <td style="text-align: right;" colspan="4">
+                <input type="submit" value="Consultar">
+            </td>
         </tr>
-    </table> 
-    <center><button type="submit" class="btn btn-default">Consultar</center>
+    </table>
+    
+    <br><br>
 </form>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-      <!--Fin del Body del Modal-->
-  </div>
-  </div>
-
-
-<button type="button" class="btn btn-sm btn-link text" data-toggle="modal" data-target="#myModal" style="padding-left:10px; text-decoration:none" id="advanced-search">[Búsqueda Avanzada]</button>
-<br>
-<a class="refresh" href="tickets.php"><?php echo __('Refresh'); ?></a>
-
-
-<!--///////////////////////////////////Fin 25/01/2016 Billy Modal para busqueda avanzada////////////////////////////////////////////////////////////-->
-
-
 
 <script type="text/javascript">
     
-/*Efecto para que muestre el formulario en el modal*/
+    if ($("#advancedsearch").is(":hidden")){
         $("#advanced-search").click(function(){
             $("#advancedsearch").show("slow");
-            
+            $("#advanced-search").hide();
+            $("#advanced-search2").show();
         });
-/*Fin del efecto para que muestre el formulario en el modal*/
-
-
-    /*
+    }
         $("#advanced-search2").click(function(){
             $("#advancedsearch").hide("slow");
             $("#advanced-search").show();
             $("#advanced-search2").hide();
-        });*/
+        });
 </script>
 
-
-<!--Inicio Billy 26/01/2016 cambia el tamaño del contenedor en el cliente-->
-<script type="text/javascript">
-    $("#container").css("width","90%");
-</script>
-<!--Fin Billy 26/01/2016 cambia el tamaño del contenedor en el cliente-->
-
-
-<!--Inicio Billy 27/01/2016 se agregaron los campos GDS y Pago a la tabla y se ancho la tabla-->
-<table id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
+<table id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
     <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
             <th nowrap>
-                <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><b><?php echo __('Ticket #');?></a>
+                <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><?php echo __('Ticket #');?></a>
             </th>
             <th width="120">
-                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><b><?php echo __('Create Date');?></a>
+                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?></a>
             </th>
             <th width="100">
-                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><b><?php echo __('Status');?></a>
+                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?></a>
             </th>
             <th width="320">
-                <a href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><b><?php echo __('Subject');?></a>
+                <a href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?></a>
             </th>
             <th width="120">
-                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><b><?php echo __('Department');?></a>
+                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?></a>
             </th>
-
-            <th width="120"><b>GDS</th>
-
-            <th width="120"><b>Localizador</th>
-            <th width="120"><b>Status</th>
-
-            <th width="120"><b>Pago</th>
-
-           <!--Fin Billy 27/01/2016 se agregaron los campos GDS y Pago a la tabla y se ancho la tabla-->
+            <th width="120">
+                Localizador
+            </th>
+            <th width="120">
+                Status
+            </th>
         </tr>
-
     </thead>
     <tbody>
     <?php
@@ -627,7 +577,7 @@ $n_cerrados = mysqli_num_rows($result_close);
             }
             ?>
             <tr id="<?php echo $row['ticket_id']; ?>">
-                <td >
+                <td>
                 <a class="Icon <?php echo strtolower($row['source']); ?>Ticket" title="<?php echo $row['email']; ?>"
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
                 </td>
@@ -639,67 +589,27 @@ $n_cerrados = mysqli_num_rows($result_close);
                 <td>&nbsp;<?php echo Format::truncate($dept,30); ?></td>
 <?php
 
-
-//Inicio Billy 27/01/2016 Query para traer de la base de datos el localizador, el estatus y el tipo de pago//////
-
 $query2 = " SELECT 
-                UPPER(CAST(cdata.localizador AS char(100) CHARACTER SET utf8)),
-                CAST(cdata.status_loc AS char(100) CHARACTER SET utf8),
-                fev.value
-                FROM `ost_ticket__cdata` cdata 
-                LEFT JOIN ost_form_entry fe ON (cdata.ticket_id = fe.object_id)
-                LEFT JOIN ost_form_entry_values fev ON (fe.id = fev.entry_id)
-            WHERE ticket_id = ".$row['ticket_id']." and fev.field_id = '37'
-            GROUP BY ticket_id";
-
+                CAST(localizador AS char(100) CHARACTER SET utf8),
+                CAST(status_loc AS char(100) CHARACTER SET utf8) 
+            FROM `ost_ticket__cdata` 
+            WHERE ticket_id = ".$row['ticket_id'];
 $result2 = $mysqli->query($query2);
 $row2 = $result2->fetch_array();
 
-$pago=explode(":",str_replace(array('"', "}"), array("", ""),$row2[2]));  //con la funcion explode separo en dos el valor del arreglo al encontrar : y con str_replace limpio el string para mostrar el tipo de pago
-
-//Fin Billy 27/01/2016 Query para traer de la base de datos el localizador, el estatus y el tipo de pago//////
-
-//Inicio Billy 27/01/2016 Query para traer de la base de datos el tipo de gds//////
-
-$query3 = " SELECT 
-                fev.value
-                FROM `ost_ticket__cdata` cdata 
-                LEFT JOIN ost_form_entry fe ON (cdata.ticket_id = fe.object_id)
-                LEFT JOIN ost_form_entry_values fev ON (fe.id = fev.entry_id)
-            WHERE ticket_id = ".$row['ticket_id']." and fev.field_id = '44'
-            GROUP BY ticket_id";
-
-$result3 = $mysqli->query($query3);
-$row3= $result3->fetch_array();
-
-
-$gds=explode(":",str_replace(array('"', "}"), array("", ""),$row3[0]));  //con la funcion explode separo en dos el valor del arreglo al encontrar : y con str_replace limpio el string para mostrar el gds
-
-//Fin Billy 27/01/2016 Query para traer de la base de datos el tipo de gds//////
-
 ?>
-
-<!--Inicio Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->
-
-                <td>&nbsp;<?php echo $gds[1]; ?></td> <!--Lleno la columna gds con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?php echo strtoupper($row2[0]); ?></td> <!--Lleno la columna localizador con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?php echo $row2[1]; ?></td> <!--Lleno la columna estatus con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?php echo $pago[1]; ?></td> <!--Lleno la columna pago con los datos traidos desde la base de datos-->
-
-<!--Fin Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->       
-
+                <td>&nbsp;<?php echo strtoupper($row2[0]); ?></td>
+                <td>&nbsp;<?php echo $row2[1]; ?></td>
             </tr>
         <?php
         }
 
      } else {
-         echo '<tr><td colspan="9">'.__('Your query did not match any records').'</td></tr>';
+         echo '<tr><td colspan="6">'.__('Your query did not match any records').'</td></tr>';
      }
     ?>
     </tbody>
 </table>
-
-<br>
 <?php
 if($res && $num>0) {
 
@@ -718,67 +628,152 @@ if($res && $num>0) {
     $siguiente = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
     $ultimo    = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
 
-//Inicio Billy 25/01/2016 Paginador del cliente//
-    echo '  <div style="text-align:center;">
-                <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
-                <a href="'.$anterior.'"><span class="glyphicon glyphicon-chevron-left"></span></a>&nbsp;
-                '.__('Page').''.$pageNav->getPageLinks().'&nbsp;
-                <a href="'.$siguiente.'"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;
-                <a href="'.$ultimo.'"><span class="glyphicon glyphicon-forward"></span></a>&nbsp;
+    echo '  <div>
+                &nbsp;'.__('Page').': 
+                <a href="'.$primero.'">Primero</a>&nbsp;
+                <a href="'.$anterior.'">Anterior</a>&nbsp;
+                '.$pageNav->getPageLinks().'&nbsp;
+                <a href="'.$siguiente.'">Siguiente</a>&nbsp;
+                <a href="'.$ultimo.'">Ultimo</a>&nbsp;
             </div>';
-
-            //Fin Billy 25/01/2016 paginador del cliente//
 }
 
 ?>
-  
-<!--Inicio Billy 1/02/2016 Agrego las clases del datepicker-->
 
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-1.12.0.js"></script>
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-ui.js"></script>
+<div class="dialog" style="display:none;" id="advanced-search">
+    <h3><?php echo __('Advanced Ticket Search');?></h3>
+    <a class="close" href=""><i class="icon-remove-circle"></i></a>
+    <hr/>
+    <form action="tickets.php" method="post" id="search" name="search">
+        <input type="hidden" name="a" value="search">
+        <fieldset class="query">
+            <input type="input" id="query" name="query" size="20" placeholder="<?php echo __('Keywords') . ' &mdash; ' . __('Optional'); ?>">
+        </fieldset>
+        <fieldset class="span6">
+            <label for="statusId"><?php echo __('Statuses');?>:</label>
+            <select id="statusId" name="statusId">
+                 <option value="">&mdash; <?php echo __('Any Status');?> &mdash;</option>
+                <?php
+                foreach (TicketStatusList::getStatuses(
+                            array('states' => array('open', 'closed'))) as $s) {
+                    echo sprintf('<option data-state="%s" value="%d">%s</option>',
+                            $s->getState(), $s->getId(), __($s->getName()));
+                }
+                ?>
+            </select>
+        </fieldset>
+        <fieldset class="span6">
+            <label for="deptId"><?php echo __('Departments');?>:</label>
+            <select id="deptId" name="deptId">
+                <option value="">&mdash; <?php echo __('All Departments');?> &mdash;</option>
+                <?php
+                if(($mydepts = $thisstaff->getDepts()) && ($depts=Dept::getDepartments())) {
+                    foreach($depts as $id =>$name) {
+                        if(!in_array($id, $mydepts)) continue;
+                        echo sprintf('<option value="%d">%s</option>', $id, $name);
+                    }
+                }
+                ?>
+            </select>
+        </fieldset>
+        <fieldset class="span6">
+            <label for="flag"><?php echo __('Flags');?>:</label>
+            <select id="flag" name="flag">
+                 <option value="">&mdash; <?php echo __('Any Flags');?> &mdash;</option>
+                 <?php
+                 if (!$cfg->showAnsweredTickets()) { ?>
+                 <option data-state="open" value="answered"><?php echo __('Answered');?></option>
+                 <?php
+                 } ?>
+                 <option data-state="open" value="overdue"><?php echo __('Overdue');?></option>
+            </select>
+        </fieldset>
+        <fieldset class="owner span6">
+            <label for="assignee"><?php echo __('Assigned To');?>:</label>
+            <select id="assignee" name="assignee">
+                <option value="">&mdash; <?php echo __('Anyone');?> &mdash;</option>
+                <option value="s0">&mdash; <?php echo __('Unassigned');?> &mdash;</option>
+                <option value="s<?php echo $thisstaff->getId(); ?>"><?php echo __('Me');?></option>
+                <?php
+                if(($users=Staff::getStaffMembers())) {
+                    echo '<OPTGROUP label="'.sprintf(__('Agents (%d)'),count($users)-1).'">';
+                    foreach($users as $id => $name) {
+                        if ($id == $thisstaff->getId())
+                            continue;
+                        $k="s$id";
+                        echo sprintf('<option value="%s">%s</option>', $k, $name);
+                    }
+                    echo '</OPTGROUP>';
+                }
 
-<!--Fin Billy 1/02/2016 Agrego las clases del datepicker-->
-
-<!--Inicio Billy 1/02/2016 Funciones para el datepicker-->
-<script>
-
-/*Inicio Billy 1/02/2016 Funcion para mostrar el datepicker*/
-$(function() {
-    $("#datepicker").datepicker();
-    $( "#datepicker" ).datepicker('option', {dateFormat: 'yy-mm-dd'});
-  });
-
-$(function() {
-    $("#datepicker2").datepicker();
-    $( "#datepicker2" ).datepicker('option', {dateFormat: 'yy-mm-dd'});
-  });
-
-/*Fin Billy 1/02/2016 Funcion para mostrar el datepicker*/
-
-
-/*Inicio Billy 1/02/2016 Funcion para cambiar el idioma del datepicker*/
-$(function($){
-    $.datepicker.regional['es'] = {
-        closeText: 'Cerrar',
-        prevText: '<Ant',
-        nextText: 'Sig>',
-        currentText: 'Hoy',
-        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-        weekHeader: 'Sm',
-        dateFormat: 'dd/mm/yy',
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ''
-    };
-    $.datepicker.setDefaults($.datepicker.regional['es']);
-});
-
-/*Fin Billy 1/02/2016 Funcion para cambiar el idioma del datepicker*/
-
-</script>
-<!--Fin Billy 1/02/2016 Funciones para el datepicker-->
+                if(($teams=Team::getTeams())) {
+                    echo '<OPTGROUP label="'.__('Teams').' ('.count($teams).')">';
+                    foreach($teams as $id => $name) {
+                        $k="t$id";
+                        echo sprintf('<option value="%s">%s</option>', $k, $name);
+                    }
+                    echo '</OPTGROUP>';
+                }
+                ?>
+            </select>
+        </fieldset>
+        <fieldset class="span6">
+            <label for="topicId"><?php echo __('Help Topics');?>:</label>
+            <select id="topicId" name="topicId">
+                <option value="" selected >&mdash; <?php echo __('All Help Topics');?> &mdash;</option>
+                <?php
+                if($topics=Topic::getHelpTopics()) {
+                    foreach($topics as $id =>$name)
+                        echo sprintf('<option value="%d" >%s</option>', $id, $name);
+                }
+                ?>
+            </select>
+        </fieldset>
+        <fieldset class="owner span6">
+            <label for="staffId"><?php echo __('Closed By');?>:</label>
+            <select id="staffId" name="staffId">
+                <option value="0">&mdash; <?php echo __('Anyone');?> &mdash;</option>
+                <option value="<?php echo $thisstaff->getId(); ?>"><?php echo __('Me');?></option>
+                <?php
+                if(($users=Staff::getStaffMembers())) {
+                    foreach($users as $id => $name)
+                        echo sprintf('<option value="%d">%s</option>', $id, $name);
+                }
+                ?>
+            </select>
+        </fieldset>
+        <fieldset class="date_range">
+            <label><?php echo __('Date Range').' &mdash; '.__('Create Date');?>:</label>
+            <input class="dp" type="input" size="20" name="startDate">
+            <span class="between"><?php echo __('TO');?></span>
+            <input class="dp" type="input" size="20" name="endDate">
+        </fieldset>
+        <?php
+        $tform = TicketForm::objects()->one();
+        echo $tform->getForm()->getMedia();
+        foreach ($tform->getInstance()->getFields() as $f) {
+            if (!$f->hasData())
+                continue;
+            elseif (!$f->getImpl()->hasSpecialSearch())
+                continue;
+            ?><fieldset class="span6">
+            <label><?php echo $f->getLabel(); ?>:</label><div><?php
+                     $f->render('search'); ?></div>
+            </fieldset>
+        <?php } ?>
+        <hr/>
+        <div id="result-count" class="clear"></div>
+        <p>
+            <span class="buttons pull-right">
+                <input type="submit" value="<?php echo __('Search');?>">
+            </span>
+            <span class="buttons pull-left">
+                <input type="reset" value="<?php echo __('Reset');?>">
+                <input type="button" value="<?php echo __('Cancel');?>" class="close">
+            </span>
+            <span class="spinner">
+                <img src="./images/ajax-loader.gif" width="16" height="16">
+            </span>
+        </p>
+    </form>
+</div>

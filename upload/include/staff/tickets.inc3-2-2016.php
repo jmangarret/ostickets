@@ -1,14 +1,3 @@
-<!--Inicio Billy 25/01/2016-->
-
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.min.css">
-  <script src="/ticket.tuagencia24.com/upload/css/bootstrap.min.js"></script>
-
-<!--Fin Billy 25/01/2016-->
-
-<script type="text/javascript">
-    $("#container").css("width","90%");
-</script>
-
 <?php
 if(!defined('OSTSCPINC') || !$thisstaff || !@$thisstaff->isStaff()) die('Access Denied');
 
@@ -402,8 +391,6 @@ if ($results) {
             ?>
         </div>
 </div>
-
-
 <div class="clear" style="margin-bottom:10px;"></div>
 <form action="tickets.php" method="POST" name='tickets' id="tickets">
 <?php csrf_token(); ?>
@@ -411,8 +398,7 @@ if ($results) {
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
-
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="100%">
+ <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
     <thead>
         <tr>
             <?php if($thisstaff->canManageTickets()) { ?>
@@ -468,12 +454,6 @@ if ($results) {
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
             <?php
             } ?>
-
-            <!--Inicio Billy 27/01/2016 Se agrego la celda gds a la tabla-->
-           <th style="color: #184E81;padding: 3px;">GDS</th>
-            <!--Fin Billy 27/01/2016 Se agrego la celda gds a la tabla-->
-
-
             <th style="color: #184E81;padding: 3px;">
                 Localizador
             </th>
@@ -483,17 +463,10 @@ if ($results) {
                 title="<?php echo sprintf(__('Sort by %s %s'), "Finalizado", __($negorder)); ?>">Finalizado</a> -->
                 Status_Loc
             </th>
-
-
-            <!--Inicio Billy 27/01/2016 Se agrego la celda pago a la tabla-->
-           <th style="color: #184E81;padding: 3px;">Pago</th>
-            <!--Fin Billy 27/01/2016 Se agrego la celda pago a la tabla-->
-
-
-            <!--Inicio Billy 26/01/2016 Se ancho la celda del tiempo para que se aprecie mejor-->
-            <th style="color: #184E81;padding: 3px;" width="125">Tiempo</th>
-            <!--Fin Billy 26/01/2016 Se ancho la celda del tiempo para que se aprecie mejor-->
-
+            
+            <th style="color: #184E81;padding: 3px;">
+                Tiempo
+            </th>
         </tr>
      </thead>
      <tbody>
@@ -626,49 +599,13 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-//Inicio Billy 27/01/2016 Query para traer de la base de datos el localizador, el estatus y el tipo de pago//////
-
 $query2 = " SELECT 
-                UPPER(CAST(cdata.localizador AS char(100) CHARACTER SET utf8)),
-                CAST(cdata.status_loc AS char(100) CHARACTER SET utf8),
-                fev.value
-                FROM `ost_ticket__cdata` cdata 
-                LEFT JOIN ost_form_entry fe ON (cdata.ticket_id = fe.object_id)
-                LEFT JOIN ost_form_entry_values fev ON (fe.id = fev.entry_id)
-            WHERE ticket_id = ".$row['ticket_id']." and fev.field_id = '37'
-            GROUP BY ticket_id";
-
+                UPPER(CAST(localizador AS char(100) CHARACTER SET utf8)),
+                CAST(status_loc AS char(100) CHARACTER SET utf8) 
+            FROM `ost_ticket__cdata` 
+            WHERE ticket_id = ".$row['ticket_id'];
 $result2 = $mysqli->query($query2);
 $row2 = $result2->fetch_array();
-
-
-
-$pago=explode(":",str_replace(array('"', "}"), array("", ""),$row2[2]));  //con la funcion explode separo en dos el valor del arreglo al encontrar : y con str_replace limpio el string para mostrar el tipo de pago
-
-
-
-//Fin Billy 27/01/2016 Query para traer de la base de datos el localizador, el estatus y el tipo de pago//////
-
-
-//Inicio Billy 27/01/2016 Query para traer de la base de datos el tipo de gds//////
-
-$query3 = " SELECT 
-                fev.value
-                FROM `ost_ticket__cdata` cdata 
-                LEFT JOIN ost_form_entry fe ON (cdata.ticket_id = fe.object_id)
-                LEFT JOIN ost_form_entry_values fev ON (fe.id = fev.entry_id)
-            WHERE ticket_id = ".$row['ticket_id']." and fev.field_id = '44'
-            GROUP BY ticket_id";
-
-$result3 = $mysqli->query($query3);
-$row3= $result3->fetch_array();
-
-
-$gds=explode(":",str_replace(array('"', "}"), array("", ""),$row3[0]));  //con la funcion explode separo en dos el valor del arreglo al encontrar : y con str_replace limpio el string para mostrar el gds
-
-
-//Fin Billy 27/01/2016 Query para traer de la base de datos el tipo de gds//////
-
 
 //print_r($query2);
 /*MICOD------------------------------------------------------------------------------------
@@ -736,14 +673,8 @@ $result_timedif = $mysqli->query($query_timedif);
 $row_timedif = $result_timedif->fetch_array();
 
 ?>
-
-<!--Inicio Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$gds[1];?></td> <!--Lleno la columna gds con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$row2[0]?></td> <!--Lleno la columna localizador con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$row2[1]?></td> <!--Lleno la columna estatus con los datos traidos desde la base de datos-->
-                <td>&nbsp;<?=$pago[1];?></td> <!--Lleno la columna tipo de pago con los datos traidos desde la base de datos-->
-<!--Fin Billy 27/01/2016 lleno las columnas de la tabla con los datos traidos desde la base de datos-->
-
+                <td>&nbsp;<?=$row2[0]?></td>
+                <td>&nbsp;<?=$row2[1]?></td>
                 <td>&nbsp;<?php 
 
                     $fecha1 = new DateTime($row_timedif[0]);
@@ -768,7 +699,7 @@ $row_timedif = $result_timedif->fetch_array();
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="14"> <!--Se agrego mas celdas al coslpan-->
+        <td colspan="12">
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
@@ -783,46 +714,16 @@ $row_timedif = $result_timedif->fetch_array();
      </tr>
     </tfoot>
     </table>
-
-    <!--////////////////////Inicio Billy 25/01/2016 Paginador Administrador/////////////////////////////////////////////-->
-
-    <br>
     <?php
     if ($num>0) { //if we actually had any tickets returned.
-
-if((($pageNav->getPage())-1) <= 0)
-        $pagea = 1;
-    else
-        $pagea = ($pageNav->getPage())-1;
-
-    if((($pageNav->getPage())+1) >= $pageNav->getNumPages())
-        $pages = $pageNav->getNumPages();
-    else
-        $pages = ($pageNav->getPage())+1;
-
-        $primero   = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $anterior  = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $siguiente = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $ultimo    = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-
-        echo '<div style="text-align:center;">
-        <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
-        <a href="'.$anterior.'"><span class="glyphicon glyphicon-chevron-left"></span></a>&nbsp;
-        &nbsp;'.__('Page').''.$pageNav->getPageLinks().'&nbsp;
-        <a href="'.$siguiente.'"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;
-        <a href="'.$ultimo.'"><span class="glyphicon glyphicon-forward"></span></a>&nbsp;';
+        echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;';
         echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
                 Http::build_query(array(
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
                 __('Export'));
         echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i></div>';
-    } 
-
-    ?>
-
-    <!--///////////////////////////////////Fin Billy 25/01/2016 Paginador Administrador//////////////////////////////////////////////////////////-->
-
+    } ?>
     </form>
 </div>
 
@@ -1000,4 +901,3 @@ if((($pageNav->getPage())-1) <= 0)
         </p>
     </form>
 </div>
-

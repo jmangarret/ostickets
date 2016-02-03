@@ -1206,10 +1206,4 @@ $(function() {
 }();
 <?php } ?>
 });
-
-//Inicio Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
-$("#container").css("width","960px"); 
-//Fin Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
-
-
 </script>

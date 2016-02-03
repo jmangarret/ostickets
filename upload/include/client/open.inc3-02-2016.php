@@ -218,38 +218,14 @@ foreach ($_POST as $key => $value) {
         e.preventDefault();
         return false;
     });
-
-/*Inicio Billy 29/01/2016 Validacion de campo numerico en numero de tarjeta de credito y en cedula*/   
-    $('input:eq(3),input:eq(6)').keypress(function (e) {
-        var regex = new RegExp("^[0-9]+$");
+    $('input:eq(3),input:eq(6),input:eq(7)').keypress(function (e) {
+        var regex = new RegExp("^[0-9.]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
         if (regex.test(str))
             return true;
         e.preventDefault();
         return false;
     });
-
-/*Fin Billy 29/01/2016 Validacion de campo numerico en numero de tarjeta de credito y en cedula*/
-
-
-/*Inicio Billy 29/01/2016 Funcion dar formato de moneda al input del monto de la tarjeta de credito y valida que no sean letras*/
-    jQuery(function($) {
-        $("input:eq(7)").autoNumeric({aSep: '.', aDec: ','});
-    });
-/*Fin Billy 29/01/2016 Funcion dar formato de moneda al input del monto de la tarjeta de credito y valida que no sean letras*/
-
-
-/*Inicio Billy 29/01/2016 Validacion de campo numerico y / en la fecha de vencimiento de la tarjeta de credito*/    
-            $('input:eq(4)').keypress(function (e) {
-        var regex = new RegExp("^[0-9/]+$");
-        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-        if (regex.test(str))
-            return true;
-        e.preventDefault();
-        return false;   
-    });
-/*Fin Billy 29/01/2016 Validacion de campo numerico y / en la fecha de vencimiento de la tarjeta de credito*/ 
-
     $('input:eq(5)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z ]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -270,20 +246,6 @@ foreach ($_POST as $key => $value) {
 
     $("input:eq(2)").attr("pattern","[A-Za-z0-9]{6}");
     $("input:eq(2)").attr("title","6 digitos alfanumericos");
-
-/*Inicio Billy 29/01/2016 Titulo al input de nº tarjeta de credito, fecha de vencimiento, cedula y monto tarjeta de credito*/
-    $("input:eq(3)").attr("title","Sólo 16 digitos numéricos");
-    $("input:eq(4)").attr("title","Ejemplo 01/16");
-    $("input:eq(6)").attr("title","Sólo 8 digitos numéricos");
-    $("input:eq(7)").attr("title","Sólo números y para agregar decimales utilice (,)");
-/*Fin Billy 29/01/2016 Titulo al input de nº tarjeta de credito, fecha de vencimiento, cedula y monto tarjeta de credito*/
-
-
-/*Inicio Billy 29/01/2016 Validacion de maxima longitud al input de nº tarjeta de credito, fecha de vencimiento y cedula*/
-    $("input:eq(3)").attr("maxlength","16"); 
-    $("input:eq(4)").attr("maxlength","5");
-    $("input:eq(6)").attr("maxlength","8");
-/*Fin Billy 29/01/2016 Validacion de maxima longitud al input de nº tarjeta de credito, fecha de vencimiento y cedula*/
 
 
     //Help Topic
@@ -371,9 +333,7 @@ foreach ($_POST as $key => $value) {
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
             $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
             $("td:eq(10)").append("<small id='codigo' style='display:none;'>Para c&oacute;digo de seguridad de TDC y autorizaci&oacute;n, contactar por tel&eacute;fono.</small>");
-            $("td:eq(14)").append("<small id='codigo1' style='display:none;'>Ejemplo 01/16</small>"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
             $("#codigo").show("slow");
-            $("#codigo1").show("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
         }
         else{
             $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
@@ -384,11 +344,9 @@ foreach ($_POST as $key => $value) {
         if( $('select:eq(3)').val() == 50){
             $("input:eq(7)").prop('required',true);
             $("tr:eq(10)").show("slow");
-            $("tr:eq(14)").show("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
         }
         else{
             $("tr:eq(10)").hide("slow");
-            $("tr:eq(14)").hide("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
             $("input:eq(7)").val("");
             $("input:eq(7)").removeAttr('required');
         }
@@ -520,7 +478,3 @@ $result->close();
 $mysqli->close();
 
 ?>
-
-<!--Inicio Billy 29/01/2016-->
-<script type="text/javascript" src="/ticket.tuagencia24.com/upload/js/autoNumeric.js"></script>
-<!--Fin Billy 29/01/2016-->
