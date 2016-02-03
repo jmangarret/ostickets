@@ -368,7 +368,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                         FROM  
                             `ost_staff` 
                         WHERE  
-                            `staff_id` = ".$_GET["id"];
+                            `staff_id` = '".$_GET["id"]."'";
             $resul = $mysqli->query($query);
             $filas = $resul->fetch_array(); 
             $week  = $filas[0];
