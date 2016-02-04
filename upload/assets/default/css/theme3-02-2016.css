@@ -1023,10 +1023,4 @@ img.sign-in-image {
   border: 2px solid #ccc;
   border-top: 10px solid #ccc;
 }
-
-/*Inicio Billy 27/01/2016 Efecto para sombrear la fila de la tabla*/
-#ticketTable tr:hover {
-  background-color: #ffffdd;
-  cursor: pointer;}
-  /*Fin Billy 27/01/2016 Efecto para sombrear la fila de la tabla*/
 /*-------------------------------------------*/

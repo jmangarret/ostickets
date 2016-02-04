@@ -738,15 +738,15 @@ print $response_form->getField('attachments')->render();
 
     $query = "  SELECT c.entry_id
                 FROM ost_ticket a, ost_form_entry b, ost_form_entry_values c
-                WHERE a.ticket_id = '".$_REQUEST["id"]."'
+                WHERE a.ticket_id = ".$_REQUEST["id"]."
                 AND a.ticket_id = b.object_id
                 AND b.id = c.entry_id
-                AND c.field_id ='86'";
+                AND c.field_id =86";
     $result = $mysqli->query($query);
     $row = $result->fetch_array();
     $obj = $row[0];
 
-    $query2 = "SELECT value FROM  `ost_form_entry_values` WHERE entry_id = '$obj' AND field_id ='86'";
+    $query2 = "SELECT value FROM  `ost_form_entry_values` WHERE entry_id = $obj AND field_id =86";
     $result2 = $mysqli->query($query2);
     $row2 = $result2->fetch_array();
     $loc = $row2[0];
@@ -1206,10 +1206,4 @@ $(function() {
 }();
 <?php } ?>
 });
-
-//Inicio Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
-$("#container").css("width","960px"); 
-//Fin Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
-
-
 </script>
