@@ -504,11 +504,11 @@ table.list tbody tr:nth-child(2n+1):hover td { background: #ffd; }
 
 
 /*table.list tbody tr:nth-child(2n+1) td { background-color: #f0faff; }*/
-table.list tbody tr:hover td { background: #FFEF00; }
+table.list tbody tr:hover td { background: #FFFAAC; }
 /*table.list tbody tr:nth-child(2n+1):hover td { background: #ffd; }*/
 
 /* row highlighting on hover + select */
-table.list tbody tr:hover td, table.list tbody tr.highlight td {  background: #FFEF00; }
+table.list tbody tr:hover td, table.list tbody tr.highlight td {  background: #FFFAAC; }
 /* disabled highlighting on nohover */
 table.list tbody tr:hover td.nohover, table.list tbody tr.highlight td.nohover {}
 

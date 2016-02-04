@@ -541,9 +541,9 @@ if ($results) {
                 */
                 $color_rojo = "Cancelar itinerario,Anular Aereo,Cambios";
                 $color_rosa = "Emitir localizador";
-                if(strpos($color_rojo,$subject)!==false) $color_tr = 'style="background:#FFACAC;"';
-                elseif(strpos($color_rosa,$subject)!==false) $color_tr = "style='background:#77FF6F'";
-                else $color_tr ="";
+                if(strpos($color_rojo,$subject)!==false) $color_tr2 = 'style="background-color:Crimson;"';
+                elseif(strpos($color_rosa,$subject)!==false) $color_tr2 = "style='background-color:LightGreen;'";
+                else $color_tr2 ="";
                 /*FIN*/
                 ?>
             <tr id="<?php echo $row['ticket_id']; ?>">
@@ -553,7 +553,7 @@ if ($results) {
                     if($ids && in_array($row['ticket_id'], $ids))
                         $sel=true;
                     ?>
-                <td align="center" class="nohover" <?=$color_tr?>>
+                <td align="center" class="nohover" <?=$color_tr2?>>
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $row['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
