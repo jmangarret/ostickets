@@ -66,9 +66,9 @@ require(CLIENTINC_DIR.'header.inc.php');
 
 <!-- Inicio 20/01/2016 Billy Ventana modal con los links de descarga de los manuales de usuarios por cada nueva funcion del sistema-->
 
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.css">
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-1.12.0.js"></script>
-  <script src="/ticket.tuagencia24.com/upload/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
+  <script src="/ostickets/upload/js/jquery-1.12.0.js"></script>
+  <script src="/ostickets/upload/js/bootstrap.min.js"></script>
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
@@ -94,19 +94,19 @@ require(CLIENTINC_DIR.'header.inc.php');
         <tbody>
             <tr>
                 <td><p>Ahora puedes crear tickets para realizar solicitudes y/o requerimientos a clientes finales. Para verficar como hacerlo puedes descargar el archivo.</p></td>
-                <td><br><a href="/ticket.tuagencia24.com/upload/news/Crear ticket.pdf" download="Crear Ticket">Descargar Archivo</a></td>
+                <td><br><a href="/ostickets/upload/news/Crear ticket.pdf" download="Crear Ticket">Descargar Archivo</a></td>
             </tr>
             <tr>
                 <td><p>Ahora puedes consultar el límite de crédito total y el saldo disponible.<br>Para verficar como hacerlo puedes descargar el archivo.</p></td>
-                <td><br><a href="/ticket.tuagencia24.com/upload/news/Limite de credito.pdf" download="Limite de credito">Descargar Archivo</a></td>
+                <td><br><a href="/ostickets/upload/news/Limite de credito.pdf" download="Limite de credito">Descargar Archivo</a></td>
             </tr>
             <tr>
                 <td><p>Ahora puedes adjuntar archivos de hasta 4 Mb a los Tickets.<br>Para verficar como hacerlo puedes descargar el archivo.</p></td>
-                <td><br><a href="/ticket.tuagencia24.com/upload/news/Archivos adjuntos.pdf" download="Archivos Adjuntos">Descargar Archivo</a></td>
+                <td><br><a href="/ostickets/upload/news/Archivos adjuntos.pdf" download="Archivos Adjuntos">Descargar Archivo</a></td>
             </tr>
             <tr>
                 <td><p>Ahora puedes realizar búsquedas más exactas de los tickets a través de la función de búsquedas avanzadas.<br>Para verficar como hacerlo puedes descargar el archivo.</p></td>
-                <td><br><a href="/ticket.tuagencia24.com/upload/news/Busqueda avanzada.pdf" download="Busqueda Avanzada">Descargar Archivo</a></td>
+                <td><br><a href="/ostickets/upload/news/Busqueda avanzada.pdf" download="Busqueda Avanzada">Descargar Archivo</a></td>
             </tr>
         </tbody>
         </table>

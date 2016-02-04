@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.min.css">
-<script src="/ticket.tuagencia24.com/upload/css/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.min.css">
+<script src="/ostickets/upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 
@@ -369,9 +369,9 @@ $n_cerrados = mysqli_num_rows($result_close);
 
 <!--////////////////////////////inicio 25/01/2016 Billy Modal para busqueda avanzada////////////////////////////////////////////-->
 
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.css">
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-1.12.0.js"></script>
-  <script src="/ticket.tuagencia24.com/upload/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
+  <script src="/ostickets/upload/js/jquery-1.12.0.js"></script>
+  <script src="/ostickets/upload/js/bootstrap.min.js"></script>
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
@@ -734,8 +734,8 @@ if($res && $num>0) {
   
 <!--Inicio Billy 1/02/2016 Agrego las clases del datepicker-->
 
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-1.12.0.js"></script>
-  <script src="/ticket.tuagencia24.com/upload/js/jquery-ui.js"></script>
+  <script src="/ostickets/upload/js/jquery-1.12.0.js"></script>
+  <script src="/ostickets/upload/js/jquery-ui.js"></script>
 
 <!--Fin Billy 1/02/2016 Agrego las clases del datepicker-->
 

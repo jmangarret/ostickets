@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
-<link rel="stylesheet" href="/ticket.tuagencia24.com/upload/css/bootstrap.min.css">
-  <script src="/ticket.tuagencia24.com/upload/css/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
+  <script src="/ostickets/upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 

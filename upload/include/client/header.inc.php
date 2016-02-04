@@ -139,6 +139,8 @@ if (($all_langs = Internationalization::availableLanguages())
             <div id="msg_warning"><?php echo $warn; ?></div>
          <?php } ?>
 
+<!--
+
 <?php
 
 if(isset($_SESSION["_auth"]["user"]["id"])){
@@ -180,3 +182,5 @@ if(isset($_SESSION["_auth"]["user"]["id"])){
 <script type="text/javascript">
     $("#nav li a:eq(2)").text("Tickets (<?=($n_cerrados+$n_abiertos)?>)");
 </script>   
+
+-->
