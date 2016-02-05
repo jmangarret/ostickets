@@ -13,7 +13,8 @@
     $query = "	SELECT CONCAT( firstname,  ' ', lastname ) , c.name, a.total, a.disponible, a.date
 				FROM ost_auditoria_limite_credito a
 				INNER JOIN ost_staff b ON a.staff_id = b.staff_id
-				INNER JOIN ost_organization c ON a.org_id = c.id";
+				INNER JOIN ost_organization c ON a.org_id = c.id 
+				ORDER BY a.date DESC";
 	$result = $mysqli->query($query);
 
 	$rowcount = mysqli_num_rows($result);
