@@ -92,6 +92,12 @@ class OrgsAjaxAPI extends AjaxController {
             }
         }
 
+        /*INICIO
+        Anthony Parisi
+        2016-02-05
+        Se agrego la siguiente linea de código para combiar la zona horaria al momento de guardar la información a la Base de Datos.*/
+        date_default_timezone_set('America/Caracas');
+        /* FIN */
         $mysqli->query("INSERT INTO ost_auditoria_limite_credito VALUES (NULL, '".$_SESSION["_auth"]["staff"]["id"]."', '$id', '$total', '$disponible',NOW());");
 
         if(!$thisstaff)
