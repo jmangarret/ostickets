@@ -525,5 +525,5 @@ $mysqli->close();
 ?>
 
 <!--Inicio Billy 29/01/2016-->
-<script type="text/javascript" src="/ostickets/upload/js/autoNumeric.js"></script>
+<script type="text/javascript" src="/upload/js/autoNumeric.js"></script>
 <!--Fin Billy 29/01/2016-->
