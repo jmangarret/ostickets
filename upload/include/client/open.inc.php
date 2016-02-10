@@ -202,8 +202,8 @@ foreach ($_POST as $key => $value) {
 
 <script type="text/javascript">
 
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").css("display","block");
-    $("#fm tr:eq(10) td:eq(0) div:eq(0)").prepend(
+    $("#fm tr:eq(11) td:eq(0) div:eq(0)").css("display","block"); //10/02/2016 Billy se sumo 1 al tr
+    $("#fm tr:eq(11) td:eq(0) div:eq(0)").prepend(  //10/02/2016 Billy se sumo 1 al tr
         "<div style='text-align:right;display:block;'>"+
             "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
             "<br>"+
@@ -250,6 +250,8 @@ foreach ($_POST as $key => $value) {
     });
 /*Fin Billy 29/01/2016 Validacion de campo numerico y / en la fecha de vencimiento de la tarjeta de credito*/ 
 
+
+/*Inicio Billy 5/02/2016 Validacion de campo caracter en banco y nombre*/
     $('input:eq(5)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z ]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -259,8 +261,10 @@ foreach ($_POST as $key => $value) {
         return false;
     });
 
-    $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10),tr:eq(12)").hide(0);
-    $("input:eq(2),input:eq(5)").css("text-transform","uppercase");
+/*Fin Billy 5/02/2016 Validacion de campo caracter en banco y nombre*/
+
+    $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10),tr:eq(11),tr:eq(13)").hide(0); //Billy 5/02/2016 Agregamos que el campo monto y status localizador se encuentre no visible al cargar el formulario
+    $("input:eq(2),input:eq(6)").css("text-transform","uppercase");
     $("select:eq(1)").empty();
     $("select:eq(1)").append('<option value="">— Select —</option>');
     $("select:eq(0),select:eq(1)").prop('required',true);
@@ -325,7 +329,7 @@ foreach ($_POST as $key => $value) {
     $("select:eq(1)").change(function(){
         if(($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23) || ($("select:eq(0)").val() == 21 && $("select:eq(1)").val() == 33)){
             if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
-                $("tr:eq(11)").show("slow");
+                //$("tr:eq(10)").show("slow"); ////////////Billy 5/02/2016 se quito el input de la cedula para que no aparezca cuando el tipo de solicitud sea emitir localizador
                 $("input:eq(2)").prop('required',true);
                 $("tr:eq(3)").show("slow");
             }
@@ -369,26 +373,25 @@ foreach ($_POST as $key => $value) {
     $('select:eq(3)').change(function(){
         if( $('select:eq(3)').val() == 14 || $('select:eq(3)').val() == 50){
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
-            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
+            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").show("slow");
             $("td:eq(10)").append("<small id='codigo' style='display:none;'>Para c&oacute;digo de seguridad de TDC y autorizaci&oacute;n, contactar por tel&eacute;fono.</small>");
-            $("td:eq(14)").append("<small id='codigo1' style='display:none;'>Ejemplo 01/16</small>"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
+            $("td:eq(16)").append("<small id='codigo1' style='display:none;'>Ejemplo 01/16</small>"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
             $("#codigo").show("slow");
             $("#codigo1").show("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
         }
         else{
-            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
+            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").val("");
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").removeAttr('required');
             $("#codigo").remove();
         }
         if( $('select:eq(3)').val() == 50){
             $("input:eq(7)").prop('required',true);
-            $("tr:eq(10)").show("slow");
-            $("tr:eq(14)").show("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
+            $("tr:eq(11)").show("slow"); //Billy 5/02/2016 Agrego el campo de monto si la opcion es tdc + cash
+            
         }
         else{
-            $("tr:eq(10)").hide("slow");
-            $("tr:eq(14)").hide("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
+            $("tr:eq(11)").hide("slow"); ////Billy 5/02/2016 quito el campo de monto si la opcion es tdc
             $("input:eq(7)").val("");
             $("input:eq(7)").removeAttr('required');
         }
@@ -522,5 +525,5 @@ $mysqli->close();
 ?>
 
 <!--Inicio Billy 29/01/2016-->
-<script type="text/javascript" src="/upload/js/autoNumeric.js"></script>
+<script type="text/javascript" src="/ostickets/upload/js/autoNumeric.js"></script>
 <!--Fin Billy 29/01/2016-->
