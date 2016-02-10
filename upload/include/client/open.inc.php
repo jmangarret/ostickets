@@ -172,16 +172,30 @@ foreach ($_POST as $key => $value) {
 
         <script>
             //$("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
-            $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede crear tickets de tipo Aereo.</b></font></big><br><br><div id='btn_create'></div>");
+            $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede emitir localizador.</b></font></big><br><br><div id='btn_create'></div>");
             $("#create").fadeOut("fast");
-            $("select:eq(0)").change(function(){
-                if($("select:eq(0)").val() != 19){
+
+            //Billy 10/02/2016 Ahora se toma solo en cuenta si es emitir localizador u otra opcion para crear tickets
+            //$("select:eq(0)").change(function(){
+            //     if($("select:eq(0)").val() != 19){
+            //         $("#create").fadeIn('slow');
+            //     }
+            //     else{
+            //         $("#create").fadeOut("fast");
+            //     }
+            // });
+
+            //Inicio Billy 10/02/2016 Si el select de detalle su solicitud es igual a emitir  localizador el boton de crear tickets se oculta si no es emitir localizador aparece
+            $("select:eq(1)").change(function(){
+                if($("select:eq(1)").val() != 19){
                     $("#create").fadeIn('slow');
                 }
                 else{
                     $("#create").fadeOut("fast");
                 }
             });
+            //Fin Billy 10/02/2016 Si el select de detalle su solicitud es igual a emitir  localizador el boton de crear tickets se oculta si no es emitir localizador aparece
+
         </script>
 
         <?php
