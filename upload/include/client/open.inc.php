@@ -264,7 +264,7 @@ foreach ($_POST as $key => $value) {
 /*Fin Billy 5/02/2016 Validacion de campo caracter en banco y nombre*/
 
     $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10),tr:eq(11),tr:eq(13)").hide(0); //Billy 5/02/2016 Agregamos que el campo monto y status localizador se encuentre no visible al cargar el formulario
-    $("input:eq(2),input:eq(6)").css("text-transform","uppercase");
+    $("input:eq(2),input:eq(5)").css("text-transform","uppercase");
     $("select:eq(1)").empty();
     $("select:eq(1)").append('<option value="">— Select —</option>');
     $("select:eq(0),select:eq(1)").prop('required',true);
