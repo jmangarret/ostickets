@@ -24,6 +24,8 @@ if ($_POST) {
     foreach ($_POST as $key => $value) {
         if($contador == 6) 
             $_POST["$key"] = strtoupper($value);
+        if($contador == 11) 
+            $_POST["$key"] = strtoupper($value);
         $contador++;
     }
     //Fin Billy 29/01/2016 Cambiar a mayuscula el localizador para guardarlo en base de datos//
