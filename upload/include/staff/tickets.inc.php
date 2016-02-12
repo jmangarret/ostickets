@@ -815,10 +815,10 @@ if((($pageNav->getPage())-1) <= 0)
     else
         $pages = ($pageNav->getPage())+1;
 
-        $primero   = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $anterior  = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $siguiente = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-        $ultimo    = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
 
         echo '<div style="text-align:center;">
         <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
