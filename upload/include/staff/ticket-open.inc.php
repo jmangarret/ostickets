@@ -181,7 +181,7 @@ if(isset($_REQUEST["uid"])){
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite = $filas[0];
-    echo "BsF ".number_format($limite,2,",",".") ." Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
+    echo "BsF ".number_format($limite,2,",",".") ." Actualizado al" .date("d-m-Y h:i:s a",strtotime($row['date']));
 }
 
 ?>

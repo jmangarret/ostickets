@@ -184,7 +184,7 @@ $row = $limit2->fetch_array();
         </tr>
         <tr>
             <td align="right">
-                <b>Actualizado al </b>:
+                <b>Actualizado al</b>:
             </td>
             <td align="left">
                  <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
