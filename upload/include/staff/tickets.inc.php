@@ -540,7 +540,7 @@ if ($results) {
                 Rosa para: Emitir Localizador.
                 */
                 $color_rojo = "Cancelar itinerario,Anular Aereo,Cambios";
-                $color_rosa = "Emitir localizador";
+                $color_rosa = "Emitir localizador,Reemision";
                 if(strpos($color_rojo,$subject)!==false) $color_tr2 = 'style="background-color:Crimson;"';
                 elseif(strpos($color_rosa,$subject)!==false) $color_tr2 = "style='background-color:LightGreen;'";
                 else $color_tr2 ="";
