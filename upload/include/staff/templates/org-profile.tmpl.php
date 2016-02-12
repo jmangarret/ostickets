@@ -40,6 +40,21 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     </table>
 </div>
 
+<?php
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+$limit="select date from ost_auditoria_limite_credito where org_id=". $org->getId()." ORDER BY date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+?>
+
 <script>
 
     // function formatoNumero(numero, decimales, separadorDecimal, separadorMiles) {
@@ -100,7 +115,7 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
     $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
     $("#org_informacion input:eq(4)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
-    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
+    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?><br> Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>"); //Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible
 
     // $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
     //     if(event.shiftKey){
@@ -297,3 +312,6 @@ $(function() {
     $("#primary_contacts").multiselect({'noneSelectedText':'<?php echo __('Select Contacts'); ?>'});
 });
 </script>
+
+
+

@@ -150,6 +150,16 @@ if(isset($_REQUEST["uid"])){
 
 if(isset($_REQUEST["uid"])){
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+    $limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=".$_REQUEST['uid'] ." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion
+
+    $limit2 = $mysqli->query($limit);
+    $row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
     /* check connection */
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
@@ -171,7 +181,7 @@ if(isset($_REQUEST["uid"])){
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite = $filas[0];
-    echo "BsF ".number_format($limite,2,",",".");
+    echo "BsF ".number_format($limite,2,",",".") ." Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
 }
 
 ?>

@@ -151,6 +151,16 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
     $filas  = $result->fetch_array();
     $limite2 = "BsF ".number_format($filas[0],2,",",".");
 
+
+    //Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $_SESSION["_auth"]["user"]["id"]." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
 ?>
 
 <div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
@@ -170,6 +180,14 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
             </td>
             <td align="left">
                 BsF <?=$limite2;?>
+            </td>   
+        </tr>
+        <tr>
+            <td align="right">
+                <b>Actualizado al </b>:
+            </td>
+            <td align="left">
+                 <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
             </td>   
         </tr>
     </table>

@@ -164,10 +164,22 @@ foreach ($_POST as $key => $value) {
     $filas  = $result->fetch_array();
     $limiteDisponible = $filas[0];
 
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $_SESSION["_auth"]["user"]["id"]." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
+
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+
+
     if($limiteDisponible <= 0){
 
-        $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente.</font>";
+        $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente.<br>Actualizado al " . date("d-m-Y h:i:s a",strtotime($row['date']))." </font>";
 
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
         ?>
 
         <script>
@@ -221,7 +233,8 @@ foreach ($_POST as $key => $value) {
         "<div style='text-align:right;display:block;'>"+
             "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
             "<br>"+
-            "Disponible: <b><?=$limite2?></b>"+
+            "Disponible: <b><?=$limite2?></b><br>"+
+            "Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?>"+ //se agregro la ultima fecha de actualizacion del monto disponible
         "</div>");
     
     $('input:eq(2)').keypress(function (e) {
