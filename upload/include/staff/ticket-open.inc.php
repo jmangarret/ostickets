@@ -150,6 +150,16 @@ if(isset($_REQUEST["uid"])){
 
 if(isset($_REQUEST["uid"])){
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+    $limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=".$_REQUEST['uid'] ." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion
+
+    $limit2 = $mysqli->query($limit);
+    $row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
     /* check connection */
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
@@ -171,7 +181,17 @@ if(isset($_REQUEST["uid"])){
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite = $filas[0];
-    echo "BsF ".number_format($limite,2,",",".");
+    
+//Inicio Billy 12/02/2016 Validacion si el saldo disponible es menor a 0 muestre el saldo en rojo
+    if($limite <= 0){
+
+        echo "BsF <font color='FF0000'><b>".number_format($filas[0],2,",",".")." Saldo deudor pendiente. </b></font> Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
+    }else{
+        echo "BsF ".number_format($limite,2,",",".") ." Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
+    }
+
+//Fin Billy 12/02/2016 Validacion si el saldo disponible es menor a 0 muestre el saldo en rojo
+
 }
 
 ?>
@@ -458,7 +478,7 @@ print $response_form->getField('attachments')->render();
     </tbody>
 </table>
 <p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>">
+    <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>" id="open">
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="javascript:
         $('.richtext').each(function() {
@@ -507,3 +527,25 @@ $("td:contains('Status Localizador:')").parent().hide(0);
 
 </script>
 
+<!--Inicio Billy 12/02/2016 Validacion si el saldo es deudor el boton de abrir tickets lo oculte-->
+<?php
+ if($limite <= 0){
+
+?>
+<script type="text/javascript">
+$("select:eq(6)").change(function(){
+                if($("select:eq(6)").val() != 19){
+                    $("#open").fadeIn('slow');
+                }
+                else{
+                    $("#open").fadeOut("fast");
+                }
+            });
+</script>
+
+<?php
+
+}
+
+?>
+<!--Fin Billy 12/02/2016 Validacion si el saldo es deudor el boton de abrir tickets lo ocult-->

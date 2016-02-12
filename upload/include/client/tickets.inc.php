@@ -319,8 +319,8 @@ $n_cerrados = mysqli_num_rows($result_close);
             <!--MICOD: Nuevo menú de opciones de tickets abiertos y cerrados-->   
             <ul id="nav2" class="flush-left" style="margin-top: -20px;">
                 <li></li>
-                <li><a class="tickets" id="open" href="tickets.php?est%5B%5D=open&des=&has=&loc=">Abiertos (<?=$n_abiertos?>)</a></li>
-                <li><a class="tickets" id="closer" href="tickets.php?est%5B%5D=closed&des=&has=&loc=">Cerrados (<?=$n_cerrados?>)</a></li>
+                <li><a class="tickets" id="open" href="tickets.php?est=open">Abiertos (<?=$n_abiertos?>)</a></li>  <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
+                <li><a class="tickets" id="closer" href="tickets.php?est=closed">Cerrados (<?=$n_cerrados?>)</a></li> <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
                 <li></li>        
             </ul>
             <!--//////////////////////////////////////////////////////////////////--> 
@@ -713,10 +713,10 @@ if($res && $num>0) {
     else
         $pages = ($pageNav->getPage())+1;
 
-    $primero   = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-    $anterior  = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-    $siguiente = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
-    $ultimo    = "tickets.php?sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"];
+    $primero   = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $anterior  = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $siguiente = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $ultimo    = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
 
 //Inicio Billy 25/01/2016 Paginador del cliente//
     echo '  <div style="text-align:center;">
