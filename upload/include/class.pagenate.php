@@ -111,7 +111,7 @@ class PageNate {
 
         if($start_loop>1){
             $lastspan=($start_loop-$displayed_span>0)?$start_loop-$displayed_span:1;
-            $html .= "\n<a href=\"$file&p=$lastspan\" ><strong>&laquo;</strong></a>";
+            $html .= "\n<a href=\"$file&p=$lastspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><strong>&laquo;</strong></a>";
         }
 
         for ($i=$start_loop; $i <= $stop_loop; $i++) {
@@ -128,7 +128,7 @@ class PageNate {
         }
         if($stop_loop<$total_pages){
             $nextspan=($stop_loop+$displayed_span>$total_pages)?$total_pages-$displayed_span:$stop_loop+$displayed_span;
-            $html .= "\n<a href=\"$file&p=$nextspan\" ><strong>&raquo;</strong></a>";
+            $html .= "\n<a href=\"$file&p=$nextspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><strong>&raquo;</strong></a>";
         }
 
 

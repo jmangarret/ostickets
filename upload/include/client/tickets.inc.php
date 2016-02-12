@@ -227,12 +227,12 @@ if ($_REQUEST['clean'] == 1) {//Si la variable GET es 1 entonces...
 }
 /*------------------------------------------------------------*/
 
-$total=db_count("SELECT COUNT(ticket.ticket_id) FROM ost_ticket ticket 
-            LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
-            ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
-            LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
-            LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
-            AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%'");//Aplicando la sesión PHP en la sentencia
+if(isset($_GET["est"]) && $_GET["est"] == "open")
+    $total=$thisclient->getNumOpenTickets();
+else if(isset($_GET["est"]) && $_GET["est"] == "closed")
+    $total=$thisclient->getNumClosedTickets();
+else
+    $total=$thisclient->getNumTickets();
 
 $pageNav=new Pagenate($total, $page, PAGE_LIMIT);
 $qstr = '&amp;'. Http::build_query($qs);
