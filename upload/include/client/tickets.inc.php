@@ -319,8 +319,8 @@ $n_cerrados = mysqli_num_rows($result_close);
             <!--MICOD: Nuevo menú de opciones de tickets abiertos y cerrados-->   
             <ul id="nav2" class="flush-left" style="margin-top: -20px;">
                 <li></li>
-                <li><a class="tickets" id="open" href="tickets.php?est%5B%5D=open&des=&has=&loc=">Abiertos (<?=$n_abiertos?>)</a></li>
-                <li><a class="tickets" id="closer" href="tickets.php?est%5B%5D=closed&des=&has=&loc=">Cerrados (<?=$n_cerrados?>)</a></li>
+                <li><a class="tickets" id="open" href="tickets.php?est=open">Abiertos (<?=$n_abiertos?>)</a></li>  <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
+                <li><a class="tickets" id="closer" href="tickets.php?est=closed">Cerrados (<?=$n_cerrados?>)</a></li> <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
                 <li></li>        
             </ul>
             <!--//////////////////////////////////////////////////////////////////--> 
