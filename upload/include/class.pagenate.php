@@ -120,8 +120,10 @@ class PageNate {
                 $html .= "\n<b>[$i]</b>";
             } else {
                 //$html .= "\n<a href=\"$file&p=$i\" ><b>$i</b></a>";
-                $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."\" ><b>$i</b></a>";
-
+                if(isset($_GET["est"]))
+                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><b>$i</b></a>";
+                else
+                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&status=".$_GET["status"]."&loc=".$_GET["loc"]."\" ><b>$i</b></a>";
             }
         }
         if($stop_loop<$total_pages){
