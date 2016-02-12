@@ -234,7 +234,7 @@ $row = $limit2->fetch_array();
             "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
             "<br>"+
             "Disponible: <b><?=$limite2?></b><br>"+
-            "Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?>"+ //se agregro la ultima fecha de actualizacion del monto disponible
+            //"Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?>"+ //se agregro la ultima fecha de actualizacion del monto disponible
         "</div>");
     
     $('input:eq(2)').keypress(function (e) {
