@@ -115,7 +115,7 @@ $row = $limit2->fetch_array();
     $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
     $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
     $("#org_informacion input:eq(4)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
-    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Actualizado al<?=date("d-m-Y h:i:s a",strtotime($row['date']))?><br> Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>"); //Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible
+    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?><br> Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>"); //Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible
 
     // $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
     //     if(event.shiftKey){
