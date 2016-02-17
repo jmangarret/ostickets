@@ -135,6 +135,13 @@ class TicketsAjaxAPI extends AjaxController {
             $criteria['org_id'] = $req['orgId'];
         }
 
+     //Inicio Billy 17/02/2016 Agregamos el campo Status Localizador para añadirlo al Query
+        if ($req['statloc']){
+            $where.=' AND cdata.status_loc='.db_input($req['statloc']);
+            $criteria['status_loc'] = $req['statloc'];
+        }
+     //Fin Billy 17/02/2016 Agregamos el campo Status Localizador para añadirlo al Query
+
         //Help topic
         if($req['topicId']) {
             $where.=' AND ticket.topic_id='.db_input($req['topicId']);
@@ -239,9 +246,10 @@ class TicketsAjaxAPI extends AjaxController {
                 $cdata_search = true;
             }
         }
-        if ($cdata_search)
+        if ($cdata_search || $req['statloc']!="")
             $from .= 'LEFT JOIN '.TABLE_PREFIX.'ticket__cdata '
                     ." cdata ON (cdata.ticket_id = ticket.ticket_id)";
+
 
         //Query
         $joins = array();

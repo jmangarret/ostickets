@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
-<link rel="stylesheet" href="/upload/css/bootstrap.css">
-  <script src="/upload/css/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
+  <script src="/ostickets/upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 
@@ -202,15 +202,34 @@ if($search):
    }
 
 endif;
-if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
-    $ticket_ids = implode(',', db_input($_SESSION['adv_'.$_REQUEST['advsid']]));
-    $qs += array('advsid' => $_REQUEST['advsid']);
+
+//Original
+// if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
+//     $ticket_ids = implode(',', db_input($_SESSION['adv_'.$_REQUEST['advsid']]));
+//     $qs += array('advsid' => $_REQUEST['advsid']);
+
+//     $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.') ';
+//     // Thanks, http://stackoverflow.com/a/1631794
+//     $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
+//     $order = ' ';
+// }
+//Fin Original
+
+//Inicio 17/02/2016 Nueva forma de mostrar el resultado de la consulta de la busqueda avanzada
+if ($_REQUEST['advsid']) {
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    $result_tkt = $mysqli->query($_SESSION["consulta"]);
+    while($filas_tkt = $result_tkt->fetch_array())
+        $ticket_ids .= $filas_tkt[0].",";
+    $ticket_ids = substr($ticket_ids, 0,strlen($ticket_ids)-1);
 
     $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.') ';
+   
     // Thanks, http://stackoverflow.com/a/1631794
     $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
     $order = ' ';
 }
+//Fin 17/02/2016 Nueva forma de mostrar el resultado de la consulta de la busqueda avanzada
 
 $qwhere .= ' GROUP BY thread.ticket_id ';
 
@@ -815,10 +834,13 @@ if((($pageNav->getPage())-1) <= 0)
     else
         $pages = ($pageNav->getPage())+1;
 
-        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    if(isset($_GET["advsid"]))
+        $advsid="&advsid=" . $_GET["advsid"];
+
+        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
 
         echo '<div style="text-align:center;">
         <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
@@ -980,6 +1002,24 @@ if((($pageNav->getPage())-1) <= 0)
                 ?>
             </select>
         </fieldset>
+
+        <!--Inicio 17/02/2016 Agregar campo Status Localizador en la busqueda avanzada-->
+        <fieldset class="span6">
+            <label for="statloc">Status Localizador:</label>
+            <select id="statloc" name="statloc">
+                <option value="">&mdash; Cualquiera &mdash;</option>
+                <option value="Anulado">Anulado</option>
+                <option value="Emitido">Emitido</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Itinerario Cancelado">Itinerario Cancelado</option>
+                <option value="Localizador no Valido">Localizador no Valido</option>
+                <option value="Reembolsado">Reembolsado</option>
+                <option value="Reemitido">Reemitido</option>
+                <option value="Ticket Sellado">Ticket Sellado</option>
+            </select>
+        </fieldset>
+        <!--Fin 17/02/2016 Agregar campo Status Localizador en la busqueda avanzada-->
+
         <fieldset class="date_range">
             <label><?php echo __('Date Range').' &mdash; '.__('Create Date');?>:</label>
             <input class="dp" type="input" size="20" name="startDate">

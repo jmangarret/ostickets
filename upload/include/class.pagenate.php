@@ -109,9 +109,12 @@ class PageNate {
         $start_loop =($start_loop-$startcredit>0)?$start_loop-$startcredit:1;
         $stop_loop  =($stop_loop+$stopcredit>$total_pages)?$total_pages:$stop_loop+$stopcredit;
 
+            if(isset($_GET["advsid"]))
+                    $advsid="&advsid=" . $_GET["advsid"];
+
         if($start_loop>1){
             $lastspan=($start_loop-$displayed_span>0)?$start_loop-$displayed_span:1;
-            $html .= "\n<a href=\"$file&p=$lastspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><strong>&laquo;</strong></a>";
+            $html .= "\n<a href=\"$file&p=$lastspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."$advsid\" ><strong>&laquo;</strong></a>";
         }
 
         for ($i=$start_loop; $i <= $stop_loop; $i++) {
@@ -120,15 +123,16 @@ class PageNate {
                 $html .= "\n<b>[$i]</b>";
             } else {
                 //$html .= "\n<a href=\"$file&p=$i\" ><b>$i</b></a>";
+                
                 if(isset($_GET["est"]))
-                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><b>$i</b></a>";
+                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."$advsid\" ><b>$i</b></a>";
                 else
-                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&status=".$_GET["status"]."&loc=".$_GET["loc"]."\" ><b>$i</b></a>";
+                    $html .= "\n<a href=\"$file&p=$i&des=".$_GET["des"]."&has=".$_GET["has"]."&status=".$_GET["status"]."&loc=".$_GET["loc"]."$advsid\" ><b>$i</b></a>";
             }
         }
         if($stop_loop<$total_pages){
             $nextspan=($stop_loop+$displayed_span>$total_pages)?$total_pages-$displayed_span:$stop_loop+$displayed_span;
-            $html .= "\n<a href=\"$file&p=$nextspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."\" ><strong>&raquo;</strong></a>";
+            $html .= "\n<a href=\"$file&p=$nextspan&des=".$_GET["des"]."&has=".$_GET["has"]."&est=".$_GET["est"]."&loc=".$_GET["loc"]."$advsid\" ><strong>&raquo;</strong></a>";
         }
 
 
