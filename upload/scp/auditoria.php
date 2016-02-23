@@ -1,3 +1,10 @@
+<!--Inicio Billy 22/02/2016-->
+
+<link rel="stylesheet" href="/upload/css/bootstrap.css">
+<script src="/upload/css/bootstrap.min.js"></script>
+
+<!--Fin Billy 23/01/2016-->
+
 <?php
 
 	require('admin.inc.php');
@@ -10,14 +17,24 @@
         exit();
     }
 
+//Inicio Billy 22/02/2016 Query para traer la cantidad total de registros de la tabla de auditoriavy se creo el objeto de la clase Pagenate
+	$query = "	SELECT *
+				FROM ost_auditoria_limite_credito";
+	$result = $mysqli->query($query);
+	$rowcount = mysqli_num_rows($result);
+
+	$pageNav=new Pagenate($rowcount, $_GET['p'], PAGE_LIMIT);
+
+//Fin Billy 23/02/2016 Query para traer la cantidad total de registros de la tabla de auditoriavy se creo el objeto de la clase Pagenate
+
+
     $query = "	SELECT CONCAT( firstname,  ' ', lastname ) , c.name, a.total, a.disponible, a.date
 				FROM ost_auditoria_limite_credito a
 				INNER JOIN ost_staff b ON a.staff_id = b.staff_id
 				INNER JOIN ost_organization c ON a.org_id = c.id 
-				ORDER BY a.date DESC";
+				ORDER BY a.date DESC LIMIT " .$pageNav->getStart().",".$pageNav->getLimit(); //se agrego el limite para paginar los resultados
 	$result = $mysqli->query($query);
-
-	$rowcount = mysqli_num_rows($result);
+	$rowcount = mysqli_num_rows($result);  //la variable $rowcount contiene el numero de registros obtenidos a partir de la sentencia sql
 
 	while($row = $result->fetch_array())
     	$rows[] = $row;
@@ -83,12 +100,36 @@ $mysqli->close();
      </tr>
     </tfoot>
 </table>
-
-<div>
-	&nbsp;Página:<b>[1]</b>&nbsp;
-</div>
-
+<br>
 <?php
+
+//Inicio Billy 22/02/2016 Paginador de la auditoria//
+    
+    if((($pageNav->getPage())-1) <= 0)
+        $pagea = 1;
+    else
+        $pagea = ($pageNav->getPage())-1;
+
+    if((($pageNav->getPage())+1) >= $pageNav->getNumPages())
+        $pages = $pageNav->getNumPages();
+    else
+        $pages = ($pageNav->getPage())+1;
+
+    $primero   = "auditoria.php?p=1";
+    $anterior  = "auditoria.php?p=$pagea";
+    $siguiente = "auditoria.php?p=$pages"; 
+    $ultimo    = "auditoria.php?p=".$pageNav->getNumPages(); 
+
+
+    echo '  <div style="text-align:center;">
+                <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
+                <a href="'.$anterior.'"><span class="glyphicon glyphicon-chevron-left"></span></a>&nbsp;
+                '.__('Page').''.$pageNav->getPageLinks().'&nbsp;
+                <a href="'.$siguiente.'"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;
+                <a href="'.$ultimo.'"><span class="glyphicon glyphicon-forward"></span></a>&nbsp;</div>';
+
+//Fin Billy 23/02/2016 paginador de la auditoria//
+
 
 	while($row = $result->fetch_array()){
 
