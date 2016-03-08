@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
-<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
-  <script src="/ostickets/upload/css/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/upload/css/bootstrap.css">
+  <script src="/upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 
@@ -385,7 +385,7 @@ $qfrom.=' LEFT JOIN '.TICKET_LOCK_TABLE.' tlock ON (ticket.ticket_id=tlock.ticke
 TicketForm::ensureDynamicDataView();
 
 $query="$qselect $qfrom $qwhere ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-$hash = ($query);
+$hash = md5($query);
 $_SESSION['search_'.$hash] = $query;
 //QUERRY QUE LISTA LOS RESULTADOS
 $res = db_query($query);
