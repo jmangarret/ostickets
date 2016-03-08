@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
-<link rel="stylesheet" href="/upload/css/bootstrap.css">
-  <script src="/upload/css/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/ostickets/upload/css/bootstrap.css">
+  <script src="/ostickets/upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 
@@ -147,58 +147,91 @@ if($search):
             printf("Connect failed: %s\n", mysqli_connect_error());
             exit();
         }
-        $aguja = explode(" ",$queryterm);
-        $pajar = "";
-        for($i=0;$i<=strlen($aguja)+1;$i++){
-            if($i == 0)
-                $pajar .= " body LIKE '%".$aguja[$i]."%'";
-            else
-                $pajar .= " AND body LIKE '%".$aguja[$i]."%'";
-        }
-        $comentario_sql =  "SELECT id
-                            FROM `ost_ticket_thread` 
-                            WHERE ".$pajar;
+        // $aguja = explode(" ",$queryterm);
+        // $pajar = "";
+        // for($i=0;$i<=strlen($aguja)+1;$i++){
+        //     if($i == 0)
+        //         $pajar .= " body LIKE '%".$aguja[$i]."%'";
+        //     else
+        //         $pajar .= " AND body LIKE '%".$aguja[$i]."%'";
+        // }
+        // $comentario_sql =  "SELECT id
+        //                     FROM `ost_ticket_thread` 
+        //                     WHERE ".$pajar;
 
-        $comentario_res = $mysqli->query($comentario_sql);
-        $comentario_row = mysqli_num_rows($comentario_res);
+        // $comentario_res = $mysqli->query($comentario_sql);
+        // $comentario_row = mysqli_num_rows($comentario_res);
 //Anthony Final 04/01/2015
 
-        if (is_numeric($searchTerm)) {
-            $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
-        } elseif (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
-            //pulling all tricks!
-            # XXX: What about searching for email addresses in the body of
-            #      the thread message
-            $qwhere.=" AND email.address='$queryterm'";
 
-//Anthony Inicio 04/01/2015
-        } elseif ($comentario_row > 0) {
-            $aguja = explode(" ",$queryterm);
-            $pajar = "";
-            for($i=0;$i<=strlen($aguja)+1;$i++){
-                if($i == 0)
-                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
-                else
-                    $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
-            }
-            $qwhere.=$pajar;
-//Anthony Final 04/01/2015
+//Inicio Billy 7/03/2016 Nueva Forma de realizar las busquedas simples, se puede buscar cedula, correos, nº tickets.
 
-        } else {//Deep search!
-            //This sucks..mass scan! search anything that moves!
-            require_once(INCLUDE_DIR.'ajax.tickets.php');
-            $tickets = TicketsAjaxApi::_search(array('query'=>$queryterm));
+        $a = "SELECT entry_id 
+              FROM ost_form_entry_values 
+              WHERE field_id= 88 AND value LIKE '%$queryterm%' LIMIT 1";
+        
+                $res_a = $mysqli->query($a);
+                $var=$res_a->fetch_array();
+
+
+        $b= "SELECT object_id 
+             FROM ost_form_entry 
+             WHERE object_type='U' AND id='". $var[0] ."'";
+
+                $res_b = $mysqli->query($b);
+                $var3= mysqli_num_rows($res_b);
+                $var2=$res_b->fetch_array();
+
+
+        $qwhere.= " AND (ticket.`number` LIKE '%$queryterm%' OR email.address LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%' OR ticket.user_id='".$var2[0]."')";
+
+
+//Fin Billy 7/03/2016 Nueva Forma de realizar las busquedas simples, se puede buscar cedula, correos, nº tickets.
+
+
+
+//         if (is_numeric($searchTerm)) {
+//             $qwhere.=" AND ticket.`number` LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%'"; //Billy 03/03/2016 Se agrego que busque numeros en los comentarios del ticket
+//         } 
+
+//         if (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
+//             //pulling all tricks!
+//             # XXX: What about searching for email addresses in the body of
+//             #      the thread message
+//             $qwhere.=" AND email.address LIKE'%$queryterm%' OR thread.body LIKE '%$queryterm%'"; //Billy 03/03/2016 Se agrego que busque correo en los comentarios del ticket
+
+// //Anthony Inicio 04/01/2015
+//         } 
+
+//         if ($comentario_row > 0) {
+//             $aguja = explode(" ",$queryterm);
+//             $pajar = "";
+//             for($i=0;$i<=strlen($aguja)+1;$i++){
+//                 if($i == 0)
+//                     $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+//                 else
+//                     $pajar .= " AND thread.body LIKE '%".$aguja[$i]."%'";
+//             }
+//             $qwhere.=$pajar;
+// //Anthony Final 04/01/2015
+
+//         } 
+
+//         // else {//Deep search!
+//         //     //This sucks..mass scan! search anything that moves!
+//         //     require_once(INCLUDE_DIR.'ajax.tickets.php');
+//         //     $tickets = TicketsAjaxApi::_search(array('query'=>$queryterm));
             
-            if (count($tickets)) {
-                $ticket_ids = implode(',',db_input($tickets));
-                $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.')';
-                $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
-                $order = ' ';
-            }
-            else
-                // No hits -- there should be an empty list of results
-                $qwhere .= ' AND false';
-        }
+//         //     if (count($tickets)) {
+//         //         $ticket_ids = implode(',',db_input($tickets));
+//         //         $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.')';
+//         //         $order_by = 'FIELD(ticket.ticket_id, '.$ticket_ids.')';
+//         //         $order = ' ';
+//         //     }
+//         //     else
+//         //         // No hits -- there should be an empty list of results
+//         //         $qwhere .= ' AND false';
+//         // }
    }
 
 endif;
@@ -216,13 +249,13 @@ endif;
 //Fin Original
 
 //Inicio 17/02/2016 Nueva forma de mostrar el resultado de la consulta de la busqueda avanzada
+
 if ($_REQUEST['advsid']) {
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     $result_tkt = $mysqli->query($_SESSION["consulta"]);
     while($filas_tkt = $result_tkt->fetch_array())
         $ticket_ids .= $filas_tkt[0].",";
     $ticket_ids = substr($ticket_ids, 0,strlen($ticket_ids)-1);
-
     $qwhere .= ' AND ticket.ticket_id IN ('.$ticket_ids.') ';
    
     // Thanks, http://stackoverflow.com/a/1631794
@@ -307,8 +340,22 @@ if($search && $deep_search) {
     $sjoin.=' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON (ticket.ticket_id=thread.ticket_id )';
 }
 
+//inicio Billy 7/03/2016
+
+// $tabla='ost_ticket__cdata';
+
+// if (stripos($qfrom,$tabla) <= 0){
+
+//     $qfrom.= ' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)';
+// }
+
 //get ticket count based on the query so far..
 $total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id")));
+
+//$prueba = "SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id"));
+//echo $prueba;
+//Fin Billy 7/03/2016
+
 //pagenate
 $pagelimit=($_GET['limit'] && is_numeric($_GET['limit']))?$_GET['limit']:PAGE_LIMIT;
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;
@@ -338,7 +385,7 @@ $qfrom.=' LEFT JOIN '.TICKET_LOCK_TABLE.' tlock ON (ticket.ticket_id=tlock.ticke
 TicketForm::ensureDynamicDataView();
 
 $query="$qselect $qfrom $qwhere ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-$hash = md5($query);
+$hash = ($query);
 $_SESSION['search_'.$hash] = $query;
 //QUERRY QUE LISTA LOS RESULTADOS
 $res = db_query($query);
@@ -837,10 +884,10 @@ if((($pageNav->getPage())-1) <= 0)
     if(isset($_GET["advsid"]))
         $advsid="&advsid=" . $_GET["advsid"];
 
-        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
-        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
-        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
-        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"; //Billy 17/02/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
 
         echo '<div style="text-align:center;">
         <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
