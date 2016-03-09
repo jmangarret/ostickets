@@ -2607,6 +2607,14 @@ class Ticket {
         if (!$form->isValid($field_filter('ticket')))
             $errors += $form->errors();
 
+        /*INICIO
+        Creado por Anthony Parisi
+        2016-02-01
+        Con las siguientes lineas de código, se crea el ticket mediante la API.*/
+        if (!in_array(strtolower($origin), array('web', 'staff')))
+            $errors = array();
+        /* FIN */
+
         if ($vars['uid'])
             $user = User::lookup($vars['uid']);
 
@@ -2954,6 +2962,28 @@ class Ticket {
 
         // Fire post-create signal (for extra email sending, searching)
         Signal::send('model.created', $ticket);
+
+        /*INICIO
+        Anthony Parisi
+        2016-02-05
+        Con las siguientes lineas de código, se actualizan los campos de 
+        Detalle de su Solicitud en las tablas descritas en la Sentencia SQL*/
+        if (!in_array(strtolower($origin), array('web', 'staff'))){
+            foreach ($ticket as $key=>$value){$ticket_idAPI = $value;break;}
+            $detail = '{"87":"Cotizacion PopPup"}';
+            $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+            $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
+            $mysqli->query("UPDATE `ost_ticket__cdata` SET `subject` = '88' WHERE `ticket_id` = '$ticket_idAPI';");
+
+            $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
+            $rowUser = mysqli_num_rows($sqlUser);
+
+            if($rowUser <= 0)
+                $mysqli->query("UPDATE ost_user SET `org_id` = 30, `updated` = NOW() WHERE id = ".($user->getId())." LIMIT 1;");
+
+
+        }
+        /* FIN */
 
         /* Phew! ... time for tea (KETEPA) */
 
