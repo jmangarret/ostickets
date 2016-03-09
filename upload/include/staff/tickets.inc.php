@@ -183,7 +183,7 @@ if($search):
                 $var2=$res_b->fetch_array();
 
 
-        $qwhere.= " AND (ticket.`number` LIKE '%$queryterm%' OR email.address LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%' OR ticket.user_id='".$var2[0]."')";
+        $qwhere.= " AND (ticket.`number` LIKE '%$queryterm%' OR email.address LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%' OR ticket.user_id='".$var2[0]."' OR UPPER (CAST( cdata.localizador AS CHAR( 100 ) CHARSET utf8 )) LIKE UPPER('%$queryterm%'))";
 
 
 //Fin Billy 7/03/2016 Nueva Forma de realizar las busquedas simples, se puede buscar cedula, correos, nº tickets.
