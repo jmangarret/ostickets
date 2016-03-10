@@ -1,7 +1,7 @@
 <!--Inicio Billy 25/01/2016-->
 
 <link rel="stylesheet" href="/upload/css/bootstrap.min.css">
-<script src="/upload/css/bootstrap.min.js"></script>
+<script src=" /upload/css/bootstrap.min.js"></script>
 
 <!--Fin Billy 25/01/2016-->
 
@@ -75,9 +75,11 @@ $qfrom='FROM '.TICKET_TABLE.' ticket '
             ON (status.id = ticket.status_id) '
       .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'
       .' LEFT JOIN '.DEPT_TABLE.' dept ON (ticket.dept_id=dept.dept_id) '
+      .' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON (ticket.ticket_id=thread.ticket_id )'
       .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
         ON (collab.ticket_id = ticket.ticket_id
                 AND collab.user_id ='.$thisclient->getId().' )';
+
 
 $qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d )',
             $thisclient->getId(), $thisclient->getId());
@@ -94,21 +96,36 @@ echo"<pre>";var_dump($status, $states[$status], $qwhere);echo"</pre>";*/
 //--------------------------------------------------------------
 
 /*MICOD: Código PHP que anexa a la caja de búsqueda principal la filtro por número de tickets, correo y localizador*/
+
+//Inicio Billy 9/03/2016 Nueva busqueda simple
+
 if($search):
     $qs += array('a' => $_REQUEST['a'], 't' => $_REQUEST['t']);
     //query
     if($searchTerm){
         $qs += array('query' => $searchTerm);
         $queryterm=db_real_escape($searchTerm,false);
+
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
+
+
         if (is_numeric($searchTerm)) {
-            $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
+            $qwhere.=" AND ticket.`number` LIKE '%$queryterm%' AND ticket.user_id='".$_SESSION["_auth"]["user"]["id"]."' OR thread.body LIKE '%$queryterm%' AND thread.user_id = '".$_SESSION["_auth"]["user"]["id"]."'";
         } elseif (strpos($searchTerm,'@') && Validator::is_email($searchTerm)) {
-            $qwhere.=" AND email.address='$queryterm'";
+            $qwhere.=" AND thread.body LIKE '%$queryterm%'";
         } else {
-            $qwhere.=" AND UPPER (CAST( cdata.localizador AS CHAR( 100 ) CHARSET utf8 )) LIKE '%".strtoupper($searchTerm)."%'"; /*Billy 1/02/2016 Busca el localizador en el buscador general indiferentemente si es mayuscula o minuscula*/
+            $qwhere.=" AND thread.body LIKE '%$queryterm%' AND thread.thread_type IN ('M','R') OR UPPER (CAST( cdata.localizador AS CHAR( 100 ) CHARSET utf8 )) LIKE '%".strtoupper($searchTerm)."%'"; 
         }
    }
    endif;
+
+//Fin Billy 10/03/2016 Nueva busqueda simple
+
 if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
     $ticket_ids = implode(',', db_input($_SESSION['adv_'.$_REQUEST['advsid']]));
     $qs += array('advsid' => $_REQUEST['advsid']);
@@ -119,23 +136,23 @@ if ($_REQUEST['advsid'] && isset($_SESSION['adv_'.$_REQUEST['advsid']])) {
 }
 /*-----------------------------------------------------------------------------------------------------------------*/
 
-$search=($_REQUEST['a']=='search' && $_REQUEST['q']);
-if($search) {
-    $qs += array('a' => $_REQUEST['a'], 'q' => $_REQUEST['q']);
-    if(is_numeric($_REQUEST['q'])) {
-        $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
-    } else {//Deep search!
-        $queryterm=db_real_escape($_REQUEST['q'],false); //escape the term ONLY...no quotes.
-        $qwhere.=' AND ( '
-                ." cdata.subject LIKE '%$queryterm%'"
-                ." OR thread.body LIKE '%$queryterm%'"
-                .' ) ';
-        $deep_search=true;
-        //Joins needed for search
-        $qfrom.=' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON ('
-               .'ticket.ticket_id=thread.ticket_id AND thread.thread_type IN ("M","R"))';
-    }
-}
+// $search=($_REQUEST['a']=='search' && $_REQUEST['q']);
+// if($search) {
+//     $qs += array('a' => $_REQUEST['a'], 'q' => $_REQUEST['q']);
+//     if(is_numeric($_REQUEST['q'])) {
+//         $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
+//     } else {//Deep search!
+//         $queryterm=db_real_escape($_REQUEST['q'],false); //escape the term ONLY...no quotes.
+//         $qwhere.=' AND ( '
+//                 ." cdata.subject LIKE '%$queryterm%'"
+//                 ." OR thread.body LIKE '%$queryterm%'"
+//                 .' ) ';
+//         $deep_search=true;
+//         //Joins needed for search
+//         $qfrom.=' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON ('
+//                .'ticket.ticket_id=thread.ticket_id AND thread.thread_type IN ("M","R"))';
+//     }
+// }
 
 if(isset($_GET["des"]) && $_GET["des"] != "")
     $qwhere .= " AND ticket.created >= '".$_GET["des"]." 00:00:00' AND ticket.created <= '".$_GET["has"]." 24:59:59'";
@@ -152,6 +169,7 @@ $qgroup=' GROUP BY ticket.ticket_id';
 
 $more = "";
 $nume = 0;
+
 
 if(isset($_GET["est"]) and $_GET["est"]!=""){ //Billy 1/02/2016 Se agrego la condicion que el campo estatus fuese diferente de vacio ya que ahora la busqueda es con select//
     /*$i=0;
@@ -227,19 +245,33 @@ if ($_REQUEST['clean'] == 1) {//Si la variable GET es 1 entonces...
 }
 /*------------------------------------------------------------*/
 
-if(isset($_GET["est"]) && $_GET["est"] == "open")
-    $total=$thisclient->getNumOpenTickets();
-else if(isset($_GET["est"]) && $_GET["est"] == "closed")
-    $total=$thisclient->getNumClosedTickets();
-else
-    $total=$thisclient->getNumTickets();
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
 
-$pageNav=new Pagenate($total, $page, PAGE_LIMIT);
+// //Inicio Billy 9/03/2016 Conteo de los tickets
+
+$restot= $mysqli->query("$qselect $qfrom $qwhere $more $qgroup");
+$rowtot=mysqli_num_rows($restot);
+
+// //Fin Billy 9/03/2016 Conteo de los tickets
+
+// if(isset($_GET["est"]) && $_GET["est"] == "open")
+//     $total=$thisclient->getNumOpenTickets();
+// else if(isset($_GET["est"]) && $_GET["est"] == "closed")
+//     $total=$thisclient->getNumClosedTickets();
+// else
+//     $total=$thisclient->getNumTickets();
+
+$pageNav=new Pagenate($rowtot, $page, PAGE_LIMIT);
 $qstr = '&amp;'. Http::build_query($qs);
 $qs += array('sort' => $_REQUEST['sort'], 'order' => $_REQUEST['order']);
 $pageNav->setURL('tickets.php', $qs);
 $query="$qselect $qfrom $qwhere $more $qgroup ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-//echo $query;
+//$query;
 //echo $_GET["sta"];
 $res = db_query($query);
 $showing=($res
@@ -713,10 +745,10 @@ if($res && $num>0) {
     else
         $pages = ($pageNav->getPage())+1;
 
-    $primero   = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-    $anterior  = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-    $siguiente = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
-    $ultimo    = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $primero   = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."&top=".$_GET["top"]."&dep=".$_GET["dep"]."&sta=".$_GET["sta"]."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $anterior  = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."&top=".$_GET["top"]."&dep=".$_GET["dep"]."&sta=".$_GET["sta"]."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $siguiente = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."&top=".$_GET["top"]."&dep=".$_GET["dep"]."&sta=".$_GET["sta"]."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 12/02/2016 Se agrego al paginero el estatus
+    $ultimo    = "tickets.php?est=".$_GET["est"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."&top=".$_GET["top"]."&dep=".$_GET["dep"]."&sta=".$_GET["sta"]."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]; //Billy 12/02/2016 Se agrego al paginero el estatus
 
 //Inicio Billy 25/01/2016 Paginador del cliente//
     echo '  <div style="text-align:center;">
