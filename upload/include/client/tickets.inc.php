@@ -349,7 +349,7 @@ $n_cerrados = mysqli_num_rows($result_close);
     </script>
 <!--//////////////////////////////////////////////////////////////////--> 
             <!--MICOD: Nuevo menú de opciones de tickets abiertos y cerrados-->   
-            <ul id="nav2" class="flush-left" style="margin-top: -20px;">
+            <ul id="nav2" class="flush-left">
                 <li></li>
                 <li><a class="tickets" id="open" href="tickets.php?est=open">Abiertos (<?=$n_abiertos?>)</a></li>  <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
                 <li><a class="tickets" id="closer" href="tickets.php?est=closed">Cerrados (<?=$n_cerrados?>)</a></li> <!--Billy 12/02/2016 Se modifico la ruta de redireccionamiento-->
@@ -369,15 +369,16 @@ $n_cerrados = mysqli_num_rows($result_close);
                         true); ?>"
                             autocomplete="off" autocorrect="off" autocapitalize="off"></td>
                         <td><input type="submit" name="basic_search" value="<?php echo __('Search'); ?>"></td>
+                        <td><button type="button" class="btn btn-sm btn-link text" data-toggle="modal" data-target="#myModal" style="padding-left:10px; text-decoration:none" id="advanced-search">[Búsqueda Avanzada]</button></td>
                     </tr>
                 </table>
                 </form>
             </div>
             <!--//////////////////////////////////////////--> 
+            
             <br>
+            <caption><b><?php echo $showing; ?></b></caption>
 
-<h1><?php echo __('Tickets');?></h1>
-<br>
 <form action="tickets.php" method="get" id="ticketSearchForm" style="display:none;">
     <input type="hidden" name="a"  value="search">
     <input type="text" name="q" size="20" value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
@@ -572,7 +573,7 @@ $n_cerrados = mysqli_num_rows($result_close);
   </div>
 
 
-<button type="button" class="btn btn-sm btn-link text" data-toggle="modal" data-target="#myModal" style="padding-left:10px; text-decoration:none" id="advanced-search">[Búsqueda Avanzada]</button>
+
 <br>
 <a class="refresh" href="tickets.php"><?php echo __('Refresh'); ?></a>
 
@@ -609,7 +610,6 @@ $n_cerrados = mysqli_num_rows($result_close);
 
 <!--Inicio Billy 27/01/2016 se agregaron los campos GDS y Pago a la tabla y se ancho la tabla-->
 <table id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
-    <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
             <th nowrap>

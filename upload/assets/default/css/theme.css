@@ -320,16 +320,23 @@ body {
   margin: 0;
   padding: 10px 0 0;
 }
+
+/*Inicio Billy 11/03/2016 Menu Superior*/
+
+
 #nav {
-  margin: 0 20px;
   padding: 2px 10px;
-  height: 20px;
-  background: url('../images/nav_bg.png') top left repeat-x;
-  border-top: 1px solid #aaa;
+  background:#eee;
+  height: 25px;
+  border-top: 1px solid #ddd;
   box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
 }
+
+/*Fin Billy 11/03/2016 Menu Superior*/
+
+
 #nav li {
   margin: 0;
   padding: 0;
@@ -350,6 +357,7 @@ body {
   -moz-border-radius: 20px;
   background-position: 10px 50%;
   background-repeat: no-repeat;
+  text-decoration: none;  /*Billy 11/03/2016 Se quito la decoracion del texto para que no se muestre como un link */
 }
 .rtl #nav li a {
   background-position: right center;
@@ -361,8 +369,8 @@ body {
 }
 #nav li a.active,
 #nav li a:hover {
-  background-color: #dbefff;
-  color: #000;
+  color: #004a80;    /*Billy 11/03/2016 Se cambio el color del texto que se encuentra seleccionado */
+  font-weight: bold; /*Billy 11/03/2016 Se coloco el negrita el texto seleccionado */
 }
 #nav li a:hover {
   background-color: #ededed;
@@ -375,7 +383,7 @@ body {
   background-image: url('../images/icons/kb.png');
 }
 #nav li a.new {
-  background-image: url('../images/icons/new.png');
+  background-image: url('../images/icons/new.gif');
 }
 #nav li a.status {
   background-image: url('../images/icons/status.png');
@@ -384,16 +392,23 @@ body {
   background-image: url('../images/icons/tix.png');
 }
 
+/*Inicio Billy 11/03/2016 Menu inferior (sub menu)*/
+
 #nav2 {
-  margin: 0 20px;
+  margin: 0 -20px;
+  margin-top: -30px;
   padding: 2px 10px;
-  height: 20px;
-  background: url('../images/nav_bg.png') top left repeat-x;
-  border-top: 1px solid #aaa;
+  height: 25px;
+  background:#f7f7f7;
+  border-top: 1px solid #bebebe;
   box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
 }
+
+/*Fin Billy 11/03/2016 Menu inferior (sub menu)*/
+
+
 #nav2 li {
   margin: 0;
   padding: 0;
@@ -414,6 +429,7 @@ body {
   -moz-border-radius: 20px;
   background-position: 10px 50%;
   background-repeat: no-repeat;
+  text-decoration: none;  /*Billy 11/03/2016 Se quito la decoracion del texto para que no se muestre como un link */
 }
 .rtl #nav2 li a {
   background-position: right center;
@@ -425,8 +441,7 @@ body {
 }
 #nav2 li a.active,
 #nav2 li a:hover {
-  background-color: #dbefff;
-  color: #000;
+  font-weight: bold; /*Billy 11/03/2016 Se coloco el negrita el texto seleccionado */
 }
 #nav2 li a:hover {
   background-color: #ededed;
@@ -442,10 +457,10 @@ body {
   background-image: url('../images/icons/new.png');
 }
 #nav2 li a.status {
-  background-image: url('../images/icons/status.png');
+  background-image: url('../images/icons/status.png'); 
 }
 #nav2 li a.tickets {
-  background-image: url('../images/icons/tix.png');
+  background-image: url('../images/icons/open_tickets.gif'); /* Billy 11/03/2016 se cambio el icono de los tickets abiertos y cerrados*/
 }
 
 #content {
