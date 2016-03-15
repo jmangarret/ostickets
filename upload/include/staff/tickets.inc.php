@@ -183,7 +183,7 @@ if($search):
                 $var2=$res_b->fetch_array();
 
 
-        $qwhere.= " AND (ticket.`number` LIKE '%$queryterm%' OR email.address LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%' OR ticket.user_id='".$var2[0]."')";
+        $qwhere.= " AND (ticket.`number` LIKE '%$queryterm%' OR email.address LIKE '%$queryterm%' OR thread.body LIKE '%$queryterm%' OR ticket.user_id='".$var2[0]."' OR UPPER (CAST( cdata.localizador AS CHAR( 100 ) CHARSET utf8 )) LIKE UPPER ('%$queryterm%'))";
 
 
 //Fin Billy 7/03/2016 Nueva Forma de realizar las busquedas simples, se puede buscar cedula, correos, nº tickets.
@@ -323,6 +323,7 @@ $qselect ='SELECT ticket.ticket_id,tlock.lock_id,ticket.`number`,ticket.dept_id,
          .' ,status.name as status,ticket.source,ticket.isoverdue,ticket.isanswered,ticket.created ';
 
 $qfrom=' FROM '.TICKET_TABLE.' ticket '.
+       ' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'. //Billy 11/03/2016 Se incluyo la tabla cdata en el query que realizar el contedo de los tickets
        ' LEFT JOIN '.TICKET_STATUS_TABLE. ' status
             ON (status.id = ticket.status_id) '.
        ' LEFT JOIN '.USER_TABLE.' user ON user.id = ticket.user_id'.
@@ -352,8 +353,8 @@ if($search && $deep_search) {
 //get ticket count based on the query so far..
 $total=db_count("SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id")));
 
-//$prueba = "SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id"));
-//echo $prueba;
+// $prueba = "SELECT count(DISTINCT ticket.ticket_id) $qfrom $sjoin ".substr($qwhere,0,stripos($qwhere, "GROUP BY thread.ticket_id"));
+// echo $prueba;
 //Fin Billy 7/03/2016
 
 //pagenate
@@ -379,7 +380,6 @@ $qfrom.=' LEFT JOIN '.TICKET_LOCK_TABLE.' tlock ON (ticket.ticket_id=tlock.ticke
        .' LEFT JOIN '.SLA_TABLE.' sla ON (ticket.sla_id=sla.id AND sla.isactive=1) '
        .' LEFT JOIN '.TOPIC_TABLE.' topic ON (ticket.topic_id=topic.topic_id) '
        .' LEFT JOIN '.TOPIC_TABLE.' ptopic ON (ptopic.topic_id=topic.topic_pid) '
-       .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id) '
        .' LEFT JOIN '.PRIORITY_TABLE.' pri ON (pri.priority_id = cdata.priority)';
 
 TicketForm::ensureDynamicDataView();
