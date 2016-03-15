@@ -201,6 +201,24 @@ class User extends UserModel {
             $user->updateInfo($vars, $errors, true);
         }
 
+        /* INICIO
+        Anthony Parisi
+        */
+
+        if(isset($_SESSION["crmEmail"])){
+
+            $mysqli  = new mysqli("localhost", "root", "ip15x0", "vtigercrm600");
+            $sqlUser = $mysqli->query("SELECT MAX(id) FROM `vtigercrm600`.vtiger_modtracker_detail;");
+            $resUser = $sqlUser->fetch_array();
+            $mysqli->query("UPDATE `vtigercrm600`.`vtiger_contactdetails` SET `mobile` = '".$_SESSION["crmPhone"]."' WHERE UPPER(`vtiger_contactdetails`.`email`) = UPPER('".$_SESSION["crmEmail"]."');");
+            $mysqli->query("INSERT INTO `vtigercrm600`.vtiger_modtracker_detail(id,fieldname,prevalue,postvalue) VALUES('".$resUser[0]."','email',NULL,'".$_SESSION["crmPhone"]."');");
+            unset($_SESSION["crmEmail"]);
+            unset($_SESSION["crmPhone"]);
+
+        }
+
+        /* FIN */
+
         return $user;
     }
 
