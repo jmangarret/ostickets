@@ -217,6 +217,7 @@ if(isset($_REQUEST["uid"])){
                     <option value="Facebook" <?php echo ($info['source']=='Facebook')?'selected="selected"':''; ?>><?php echo __('Facebook'); ?></option>
                     <option value="AOL" <?php echo ($info['source']=='AOL')?'selected="selected"':''; ?>><?php echo __('AOL'); ?></option>
                     <option value="Other" <?php echo ($info['source']=='Other')?'selected="selected"':''; ?>><?php echo __('Other'); ?></option>
+                    <option value="Instagram" <?php echo ($info['source']=='Instagram')?'selected="selected"':''; ?>><?php echo __('Instagram'); ?></option>
                 </select>
                 &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['source']; ?></font>
             </td>
