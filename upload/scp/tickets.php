@@ -23,14 +23,21 @@ require_once(INCLUDE_DIR.'class.json.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 require_once(INCLUDE_DIR.'class.export.php');       // For paper sizes
 
-if(isset($_POST["estado_localizador"])){
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+/*INICIO
+Anthony Parisi
+2016-03-28*/
+require_once(INCLUDE_DIR.'PHPMailer/PHPMailerAutoload.php');       // Necesario para cambiar remitente 
+/*FIN*/
+
+$mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
 
     /* check connection */
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
     }
+
+if(isset($_POST["estado_localizador"])){
 
     $query = "  SELECT c.entry_id
                 FROM ost_ticket a, ost_form_entry b, ost_form_entry_values c
@@ -88,6 +95,51 @@ if($_POST && !$errors):
         $lock=$ticket->getLock(); //Ticket lock if any
         switch(strtolower($_POST['a'])):
         case 'reply':
+
+            /*INICIO
+            Anthony Parisi
+            2016-03-28*/
+
+            $query = "  SELECT user.org_id, user.name, email.address, CONCAT( staff.firstname,  ' ', staff.lastname ) , staff.email
+                        FROM ost_user user
+                        INNER JOIN ost_ticket ticket ON ( ticket.user_id = user.id ) 
+                        INNER JOIN ost_user_email email ON ( email.user_id = ticket.user_id ) 
+                        INNER JOIN ost_staff staff ON ( staff.staff_id = ticket.staff_id ) 
+                        WHERE ticket.ticket_id = '".$_REQUEST["id"]."'
+                        LIMIT 1";
+            $result = $mysqli->query($query);
+            $row = $result->fetch_array();
+
+            if($row[0] == "30"){
+
+                $_POST["emailreply"] = 0;
+
+                $mail = new PHPMailer;
+
+                $mail->isSMTP();                                      // Set mailer to use SMTP
+                $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+                $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                $mail->Username = 'info@tuagencia24.com';                 // SMTP username
+                $mail->Password = 'AUDEtuagencia24';                           // SMTP password
+                $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                $mail->Port = 587;                                    // TCP port to connect to
+
+                $mail->addReplyTo($row[4], $row[3]);
+                $mail->setFrom('info@tuagencia24.com', 'Tuagencia24');
+                $mail->addAddress($row[2], $row[1]);               // Name is optional
+
+                $mail->isHTML(true);                                  // Set email format to HTML
+
+                $mail->Subject = "Cotizacion";
+                $mail->Body    = $_POST["response"];
+                $mail->AltBody = $_POST["response"];
+
+                $mail->send();
+
+            }
+
+            /*FIN*/
+
             if(!$thisstaff->canPostReply())
                 $errors['err'] = __('Action denied. Contact admin for access');
             else {
