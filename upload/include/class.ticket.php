@@ -2996,7 +2996,7 @@ class Ticket {
 
         if(!$thisstaff || !$thisstaff->canCreateTickets()) return false;
 
-        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','whatapp el rosal','pop-up web','facebook','aol','other')))
+        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','whatapp el rosal','pop-up web','facebook','aol','other','instagram')))
             $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
 
         if (!$vars['uid']) {
