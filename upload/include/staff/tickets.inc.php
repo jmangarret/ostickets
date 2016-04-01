@@ -606,11 +606,13 @@ if ($results) {
                 Rosa para: Emitir Localizador.
                 */
                 $color_rojo = "Cancelar itinerario,Anular Aereo,Cambios";
-                $color_rosa = "Emitir localizador,Reemision";
-                $color_azul = "Pago de reporte pasado,Pago de reporte en curso";
+                $color_rosa = "Emitir localizador";
+                $color_azul = "Reemision";
+                $color_pink = "Pago de reporte pasado,Pago de reporte en curso";
                 if(strpos($color_rojo,$subject)!==false) $color_tr2 = 'style="background-color:Crimson;"';
                 elseif(strpos($color_rosa,$subject)!==false) $color_tr2 = "style='background-color:LightGreen;'";
                 elseif(strpos($color_azul,$subject)!==false) $color_tr2 = "style='background-color:#81BEF7;'";
+                elseif(strpos($color_pink,$subject)!==false) $color_tr2 = "style='background-color:#F5A9D0;'";
                 else $color_tr2 ="";
                 /*FIN*/
                 ?>
