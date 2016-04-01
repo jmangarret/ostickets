@@ -462,6 +462,16 @@ $nav->setTabActive('tickets');
 $open_name = _P('queue-name',
     /* This is the name of the open ticket queue */
     'Open');
+
+//Inicio Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets abiertos en ella de lo contrario lo haga en la vista lista//
+if ($_REQUEST['vista']=='detalle'){
+$nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
+                            'title'=>__('Open Tickets'),
+                            'href'=>'tickets.php?vista=detalle&status=open',
+                            'iconclass'=>'Ticket'),
+                        (!$_REQUEST['status'] || $_REQUEST['status']=='open'));
+
+} else {
 if($cfg->showAnsweredTickets()) {
     $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
                             'title'=>__('Open Tickets'),
@@ -487,8 +497,20 @@ if($cfg->showAnsweredTickets()) {
                             ($_REQUEST['status']=='answered'));
     }
 }
+}
+//Fin Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets abiertos en ella de lo contrario lo haga en la vista lista//
 
-if($stats['assigned']) {
+
+//Inicio Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
+if($stats['assigned'] && $_REQUEST['vista']=='detalle') {
+
+    $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
+                           'title'=>__('Assigned Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=assigned',
+                           'iconclass'=>'assignedTickets'),
+                        ($_REQUEST['status']=='assigned'));
+} else {
 
     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
                            'title'=>__('Assigned Tickets'),
@@ -497,8 +519,23 @@ if($stats['assigned']) {
                         ($_REQUEST['status']=='assigned'));
 }
 
-if($stats['overdue']) {
+//Fin Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
+
+//Inicio Billy 29/03/2016 Se agrego si esta definida la vista detalle muestre los tickets vencidos en ella de lo contrario lo haga en la vista lista//
+if($stats['overdue'] && $_REQUEST['vista']=='detalle') {
     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
+                           'title'=>__('Stale Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=overdue',
+                           'iconclass'=>'overdueTickets'),
+                        ($_REQUEST['status']=='overdue'));
+
+    if(!$sysnotice && $stats['overdue']>10)
+        $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
+
+} else {
+
+$nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
                            'title'=>__('Stale Tickets'),
                            'href'=>'tickets.php?status=overdue',
                            'iconclass'=>'overdueTickets'),
@@ -506,7 +543,19 @@ if($stats['overdue']) {
 
     if(!$sysnotice && $stats['overdue']>10)
         $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
+
 }
+//Fin Billy 29/03/2016 Se agrego si esta definida la vista detalle muestre los tickets vencidos en ella de lo contrario lo haga en la vista lista//
+
+
+//Inicio Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets cerrados en ella de lo contrario lo haga en la vista lista//
+if ($_REQUEST['vista']=='detalle'){
+    $nav->addSubMenu(array('desc' => __('Closed').' ('.number_format($stats['closed']).')',
+                           'title'=>__('Closed Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=closed',
+                           'iconclass'=>'closedTickets'),
+                        ($_REQUEST['status']=='closed'));
+} else {
 
 if($thisstaff->showAssignedOnly() && $stats['closed']) {
     $nav->addSubMenu(array('desc'=>__('My Closed Tickets').' ('.number_format($stats['closed']).')',
@@ -522,6 +571,8 @@ if($thisstaff->showAssignedOnly() && $stats['closed']) {
                            'iconclass'=>'closedTickets'),
                         ($_REQUEST['status']=='closed'));
 }
+}
+//Fin Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets cerrados en ella de lo contrario lo haga en la vista lista//
 
 if($thisstaff->canCreateTickets()) {
     $nav->addSubMenu(array('desc'=>__('New Ticket'),
@@ -550,7 +601,7 @@ if($ticket) {
     } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
         $errors['err'] = __('Internal error: Unable to export the ticket to PDF for print.');
 } else {
-	$inc = 'tickets.inc.php';
+    $inc = 'tickets.inc.php';
     if($_REQUEST['a']=='open' && $thisstaff->canCreateTickets())
         $inc = 'ticket-open.inc.php';
     elseif($_REQUEST['a'] == 'export') {
