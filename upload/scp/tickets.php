@@ -500,7 +500,17 @@ if($cfg->showAnsweredTickets()) {
 }
 //Fin Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets abiertos en ella de lo contrario lo haga en la vista lista//
 
-if($stats['assigned']) {
+
+//Inicio Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
+if($stats['assigned'] && $_REQUEST['vista']=='detalle') {
+
+    $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
+                           'title'=>__('Assigned Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=assigned',
+                           'iconclass'=>'assignedTickets'),
+                        ($_REQUEST['status']=='assigned'));
+} else {
 
     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
                            'title'=>__('Assigned Tickets'),
@@ -508,6 +518,9 @@ if($stats['assigned']) {
                            'iconclass'=>'assignedTickets'),
                         ($_REQUEST['status']=='assigned'));
 }
+
+//Fin Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
 
 //Inicio Billy 29/03/2016 Se agrego si esta definida la vista detalle muestre los tickets vencidos en ella de lo contrario lo haga en la vista lista//
 if($stats['overdue'] && $_REQUEST['vista']=='detalle') {
