@@ -282,13 +282,18 @@ function search() {
         $result = array();
 
         if (count($tickets)) {
+
+//Inicio Billy 30/03/2016 Validacion si esta definida la vista en la url y es igual a detalle o lista
+            if(isset($_SESSION['vista']) && $_SESSION['vista']==1) 
+                $vista='&vista=detalle';
+//Fin Billy 30/03/2016 Validacion si esta definida la vista en la url y es igual a detalle o lista
+
             $uid = md5($_SERVER['QUERY_STRING']);
             $_SESSION["adv_$uid"] = $tickets;
             $result['success'] = sprintf(__("Search criteria matched %s"),
                     sprintf(_N('%d ticket', '%d tickets', count($tickets)), count($tickets)
                 ))
-                . " - <a href='tickets.php?advsid=$uid'>".__('view')."</a>";
-                
+                . " - <a href='tickets.php?advsid=$uid$vista'>".__('view')."</a>"; //Billy Redireccionamiento al mostrar el resultado de la busqueda avanzada
         } else {
             $result['fail']=__('No tickets found matching your search criteria.');
         }

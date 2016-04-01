@@ -424,12 +424,25 @@ if ($results) {
 }
 
 //YOU BREAK IT YOU FIX IT.
+
+
+//Inicio Billy 30/03/2016 Validacion si esta definida la vista en la url
+
+if (isset($_REQUEST['vista']) && $_REQUEST['vista']=='detalle'){
+  $_SESSION['vista']='1';
+}else{
+  $_SESSION['vista']='0';
+}
+
+//Fin Billy 30/03/2016 Validacion si esta definida la vista en la url
+
 ?>
 <!-- SEARCH FORM START -->
-<div id='basic_search'>
+<div id='basic_search' style="display: inline-block;">
     <form action="tickets.php" method="get">
     <?php csrf_token(); ?>
     <input type="hidden" name="a" value="search">
+    <input type="hidden" name="vista" value="<?=$_REQUEST['vista']?>"></input> <!--Billy 28/03/2016 Input para mostrar el resultado de la busqueda avanzada en la vista detalle o en la vista lista dependiendo de la vista que este definida en la url-->
     <table>
         <tr>
             <td>
@@ -443,9 +456,33 @@ if ($results) {
     </table>
     </form>
 </div>
+
+<!--Inicio Billy 16/03/2016 Botones para cambiar el tipo de vista-->
+<div style="display: inline-block;" class="pull-right">
+<table>
+<tr>
+<td style="font-family: arial, helvetica, sans-serif; color: #696969">
+Tipo de Vista
+</td>
+<td>
+<a id="boton_lista" class="action-button" href="tickets.php?&vista=lista">Lista</a><a id="boton_detalle" class="action-button" href="tickets.php?&vista=detalle">Detalle</a>
+</td>
+</table>
+</div>
+<!--Fin Billy 16/03/2016 Botones para cambiar el tipo de vista-->
+
+
+
 <!-- SEARCH FORM END -->
 <div class="clear"></div>
-<div style="margin-bottom:20px; padding-top:10px;">
+
+<!--Inicio Billy 16/03/2016 Div de la vista detalle-->
+<div id="vista_detalle" style="margin-bottom:20px; padding-top:10px; display: none;">
+<table width="100%">
+  <tr>
+
+  <td width="50%" style="vertical-align: top;">
+  
 <div>
         <div class="pull-left flush-left">
             <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
@@ -485,26 +522,300 @@ if ($results) {
             <th width="8px">&nbsp;</th>
             <?php } ?>
             <th width="70">
-                <a <?php echo $id_sort; ?> href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                <a <?php echo $id_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&vista=<?=$_REQUEST['vista']?>&sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Ticket ID'), __($negorder)); ?>"><?php echo __('Ticket'); ?></a></th>
             <th width="70">
-                <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                <a  <?php echo $date_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&vista=<?=$_REQUEST['vista']?>&sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
             <th width="280">
-                 <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                 <a <?php echo $subj_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&vista=<?=$_REQUEST['vista']?>&sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
+            <th width="60">
+                    <a <?php echo $status_sort; ?> href=""
+                        title="<?php echo sprintf(__('Sort by %s %s'), "Organización", __($negorder)); ?>">Organización</a></th>
+                        <!--Inicio Billy 26/01/2016 Se ancho la celda del tiempo para que se aprecie mejor-->
+        </tr>
+     </thead>
+     <tbody>
+        <?php
+        // Setup Subject field for display
+        $subject_field = TicketForm::objects()->one()->getField('subject');
+        $class = "row1";
+        $total=0;
+        if($res && ($num=count($results))):
+            $ids=($errors && $_POST['tids'] && is_array($_POST['tids']))?$_POST['tids']:null;
+            $iframecount= 0; 
+            foreach ($results as $row) {
+                $iframecount ++;
+                if ($iframecount==1 )
+                  $iframetkt= $row['ticket_id'];
+                $tag=$row['staff_id']?'assigned':'openticket';
+                $flag=null;
+                if($row['lock_id'])
+                    $flag='locked';
+                elseif($row['isoverdue'])
+                    $flag='overdue';
+
+                $lc='';
+                if($showassigned) {
+                    if($row['staff_id'])
+                        $lc=sprintf('<span class="Icon staffAssigned">%s</span>',Format::truncate($row['staff'],40));
+                    elseif($row['team_id'])
+                        $lc=sprintf('<span class="Icon teamAssigned">%s</span>',Format::truncate($row['team'],40));
+                    else
+                        $lc=' ';
+                }else{
+                    $lc=Format::truncate($row['dept_name'],40);
+                }
+                $tid=$row['number'];
+
+                $subject = Format::truncate($subject_field->display(
+                    $subject_field->to_php($row['subject']) ?: $row['subject']
+                ), 40);
+                $threadcount=$row['thread_count'];
+                if(!strcasecmp($row['state'],'open') && !$row['isanswered'] && !$row['lock_id']) {
+                    $tid=sprintf('<b>%s</b>',$tid);
+                }
+                /*INICIO
+                Anthony Parisi
+                2016-02-03
+                Las siguientes lineas de código definiran el color de fondo de las filas de acuerdo al crierio del tipo de solicitud.
+                Rojo para: Cambios, Cancelar Itinerario y Anular Aereo.
+                Rosa para: Emitir Localizador.
+                */
+                $color_rojo = "Cancelar itinerario,Anular Aereo,Cambios";
+                $color_rosa = "Emitir localizador,Reemision";
+                if(strpos($color_rojo,$subject)!==false) $color_tr2 = 'style="background-color:Crimson;"';
+                elseif(strpos($color_rosa,$subject)!==false) $color_tr2 = "style='background-color:LightGreen;'";
+                else $color_tr2 ="";
+                /*FIN*/
+                ?>
+            <tr id="<?php echo $row['ticket_id']; ?>">
+                <?php if($thisstaff->canManageTickets()) {
+
+                    $sel=false;
+                    if($ids && in_array($row['ticket_id'], $ids))
+                        $sel=true;
+                    ?>
+                <td align="center" class="nohover" <?=$color_tr2?>>
+                    <input class="ckb" type="checkbox" name="tids[]"
+                        value="<?php echo $row['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
+                </td>
+                <?php } ?>
+<?php
+
+$mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+
+$query2 = " SELECT *
+            FROM `ost_ticket` 
+            WHERE ticket_id = ".$row['ticket_id'];
+
+$result2 = $mysqli->query($query2);
+$row2 = $result2->fetch_array();
+$color = "";
+
+if($row2[4] == 1){
+
+    if($row2[20] > $row2[19])
+        $color = "color: #259A00;";
+
+}
+
+/*MICOD: Sentencia para listar las organizaciones en el listado de tickets*/
+$query3 = "SELECT ost_organization.id, ost_organization.name FROM ost_organization 
+            WHERE ost_organization.id IN (SELECT DISTINCT ost_user.org_id FROM ost_user WHERE ost_user.id 
+            IN (SELECT DISTINCT ost_ticket.user_id FROM ost_ticket 
+            WHERE ost_ticket.ticket_id = ".$row['ticket_id']."))";
+$result3 = $mysqli->query($query3);
+$organizacion = $result3->fetch_array();
+/*----------------------------------------------------------------*/
+
+?>
+                <td title="<?php echo $row['email']; ?>" <?=$color_tr?>>
+
+
+                  <a style="<?=$color?>" class="Icon <?php echo strtolower($row['source']); ?>Ticket a_<?=$row['ticket_id']?>" title="<?php echo __('Preview Ticket'); ?>" href="#" onclick="iframe_a.location.reload();return false"><?php echo $tid; ?></a></td> <!--Billy 18/03/2016 se agrego un id a la etiqueta a, se modifico el href para que no redirrecione a ningun lugar y se agrego un onclick para que refresque el iframe -->
+
+                  <td align="center" <?=$color_tr?>><?php echo Format::db_datetime($row['effective_date']); ?></td>
+                <td <?=$color_tr?>>
+                <a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket a_<?=$row['ticket_id']?>" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
+                    href="#" onclick="iframe_a.location.reload();return false"><?php echo $subject; ?></a>
+                     <?php
+                        if ($threadcount>1)
+                            echo "<small>($threadcount)</small>&nbsp;".'<i
+                                class="icon-fixed-width icon-comments-alt"></i>&nbsp;';
+                        if ($row['collaborators'])
+                            echo '<i class="icon-fixed-width icon-group faded"></i>&nbsp;';
+                        if ($row['attachments'])
+                            echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
+                    ?>
+                </td>
+
+<!--Inicio Billy 18/03/2016 Funcion para tomar el id del ticket y mostrar el detalle del mismo en el iframe -->
+                  <script type="text/javascript">
+                    $('.a_<?=$row['ticket_id']?>').click(function(){ 
+                      var url = "tickets.php?id=<?=$row['ticket_id']?>";
+                      $('#iframe_a').attr("src",url);
+                      });
+                  </script>
+<!--Fin Billy 18/03/2016 Funcion para tomar el id del ticket y mostrar el detalle del mismo en el iframe -->
+
+                <!--MICOD: Impresión de las organizaciones en el listado-->
+                <td <?=$color_tr?>>&nbsp;<?=$organizacion[1]?></td>
+                <!--/////////////////////////////////////////////-->
+<?php
+
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+            } //end of while.
+        else: //not tickets found!! set fetch error.
+            $ferror=__('There are no tickets matching your criteria.');
+        endif; ?>
+    </tbody>
+    <tfoot>
+     <tr>
+        <td colspan="14"> <!--Se agrego mas celdas al coslpan-->
+            <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
+            <?php echo __('Select');?>:&nbsp;
+            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
+            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
+            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <?php }else{
+                echo '<i>';
+                echo $ferror?Format::htmlchars($ferror):__('Query returned 0 results.');
+                echo '</i>';
+            } ?>
+        </td>
+     </tr>
+    </tfoot>
+    </table>
+
+    <!--////////////////////Inicio Billy 25/01/2016 Paginador Administrador/////////////////////////////////////////////-->
+
+    <br>
+    <?php
+    if ($num>0) { //if we actually had any tickets returned.
+
+if((($pageNav->getPage())-1) <= 0)
+        $pagea = 1;
+    else
+        $pagea = ($pageNav->getPage())-1;
+
+    if((($pageNav->getPage())+1) >= $pageNav->getNumPages())
+        $pages = $pageNav->getNumPages();
+    else
+        $pages = ($pageNav->getPage())+1;
+
+    if(isset($_GET["advsid"]))
+        $advsid="&advsid=" . $_GET["advsid"];
+
+        $primero   = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=1&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]."&vista=".$_GET["vista"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $anterior  = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pagea&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]."&vista=".$_GET["vista"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $siguiente = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=$pages&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]."&vista=".$_GET["vista"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+        $ultimo    = "tickets.php?status=".$_GET["status"]."&sort=".$_GET["sort"]."&order=".$_GET["order"]."&p=".$pageNav->getNumPages()."&des=".$_GET["des"]."&has=".$_GET["has"]."&loc=".$_GET["loc"]."$advsid"."&a=".$_GET["a"]."&t=".$_GET["t"]."&query=".$_GET["query"]."&vista=".$_GET["vista"]; //Billy 08/03/2016 Se agrego al paginero el estatus y el query del resultado de la busqueda avanzada
+
+        echo '<div style="text-align:center;">
+        <a href="'.$primero.'"><span class="glyphicon glyphicon-backward"></span></a>&nbsp;
+        <a href="'.$anterior.'"><span class="glyphicon glyphicon-chevron-left"></span></a>&nbsp;
+        &nbsp;'.__('Page').''.$pageNav->getPageLinks().'&nbsp;
+        <a href="'.$siguiente.'"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;
+        <a href="'.$ultimo.'"><span class="glyphicon glyphicon-forward"></span></a>&nbsp;';
+        echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
+                Http::build_query(array(
+                        'a' => 'export', 'h' => $hash,
+                        'status' => $_REQUEST['status'])),
+                __('Export'));
+        echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i></div>';
+    } 
+
+    ?>
+    <!--///////////////////////////////////Fin Billy 25/01/2016 Paginador Administrador//////////////////////////////////////////////////////////-->
+    </form>
+  </td>
+
+<!--Inicio Billy 17/03/2016 Iframe para mostrar el detalle de los tickets-->
+  <td height="915px" style="vertical-align: top;">
+  <iframe id="iframe_a" width="100%" height="100%" src="tickets.php?id=<?=$iframetkt?>" name="iframe_a" frameborder:"0"></iframe>
+  </td>
+<!--Fin Billy 17/03/2016 Iframe para mostrar el detalle de los tickets-->
+  </tr>
+</table>
+</div>
+<!--Fin Billy 16/03/2016 Div de la vista detalle-->
+
+
+<div id="vista_lista" style="margin-bottom:20px; padding-top:10px; display: none;"> <!--Billy 16/03/2016 Div de la vista lista-->
+<div>
+        <div class="pull-left flush-left">
+            <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
+                title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
+                $results_type.$showing; ?></a></h2>
+        </div>
+        <div class="pull-right flush-right">
+
+            <?php
+            if ($thisstaff->canDeleteTickets()) { ?>
+            <a id="tickets-delete" class="action-button pull-right tickets-action"
+                href="#tickets/status/delete"><i
+            class="icon-trash"></i> <?php echo __('Delete'); ?></a>
+            <?php
+            } ?>
+            <?php
+            if ($thisstaff->canManageTickets()) {
+                echo TicketStatus::status_options();
+            }
+            ?>
+        </div>
+</div>
+
+
+<div class="clear" style="margin-bottom:10px;"></div>
+<form action="tickets.php" method="POST" name='tickets' id="tickets">
+<?php csrf_token(); ?>
+ <input type="hidden" name="a" value="mass_process" >
+ <input type="hidden" name="do" id="action" value="" >
+ <input type="hidden" name="status" value="<?php echo
+ Format::htmlchars($_REQUEST['status'], true); ?>" >
+
+ <table class="list" border="0" cellspacing="1" cellpadding="2" width="100%">
+    <thead>
+        <tr>
+            <?php if($thisstaff->canManageTickets()) { ?>
+            <th width="8px">&nbsp;</th>
+            <?php } ?>
+            <th width="70">
+                <a <?php echo $id_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    title="<?php echo sprintf(__('Sort by %s %s'), __('Ticket ID'), __($negorder)); ?>"><?php echo __('Ticket'); ?></a></th>
+            <th width="70">
+                <a  <?php echo $date_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
+            <th width="280">
+                 <a <?php echo $subj_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
-                <a <?php echo $name_sort; ?> href="tickets.php?sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                <a <?php echo $name_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                      title="<?php echo sprintf(__('Sort by %s %s'), __('Name'), __($negorder)); ?>"><?php echo __('From');?></a></th>
             <?php
             //if($search && !$status) { ?>
                 <th width="60">
-                    <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    <a <?php echo $status_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
             <?php
             //} else { ?>
                 <th width="60" <?php echo $pri_sort;?>>
-                    <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                    <a <?php echo $pri_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
             //}
@@ -519,18 +830,18 @@ if ($results) {
                 //Closed by
                 if(!strcasecmp($status,'closed')) { ?>
                     <th width="150">
-                        <a <?php echo $staff_sort; ?> href="tickets.php?sort=staff&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                        <a <?php echo $staff_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=staff&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                             title="<?php echo sprintf(__('Sort by %s %s'), __("Closing Agent's Name"), __($negorder)); ?>"><?php echo __('Closed By'); ?></a></th>
                 <?php
                 } else { //assigned to ?>
                     <th width="150">
-                        <a <?php echo $assignee_sort; ?> href="tickets.php?sort=assignee&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
+                        <a <?php echo $assignee_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=assignee&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                             title="<?php echo sprintf(__('Sort by %s %s'), __('Assignee'), __($negorder)); ?>"><?php echo __('Assigned To'); ?></a></th>
                 <?php
                 }
             } else { ?>
                 <th width="150">
-                    <a <?php echo $dept_sort; ?> href="tickets.php?sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
+                    <a <?php echo $dept_sort; ?> href="tickets.php?advsid=<?=$_REQUEST['advsid']?>&sort=dept&order=<?php echo $negorder;?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Department'), __($negorder)); ?>"><?php echo __('Department');?></a></th>
             <?php
             } ?>
@@ -865,6 +1176,8 @@ $row_timedif = $result_timedif->fetch_array();
     </tfoot>
     </table>
 
+    <!-- <iframe width="100%" height="300px" src="http://localhost/ostickets/upload/scp/tickets.php?id=4989" name="iframe_a"></iframe> -->
+
     <!--////////////////////Inicio Billy 25/01/2016 Paginador Administrador/////////////////////////////////////////////-->
 
     <br>
@@ -1103,3 +1416,16 @@ if((($pageNav->getPage())-1) <= 0)
     </form>
 </div>
 
+<!--Inicio Billy 16/03/2016 Funcion para mostrar la vista dependiendo de la seleccionada-->
+<script type="text/javascript">
+  
+var url= window.location.href;
+if (url.indexOf("vista=detalle")>-1){
+  $('#vista_lista').hide(0);
+  $('#vista_detalle').show("slow");
+}else{
+  $('#vista_lista').show("slow");
+  $('#vista_detalle').hide(0);
+}
+</script>
+<!--Fin Billy 16/03/2016 Funcion para mostrar la vista dependiendo de la seleccionada-->
