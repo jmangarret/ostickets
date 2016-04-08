@@ -99,7 +99,7 @@ if ($_POST)
         <tr>
             <td width="160"><?php echo __('Ticket Notice'); ?>:</td>
             <td>
-            <input type="checkbox" name="alertuser" <?php echo (!$errors || $info['alertuser'])? 'checked="checked"': ''; ?>><?php
+            <input type="checkbox" name="alertuser" <?php //echo (!$errors || $info['alertuser'])? 'checked="checked"': ''; ?>><?php
                 echo __('Send alert to user.'); ?>
             </td>
         </tr>
