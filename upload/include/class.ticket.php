@@ -2969,7 +2969,42 @@ class Ticket {
         Con las siguientes lineas de código, se actualizan los campos de 
         Detalle de su Solicitud en las tablas descritas en la Sentencia SQL*/
         if (!in_array(strtolower($origin), array('web', 'staff'))){
-            foreach ($ticket as $key=>$value){$ticket_idAPI = $value;break;}
+            foreach ($ticket as $key=>$value){
+                if($key == "id") $ticket_idAPI = $value;
+                if($key == "last_message"){
+                    $last_message = $value;
+                    $datos    = explode("\n", $last_message);
+                    $nombre   = ucwords(strtolower(substr($datos[0], 20, strlen($datos[0])-21)));
+                    $correo   = strtolower(substr($datos[1], 20, strlen($datos[1])-21));
+                    $telefono = substr($datos[2], 22, strlen($datos[2])-23);
+                    $i        = 5;
+                    $mensaje  = "";
+                    while(strpos($datos[$i], "------------------------------------------------------") === false){
+                        $mensaje .= $datos[$i];
+                        $i++;
+                    }
+                    for($i=5;$i < (count($datos)-6);$i++){
+                        if(strpos($datos[$i], "TIPO DE PASAJE: ") > -1)
+                            $pasaje = substr($datos[$i], 28, strlen($datos[$i])-29);
+                        elseif(strpos($datos[$i], "CIUDAD DE ORIGEN: ") > -1)
+                            $origen = substr($datos[$i], 18, strlen($datos[$i])-19);
+                        elseif(strpos($datos[$i], "CIUDAD DE DESTINO: ") > -1)
+                            $destino = substr($datos[$i], 21, strlen($datos[$i])-22);
+                        elseif(strpos($datos[$i], "FECHA DE SALIDA: ") > -1)
+                            $salida = substr($datos[$i], 17, strlen($datos[$i])-18);
+                        elseif(strpos($datos[$i], "FECHA DE REGRESO: ") > -1)
+                            $regreso = substr($datos[$i], 20, strlen($datos[$i])-21);
+                        elseif(strpos($datos[$i], "CLASE: ") > -1)
+                            $clase = substr($datos[$i], 19, strlen($datos[$i])-20);
+                        elseif(strpos($datos[$i], "AEROL") > -1)
+                            $aerolinea = substr($datos[$i], 14, strlen($datos[$i])-15);
+                    }
+                    $adultos = substr($datos[count($datos)-5], 9, strlen($datos[count($datos)-5])-10);
+                    $mayores = substr($datos[count($datos)-4], 11, strlen($datos[count($datos)-4])-12);
+                    $ninos = substr($datos[count($datos)-3], 9, strlen($datos[count($datos)-3])-10);
+                    $bebes = substr($datos[count($datos)-2], 8, strlen($datos[count($datos)-2])-9);
+                } 
+            }
             $detail = '{"88":"Cotizacion PopPup"}';
             $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
             $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
@@ -2981,6 +3016,41 @@ class Ticket {
             if($rowUser <= 0)
                 $mysqli->query("UPDATE ost_user SET `org_id` = 30, `updated` = NOW() WHERE id = ".($user->getId())." LIMIT 1;");
 
+            $mysqli->query("INSERT INTO 
+                                `ost_cotizaciones` (
+                                    `ticket_id`, 
+                                    `nombre`, 
+                                    `correo`, 
+                                    `telefono`, 
+                                    `mensaje`, 
+                                    `tipo_vuelo`, 
+                                    `origen`, 
+                                    `destino`, 
+                                    `salida`, 
+                                    `regreso`, 
+                                    `clase`, 
+                                    `aerolinea`, 
+                                    `adultos`, 
+                                    `mayores`, 
+                                    `ninos`, 
+                                    `bebe`) 
+                                VALUES (
+                                    '$ticket_idAPI', 
+                                    '$nombre', 
+                                    '$correo', 
+                                    '$telefono', 
+                                    '$mensaje', 
+                                    '$pasaje', 
+                                    '$origen', 
+                                    '$destino', 
+                                    '$salida', 
+                                    '$regreso', 
+                                    '$clase', 
+                                    '$aerolinea', 
+                                    '$adultos', 
+                                    '$mayores', 
+                                    '$ninos', 
+                                    '$bebes');");
 
         }
         /* FIN */
