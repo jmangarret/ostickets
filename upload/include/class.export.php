@@ -57,6 +57,12 @@ class Export {
             $fields[$key] = $f;
             $select[] = "cdata.`$name` AS __field_".$f->get('id');
         }
+        
+        //Inicio 13/04/2016 Se agrego el campo tiempo a cdata para mostrarlo en el archivo junto con el tiempo de duracion del ticket
+        $cdata['tiempo'] = 'Tiempo de Respuesta';
+        $select[] = "'Tiempo de Respuesta' AS tiempo";
+        //Fin 13/04/2016 Se agrego el campo tiempo a cdata para mostrarlo en el archivo junto con el tiempo de duracion del ticket
+
         if ($select)
             $sql = str_replace(' FROM ', ',' . implode(',', $select) . ' FROM ', $sql);
         return self::dumpQuery($sql,
@@ -88,7 +94,23 @@ class Export {
                         $record[$i] = $f->export($f->to_php($record[$i]));
                     }
                 }
+
+                //Inicio 13/04/2016 Se llena la comlumna tiempo del archivo con la duracion de cada ticket
+                $fecha1 = new DateTime($record[1]);
+                if($_REQUEST["status"] == "open" || $_REQUEST["status"] == "assigned")
+                    $fecha2 = new DateTime(date("Y-m-d H:i:s"));
+                else
+                    $fecha2 = new DateTime($record[10]);
+                $fecha = $fecha1->diff($fecha2);
+
+                if($fecha->y > 0)      $record[$i+1] = $fecha->y."A ".$fecha->m."M ".$fecha->d."d ".$fecha->h."h ".$fecha->i."m ";
+                else if($fecha->m > 0) $record[$i+1] = $fecha->m."M ".$fecha->d."d ".$fecha->h."h ".$fecha->i."m ";
+                else if($fecha->d > 0) $record[$i+1] = $fecha->d."d ".$fecha->h."h ".$fecha->i."m ";
+                else if($fecha->h > 0) $record[$i+1] = $fecha->h."h ".$fecha->i."m ";
+                else if($fecha->i > 0) $record[$i+1] = $fecha->i."m ";
+                else $record[$i+1] = '0m';
                 return $record;
+                //Inicio 13/04/2016 Se llena la comlumna tiempo del archivo con la duracion de cada ticket
             })
             );
     }

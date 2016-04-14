@@ -1125,7 +1125,7 @@ duró abierto el ticket y lo renderiza en la tabla de tickets*/
 // }
 /*MICOD------------------------------------------------------------------------------------*/
 
-if(isset($row_time['closed']))
+if($_REQUEST["status"] == "closed")
     $query_timedif = "  SELECT created, closed FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
 else
     $query_timedif = "  SELECT created, NOW() FROM ost_ticket WHERE ticket_id = ".$row['ticket_id'];
