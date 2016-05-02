@@ -642,14 +642,14 @@ $organizacion = $result3->fetch_array();
 
 
 //Inicio Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
-/*$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
+$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
 $result4 = $mysqli->query($query4);
 $origendestino = $result4->fetch_array();
 
 $origen=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[0]));
 $destino=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[1]));
 
-$final= $origen[1]."- ".$destino[1]."<br>";*/
+$final= $origen[1]."- ".$destino[1]."<br>";
 
 //Fin Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
 
@@ -999,14 +999,14 @@ $organizacion = $result3->fetch_array();
 /*----------------------------------------------------------------*/
 
 //Inicio Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
-/*$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
+$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
 $result4 = $mysqli->query($query4);
 $origendestino = $result4->fetch_array();
 
 $origen=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[0]));
 $destino=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[1]));
 
-$final= $origen[1]."- ".$destino[1]."<br>";*/
+$final= $origen[1]."- ".$destino[1]."<br>";
 
 //Fin Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
 
