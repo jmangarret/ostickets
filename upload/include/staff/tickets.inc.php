@@ -640,6 +640,19 @@ $result3 = $mysqli->query($query3);
 $organizacion = $result3->fetch_array();
 /*----------------------------------------------------------------*/
 
+
+//Inicio Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
+/*$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
+$result4 = $mysqli->query($query4);
+$origendestino = $result4->fetch_array();
+
+$origen=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[0]));
+$destino=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[1]));
+
+$final= $origen[1]."- ".$destino[1]."<br>";*/
+
+//Fin Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
+
 ?>
                 <td title="<?php echo $row['email']; ?>" <?=$color_tr?>>
 
@@ -649,7 +662,15 @@ $organizacion = $result3->fetch_array();
                   <td align="center" <?=$color_tr?>><?php echo Format::db_datetime($row['effective_date']); ?></td>
                 <td <?=$color_tr?>>
                 <a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket a_<?=$row['ticket_id']?>" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
-                    href="#" onclick="iframe_a.location.reload();return false"><?php echo $subject; ?></a>
+                    href="#" onclick="iframe_a.location.reload();return false">
+                    <?php 
+                    if ($subject == "Cotizacion PopPup"){
+                        echo $subject."/".$final;
+                      } else {
+                        echo $subject;
+                    }
+                    ?>
+                    </a>
                      <?php
                         if ($threadcount>1)
                             echo "<small>($threadcount)</small>&nbsp;".'<i
@@ -977,6 +998,18 @@ $result3 = $mysqli->query($query3);
 $organizacion = $result3->fetch_array();
 /*----------------------------------------------------------------*/
 
+//Inicio Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
+/*$query4 = "SELECT origen,destino FROM ost_cotizaciones WHERE ticket_id = ". $row['ticket_id']."";
+$result4 = $mysqli->query($query4);
+$origendestino = $result4->fetch_array();
+
+$origen=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[0]));
+$destino=explode("(",str_replace(array(")", '"'), array("", ""),$origendestino[1]));
+
+$final= $origen[1]."- ".$destino[1]."<br>";*/
+
+//Fin Billy 29/04/2016 Query para seleccionar el origen y destino de las cotizaciones PopUp
+
 ?>
                 <td title="<?php echo $row['email']; ?>" <?=$color_tr?>>
                   <a style="<?=$color?>" class="Icon <?php echo strtolower($row['source']); ?>Ticket ticketPreview"
@@ -984,7 +1017,15 @@ $organizacion = $result3->fetch_array();
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $tid; ?></a></td>
                 <td align="center" <?=$color_tr?>><?php echo Format::db_datetime($row['effective_date']); ?></td>
                 <td <?=$color_tr?>><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
-                    href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
+                    href="tickets.php?id=<?php echo $row['ticket_id']; ?>">
+                    <?php 
+                    if ($subject == "Cotizacion PopPup"){
+                        echo $subject."/".$final;
+                      } else {
+                        echo $subject;
+                    }  
+                    ?>
+                    </a>
                      <?php
                         if ($threadcount>1)
                             echo "<small>($threadcount)</small>&nbsp;".'<i
