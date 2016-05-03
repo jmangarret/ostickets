@@ -33,7 +33,7 @@ if(OSTINSTALLED!=TRUE){
 define('SECRET_SALT','cfcds_cjH52Mgbx__ENHZNXuJIR4RmaD');
 
 #Default admin email. Used only on db connection issues and related alerts.
-define('ADMIN_EMAIL','lordbta@gmail.com');
+define('ADMIN_EMAIL','info@tuagencia24.com');
 
 # Database Options
 # ---------------------------------------------------
