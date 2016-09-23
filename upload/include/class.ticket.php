@@ -1010,9 +1010,73 @@ class Ticket {
             //Alert admin??
             if($cfg->alertAdminONNewTicket()) {
                 $alert = $this->replaceVars($msg, array('recipient' => 'Admin'));
-                $email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
+                //$email->sendAlert($cfg->getAdminEmail(), $alert['subj'], $alert['body'], null, $options);
                 $sentlist[]=$cfg->getAdminEmail();
             }
+
+            // Anthony 2016-01-15
+
+            $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+            $query_weekend = "SELECT value FROM `ost_config` WHERE `namespace` = 'core'AND `key` = 'weekend'";
+            $resul_weekend = $mysqli->query($query_weekend);
+            $filas_weekend = $resul_weekend->fetch_array();
+
+            if($filas_weekend[0] == 1){
+
+                $query_alert = "SELECT
+                                    `email` 
+                                FROM  
+                                    `ost_staff` 
+                                WHERE  
+                                    `weekend_alert` = '1'";
+                $resul_alert = $mysqli->query($query_alert);
+                while($row = $resul_alert->fetch_array()) $rows[] = $row;
+                foreach($rows as $row) $string = $string.$row[0].",";
+
+                // $query_weekend_core = " SELECT
+                //                             `value` 
+                //                         FROM  
+                //                             `ost_config` 
+                //                         WHERE  
+                //                             `namespace` =  'core'
+                //                             AND  `key` IN ( '1weekend_dia',  
+                //                                             '1weekend_hora',  
+                //                                             '1weekend_minutos',  
+                //                                             '1weekend_turno',  
+                //                                             '2weekend_dia',  
+                //                                             '2weekend_hora',  
+                //                                             '2weekend_minutos',  
+                //                                             '2weekend_turno')
+                //                         ORDER BY id";
+
+                // $resul_weekend_core = $mysqli->query($query_weekend_core);
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia1 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora1 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos1 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno1 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_dia2 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_hora2 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_minutos2 = $filas_weekend_core[0];
+                // $filas_weekend_core = $resul_weekend_core->fetch_array(); $weekend_turno2 = $filas_weekend_core[0];
+                
+                // if($weekend_turno1 == "pm") $weekend_hora1 += 12;
+                // if($weekend_turno2 == "pm") $weekend_hora2 += 12;
+
+                date_default_timezone_set('America/Caracas');
+
+                if( date("w") == 6 || date("w") == 0 ){
+                    // if(date("w") == $weekend_dia1 && date("H") >= $weekend_hora1)
+                    //     $email->sendAlert(substr($string,0,strlen($string)-1), "Notificacion Fin de Semana1", $alert['body'], null, $options);
+                    // elseif (date("w") == $weekend_dia2 && date("H") <= $weekend_hora2)
+                    //     $email->sendAlert(substr($string,0,strlen($string)-1), "Notificacion Fin de Semana2", $alert['body'], null, $options);
+                    // else
+                        $email->sendAlert(substr($string,0,strlen($string)-1), "Notificacion Fin de Semana", $alert['body'], null, $options);
+                }
+
+            }
+
+            // Anthony 2016-01-15
 
             //Only alerts dept members if the ticket is NOT assigned.
             if($cfg->alertDeptMembersONNewTicket() && !$this->isAssigned()) {
@@ -2001,8 +2065,10 @@ class Ticket {
                     $variables + array('recipient' => $this->getOwner()));
 
             $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
+            //var_dump($msg);
             $email->send($this->getOwner(), $msg['subj'], $msg['body'], $attachments,
                 $options);
+            
         }
 
         if($vars['emailcollab'])
@@ -2541,6 +2607,14 @@ class Ticket {
         if (!$form->isValid($field_filter('ticket')))
             $errors += $form->errors();
 
+        /*INICIO
+        Creado por Anthony Parisi
+        2016-02-01
+        Con las siguientes lineas de código, se crea el ticket mediante la API.*/
+        if (!in_array(strtolower($origin), array('web', 'staff')))
+            $errors = array();
+        /* FIN */
+
         if ($vars['uid'])
             $user = User::lookup($vars['uid']);
 
@@ -2889,6 +2963,98 @@ class Ticket {
         // Fire post-create signal (for extra email sending, searching)
         Signal::send('model.created', $ticket);
 
+        /*INICIO
+        Anthony Parisi
+        2016-02-05
+        Con las siguientes lineas de código, se actualizan los campos de 
+        Detalle de su Solicitud en las tablas descritas en la Sentencia SQL*/
+        if (!in_array(strtolower($origin), array('web', 'staff'))){
+            foreach ($ticket as $key=>$value){
+                if($key == "id") $ticket_idAPI = $value;
+                if($key == "last_message"){
+                    $last_message = $value;
+                    $datos    = explode("\n", $last_message);
+                    $nombre   = ucwords(strtolower(substr($datos[0], 20, strlen($datos[0])-21)));
+                    $correo   = strtolower(substr($datos[1], 20, strlen($datos[1])-21));
+                    $telefono = substr($datos[2], 22, strlen($datos[2])-23);
+                    $i        = 5;
+                    $mensaje  = "";
+                    while(strpos($datos[$i], "------------------------------------------------------") === false){
+                        $mensaje .= $datos[$i];
+                        $i++;
+                    }
+                    for($i=5;$i < (count($datos)-6);$i++){
+                        if(strpos($datos[$i], "TIPO DE PASAJE: ") > -1)
+                            $pasaje = substr($datos[$i], 28, strlen($datos[$i])-29);
+                        elseif(strpos($datos[$i], "CIUDAD DE ORIGEN: ") > -1)
+                            $origen = substr($datos[$i], 18, strlen($datos[$i])-19);
+                        elseif(strpos($datos[$i], "CIUDAD DE DESTINO: ") > -1)
+                            $destino = substr($datos[$i], 21, strlen($datos[$i])-22);
+                        elseif(strpos($datos[$i], "FECHA DE SALIDA: ") > -1)
+                            $salida = substr($datos[$i], 17, strlen($datos[$i])-18);
+                        elseif(strpos($datos[$i], "FECHA DE REGRESO: ") > -1)
+                            $regreso = substr($datos[$i], 20, strlen($datos[$i])-21);
+                        elseif(strpos($datos[$i], "CLASE: ") > -1)
+                            $clase = substr($datos[$i], 19, strlen($datos[$i])-20);
+                        elseif(strpos($datos[$i], "AEROL") > -1)
+                            $aerolinea = substr($datos[$i], 14, strlen($datos[$i])-15);
+                    }
+                    $adultos = substr($datos[count($datos)-5], 9, strlen($datos[count($datos)-5])-10);
+                    $mayores = substr($datos[count($datos)-4], 11, strlen($datos[count($datos)-4])-12);
+                    $ninos = substr($datos[count($datos)-3], 9, strlen($datos[count($datos)-3])-10);
+                    $bebes = substr($datos[count($datos)-2], 8, strlen($datos[count($datos)-2])-9);
+                } 
+            }
+            $detail = '{"88":"Cotizacion PopPup"}';
+            $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+            $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
+            $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='88', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='88';");
+
+            $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
+            $rowUser = mysqli_num_rows($sqlUser);
+
+            if($rowUser <= 0)
+                $mysqli->query("UPDATE ost_user SET `org_id` = 30, `updated` = NOW() WHERE id = ".($user->getId())." LIMIT 1;");
+
+            $mysqli->query("INSERT INTO 
+                                `ost_cotizaciones` (
+                                    `ticket_id`, 
+                                    `nombre`, 
+                                    `correo`, 
+                                    `telefono`, 
+                                    `mensaje`, 
+                                    `tipo_vuelo`, 
+                                    `origen`, 
+                                    `destino`, 
+                                    `salida`, 
+                                    `regreso`, 
+                                    `clase`, 
+                                    `aerolinea`, 
+                                    `adultos`, 
+                                    `mayores`, 
+                                    `ninos`, 
+                                    `bebe`) 
+                                VALUES (
+                                    '$ticket_idAPI', 
+                                    '$nombre', 
+                                    '$correo', 
+                                    '$telefono', 
+                                    '$mensaje', 
+                                    '$pasaje', 
+                                    '$origen', 
+                                    '$destino', 
+                                    '$salida', 
+                                    '$regreso', 
+                                    '$clase', 
+                                    '$aerolinea', 
+                                    '$adultos', 
+                                    '$mayores', 
+                                    '$ninos', 
+                                    '$bebes');");
+
+        }
+        /* FIN */
+
         /* Phew! ... time for tea (KETEPA) */
 
         return $ticket;
@@ -2900,7 +3066,7 @@ class Ticket {
 
         if(!$thisstaff || !$thisstaff->canCreateTickets()) return false;
 
-        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','other')))
+        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','whatapp el rosal','pop-up web','facebook','aol','other','instagram')))
             $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
 
         if (!$vars['uid']) {

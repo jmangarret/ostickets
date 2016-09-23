@@ -88,9 +88,9 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     }
 
     if(isset($_POST["ci"]))
-        $mysqli->query("UPDATE ost_staff SET ci = '".$_POST["ci"]."' WHERE staff_id = ".$_SESSION["_auth"]["staff"]["id"]);
+        $mysqli->query("UPDATE ost_staff SET ci = '".$_POST["ci"]."' WHERE staff_id = ".$info['id']);
 
-    $query = "SELECT ci FROM ost_staff WHERE staff_id = ".$_SESSION["_auth"]["staff"]["id"];
+    $query = "SELECT ci FROM ost_staff WHERE staff_id = '".$info['id']."'";
     $result = $mysqli->query($query);
     $row = $result->fetch_array();
     $ci = $row[0];
@@ -360,6 +360,29 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     &nbsp;<i class="help-tip icon-question-sign" href="#vacation_mode"></i>
             </td>
         </tr>
+        <!-- Anthony 2016-01-18-->
+        <?php
+
+            $query = " SELECT
+                            `weekend_alert` 
+                        FROM  
+                            `ost_staff` 
+                        WHERE  
+                            `staff_id` = '".$_GET["id"]."'";
+            $resul = $mysqli->query($query);
+            $filas = $resul->fetch_array(); 
+            $week  = $filas[0];
+        ?>
+        <tr>
+            <td width="180">
+                Notificaciones Fines de Semana:
+            </td>
+            <td>
+                <input type="checkbox" name="weekend" <?php echo ($week == 1) ? 'checked="checked"':''; ?>>
+                    Recibir notificaciones los fines de semana de nuevas solicitudes.
+            </td>
+        </tr>
+        <!-- Anthony 2016-01-18-->
         <?php
          //List team assignments.
          $sql='SELECT team.team_id, team.name, isenabled FROM '.TEAM_TABLE.' team  ORDER BY team.name';

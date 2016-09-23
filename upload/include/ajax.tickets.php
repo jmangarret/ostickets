@@ -135,6 +135,13 @@ class TicketsAjaxAPI extends AjaxController {
             $criteria['org_id'] = $req['orgId'];
         }
 
+     //Inicio Billy 17/02/2016 Agregamos el campo Status Localizador para añadirlo al Query
+        if ($req['statloc']){
+            $where.=' AND cdata.status_loc='.db_input($req['statloc']);
+            $criteria['status_loc'] = $req['statloc'];
+        }
+     //Fin Billy 17/02/2016 Agregamos el campo Status Localizador para añadirlo al Query
+
         //Help topic
         if($req['topicId']) {
             $where.=' AND ticket.topic_id='.db_input($req['topicId']);
@@ -171,7 +178,7 @@ class TicketsAjaxAPI extends AjaxController {
         if($req['assignee'] && strcasecmp($req['status'], 'closed'))  { # assigned-to
             $id=preg_replace("/[^0-9]/", "", $req['assignee']);
             $assignee = $req['assignee'];
-            $where.= ' AND ( ( status.state="open" ';
+            $where.= " AND ( ( status.state IN ('open','closed') ";
             if($assignee[0]=='t') {
                 $where.=' AND ticket.team_id='.db_input($id);
                 $criteria['team_id'] = $id;
@@ -239,9 +246,10 @@ class TicketsAjaxAPI extends AjaxController {
                 $cdata_search = true;
             }
         }
-        if ($cdata_search)
+        if ($cdata_search || $req['statloc']!="")
             $from .= 'LEFT JOIN '.TABLE_PREFIX.'ticket__cdata '
                     ." cdata ON (cdata.ticket_id = ticket.ticket_id)";
+
 
         //Query
         $joins = array();
@@ -274,12 +282,18 @@ function search() {
         $result = array();
 
         if (count($tickets)) {
+
+//Inicio Billy 30/03/2016 Validacion si esta definida la vista en la url y es igual a detalle o lista
+            if(isset($_SESSION['vista']) && $_SESSION['vista']==1) 
+                $vista='&vista=detalle';
+//Fin Billy 30/03/2016 Validacion si esta definida la vista en la url y es igual a detalle o lista
+
             $uid = md5($_SERVER['QUERY_STRING']);
             $_SESSION["adv_$uid"] = $tickets;
             $result['success'] = sprintf(__("Search criteria matched %s"),
                     sprintf(_N('%d ticket', '%d tickets', count($tickets)), count($tickets)
                 ))
-                . " - <a href='tickets.php?advsid=$uid'>".__('view')."</a>";
+                . " - <a href='tickets.php?advsid=$uid$vista'>".__('view')."</a>"; //Billy Redireccionamiento al mostrar el resultado de la busqueda avanzada
         } else {
             $result['fail']=__('No tickets found matching your search criteria.');
         }

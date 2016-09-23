@@ -101,6 +101,104 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $idx=>$form) {
 <?php } ?>
 </tr>
 </table>
+
+<?php
+
+    /*
+    /* Nombre: Anthony Parisi
+    /* Fecha: 11-11-2015
+    /* Descripción: Se agrega el siguiente código para visualizar los campos Límite de Crédito Total y Disponible de la Organización
+    /* 
+    /* INICIO
+    */
+
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = "BsF ".number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite2 = "BsF ".number_format($filas[0],2,",",".");
+
+
+    //Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $_SESSION["_auth"]["user"]["id"]." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+?>
+
+<div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
+    <table align="right">
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Total</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite;?>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <b>Disponible</b>:
+                
+            </td>
+            <td align="left">
+                BsF <?=$limite2;?>
+            </td>   
+        </tr>
+        <tr>
+            <td align="right">
+                <b>Actualizado al</b>:
+            </td>
+            <td align="left">
+                 <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
+            </td>   
+        </tr>
+    </table>
+</div>
+
+<?php
+    /*
+    /* FINAL
+    */
+?>
+
 <br>
 <div class="subject"><?php echo __('Subject'); ?>: <strong><?php echo Format::htmlchars($ticket->getSubject()); ?></strong></div>
 <div id="ticketThread">

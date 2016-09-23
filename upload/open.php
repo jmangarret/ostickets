@@ -18,6 +18,18 @@ define('SOURCE','Web'); //Ticket source.
 $ticket = null;
 $errors=array();
 if ($_POST) {
+
+    //Inicio Billy 29/01/2016 Cambiar a mayuscula el localizador para guardarlo en base de datos//
+    $contador=1;
+    foreach ($_POST as $key => $value) {
+        if($contador == 6) 
+            $_POST["$key"] = strtoupper($value);
+        if($contador == 11) 
+            $_POST["$key"] = strtoupper($value);
+        $contador++;
+    }
+    //Fin Billy 29/01/2016 Cambiar a mayuscula el localizador para guardarlo en base de datos//
+
     $vars = $_POST;
     $vars['deptId']=$vars['emailId']=0; //Just Making sure we don't accept crap...only topicId is expected.
     if ($thisclient) {

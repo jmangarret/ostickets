@@ -386,6 +386,20 @@ class ApiJsonDataParser extends JsonDataParser {
     function fixup($current) {
         if (!is_array($current))
             return $current;
+
+        /* INICIO
+        Anthony Parisi
+        */
+
+        foreach ($current as $key=>&$value) {
+            if ($key == "email")
+                $_SESSION["crmEmail"] = $value;
+            if ($key == "phone")
+                $_SESSION["crmPhone"] = $value;
+        }
+
+        /* FIN */
+        
         foreach ($current as $key=>&$value) {
             if ($key == "phone") {
                 $value = strtoupper($value);

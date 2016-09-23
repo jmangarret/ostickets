@@ -69,6 +69,37 @@ class OrgsAjaxAPI extends AjaxController {
     function updateOrg($id, $profile=false) {
         global $thisstaff;
 
+        include("../include/ost-config.php");
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+        /* check connection */
+        if (mysqli_connect_errno()) {
+            printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+        }
+
+        $i = 0;
+        foreach ($_POST as $key => $value) {
+            $i++;
+            if($i == 4) {
+                $_POST["$key"] = str_replace('.','',substr($value,0,strlen($value)-3)).substr($value,strlen($value)-3,strlen($value));
+                $_POST["$key"] = str_replace(',','.',$_POST["$key"]);
+                $total = $_POST["$key"];
+            }
+            if($i == 5) {
+                $_POST["$key"] = str_replace('.','',substr($value,0,strlen($value)-3)).substr($value,strlen($value)-3,strlen($value));
+                $_POST["$key"] = str_replace(',','.',$_POST["$key"]);
+                $disponible = $_POST["$key"];
+            }
+        }
+
+        /*INICIO
+        Anthony Parisi
+        2016-02-05
+        Se agrego la siguiente linea de código para combiar la zona horaria al momento de guardar la información a la Base de Datos.*/
+        date_default_timezone_set('America/Caracas');
+        /* FIN */
+        $mysqli->query("INSERT INTO ost_auditoria_limite_credito VALUES (NULL, '".$_SESSION["_auth"]["staff"]["id"]."', '$id', '$total', '$disponible','".date("Y-m-d H:i:s")."');");
+
         if(!$thisstaff)
             Http::response(403, 'Login Required');
         elseif(!($org = Organization::lookup($id)))

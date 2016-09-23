@@ -22,6 +22,7 @@ $sla   = $ticket->getSLA();
 $lock  = $ticket->getLock();  //Ticket lock obj
 $id    = $ticket->getId();    //Ticket ID.
 
+
 //Useful warnings and errors the user might want to know!
 if ($ticket->isClosed() && !$ticket->isReopenable())
     $warn = sprintf(
@@ -364,7 +365,10 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     echo $a->getField()->get('label');
                     ?>:</th>
                     <td><?php
-    echo $v;
+    if ($a->getField()->get('label') == "Localizador")
+        echo strtoupper($v);
+    else
+        echo $v;
                     ?></td>
                 </tr>
                 <?php } ?>
@@ -375,8 +379,111 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $idx++;
     } ?>
 </table>
+
+<?php
+
+    /*
+    /* Nombre: Anthony Parisi
+    /* Fecha: 11-11-2015
+    /* Descripción: Se agrega el siguiente código para visualizar los campos Límite de Crédito Total y Disponible de la Organización
+    /* 
+    /* INICIO
+    */
+
+    include("../ost-config.php");
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite2 = number_format($filas[0],2,",",".");
+
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $user->getId()." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+
+?>
+
+<div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
+    <table align="right">
+        <tr>
+            <td align="right">
+                <b>L&iacute;mite de Cr&eacute;dito Total</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite;?>
+            </td>   
+        </tr>
+        <tr>
+            <td align="right">
+                <b>Disponible</b>:
+            </td>
+            <td align="left">
+                BsF <?=$limite2;?>
+            </td>   
+        </tr>
+        <tr>
+            <td align="right">
+                <b>Actualizado al</b>:
+            </td>
+            <td align="left">
+                 <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
+            </td>   
+        </tr>
+    </table>
+</div>
+
+<?php
+    /*
+    /* FINAL
+    */
+?>
+
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
+    <big><big><?php echo Format::htmlchars($ticket->getSubject()); ?></big></big>
+</div>
+
 <div class="clear"></div>
-<h2 style="padding:10px 0 5px 0; font-size:11pt;"><?php echo Format::htmlchars($ticket->getSubject()); ?></h2>
+<h2 style="padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:yellow;"><big><big><?php echo Format::htmlchars($ticket->getSubject()); ?></big></big></h2>
 <?php
 $tcount = $ticket->getThreadCount();
 $tcount+= $ticket->getNumNotes();
@@ -651,15 +758,15 @@ print $response_form->getField('attachments')->render();
 
     $query = "  SELECT c.entry_id
                 FROM ost_ticket a, ost_form_entry b, ost_form_entry_values c
-                WHERE a.ticket_id = ".$_REQUEST["id"]."
+                WHERE a.ticket_id = '".$_REQUEST["id"]."'
                 AND a.ticket_id = b.object_id
                 AND b.id = c.entry_id
-                AND c.field_id =86";
+                AND c.field_id ='86'";
     $result = $mysqli->query($query);
     $row = $result->fetch_array();
     $obj = $row[0];
 
-    $query2 = "SELECT value FROM  `ost_form_entry_values` WHERE entry_id = $obj AND field_id =86";
+    $query2 = "SELECT value FROM  `ost_form_entry_values` WHERE entry_id = '$obj' AND field_id ='86'";
     $result2 = $mysqli->query($query2);
     $row2 = $result2->fetch_array();
     $loc = $row2[0];
@@ -1119,4 +1226,10 @@ $(function() {
 }();
 <?php } ?>
 });
+
+//Inicio Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
+$("#container").css("width","960px"); 
+//Fin Billy 26/01/2016 Script para mantener el tamaño del container del administrador///////
+
+
 </script>

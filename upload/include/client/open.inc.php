@@ -113,7 +113,7 @@ foreach ($_POST as $key => $value) {
   </table>
 <hr/>
   <p style="text-align:center;">
-        <input type="submit" value="<?php echo __('Create Ticket');?>" id="create">
+        <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
         <input type="reset" name="reset" value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick="javascript:
             $('.richtext').each(function() {
@@ -125,7 +125,117 @@ foreach ($_POST as $key => $value) {
   </p>
 </form>
 
+<?php
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = "BsF ".number_format($filas[0],2,",",".");
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_SESSION["_auth"]["user"]["id"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limiteDisponible = $filas[0];
+
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $_SESSION["_auth"]["user"]["id"]." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
+
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+
+
+    if($limiteDisponible <= 0){
+
+        $limite2 = "<font color='FF0000'>BsF ".number_format($filas[0],2,",",".")."<br>Saldo deudor pendiente. </font>";
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+        ?>
+
+        <script>
+            //$("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+            $("#ticketForm p").prepend("<big><font color='FF0000'><b>Tiene pendiente un saldo deudor.<br>No puede emitir localizador.</b></font></big><br><br><div id='btn_create'></div>");
+            $("#create").fadeOut("fast");
+
+            //Billy 10/02/2016 Ahora se toma solo en cuenta si es emitir localizador u otra opcion para crear tickets
+            //$("select:eq(0)").change(function(){
+            //     if($("select:eq(0)").val() != 19){
+            //         $("#create").fadeIn('slow');
+            //     }
+            //     else{
+            //         $("#create").fadeOut("fast");
+            //     }
+            // });
+
+            //Inicio Billy 10/02/2016 Si el select de detalle su solicitud es igual a emitir  localizador el boton de crear tickets se oculta si no es emitir localizador aparece
+            $("select:eq(1)").change(function(){
+                if($("select:eq(1)").val() != 19){
+                    $("#create").fadeIn('slow');
+                }
+                else{
+                    $("#create").fadeOut("fast");
+                }
+            });
+            //Fin Billy 10/02/2016 Si el select de detalle su solicitud es igual a emitir  localizador el boton de crear tickets se oculta si no es emitir localizador aparece
+
+        </script>
+
+        <?php
+    }
+    else{
+
+        $limite2 = "BsF ".number_format($filas[0],2,",",".");
+        
+        ?>
+
+        <!--<script>
+            $("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
+        </script>-->
+
+        <?php
+    }
+?>
+
 <script type="text/javascript">
+
+    $("#fm tr:eq(11) td:eq(0) div:eq(0)").css("display","block"); //10/02/2016 Billy se sumo 1 al tr
+    $("#fm tr:eq(11) td:eq(0) div:eq(0)").prepend(  //10/02/2016 Billy se sumo 1 al tr
+        "<div style='text-align:right;display:block;'>"+
+            "L&iacute;mite de Cr&eacute;dito Total: <b><?=$limite?></b>"+
+            "<br>"+
+            "Disponible: <b><?=$limite2?></b><br>"+
+            "Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?>"+ //se agregro la ultima fecha de actualizacion del monto disponible
+        "</div>");
     
     $('input:eq(2)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z0-9]+$");
@@ -135,14 +245,40 @@ foreach ($_POST as $key => $value) {
         e.preventDefault();
         return false;
     });
-    $('input:eq(3),input:eq(6),input:eq(7)').keypress(function (e) {
-        var regex = new RegExp("^[0-9.]+$");
+
+/*Inicio Billy 29/01/2016 Validacion de campo numerico en numero de tarjeta de credito y en cedula*/   
+    $('input:eq(3),input:eq(6)').keypress(function (e) {
+        var regex = new RegExp("^[0-9]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
         if (regex.test(str))
             return true;
         e.preventDefault();
         return false;
     });
+
+/*Fin Billy 29/01/2016 Validacion de campo numerico en numero de tarjeta de credito y en cedula*/
+
+
+/*Inicio Billy 29/01/2016 Funcion dar formato de moneda al input del monto de la tarjeta de credito y valida que no sean letras*/
+    jQuery(function($) {
+        $("input:eq(7)").autoNumeric({aSep: '.', aDec: ','});
+    });
+/*Fin Billy 29/01/2016 Funcion dar formato de moneda al input del monto de la tarjeta de credito y valida que no sean letras*/
+
+
+/*Inicio Billy 29/01/2016 Validacion de campo numerico y / en la fecha de vencimiento de la tarjeta de credito*/    
+            $('input:eq(4)').keypress(function (e) {
+        var regex = new RegExp("^[0-9/]+$");
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str))
+            return true;
+        e.preventDefault();
+        return false;   
+    });
+/*Fin Billy 29/01/2016 Validacion de campo numerico y / en la fecha de vencimiento de la tarjeta de credito*/ 
+
+
+/*Inicio Billy 5/02/2016 Validacion de campo caracter en banco y nombre*/
     $('input:eq(5)').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z ]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -152,7 +288,9 @@ foreach ($_POST as $key => $value) {
         return false;
     });
 
-    $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10),tr:eq(12)").hide(0);
+/*Fin Billy 5/02/2016 Validacion de campo caracter en banco y nombre*/
+
+    $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10),tr:eq(11),tr:eq(13)").hide(0); //Billy 5/02/2016 Agregamos que el campo monto y status localizador se encuentre no visible al cargar el formulario
     $("input:eq(2),input:eq(5)").css("text-transform","uppercase");
     $("select:eq(1)").empty();
     $("select:eq(1)").append('<option value="">— Select —</option>');
@@ -163,6 +301,20 @@ foreach ($_POST as $key => $value) {
 
     $("input:eq(2)").attr("pattern","[A-Za-z0-9]{6}");
     $("input:eq(2)").attr("title","6 digitos alfanumericos");
+
+/*Inicio Billy 29/01/2016 Titulo al input de nº tarjeta de credito, fecha de vencimiento, cedula y monto tarjeta de credito*/
+    $("input:eq(3)").attr("title","Sólo 16 digitos numéricos");
+    $("input:eq(4)").attr("title","Ejemplo 01/16");
+    $("input:eq(6)").attr("title","Sólo 8 digitos numéricos");
+    $("input:eq(7)").attr("title","Sólo números y para agregar decimales utilice (,)");
+/*Fin Billy 29/01/2016 Titulo al input de nº tarjeta de credito, fecha de vencimiento, cedula y monto tarjeta de credito*/
+
+
+/*Inicio Billy 29/01/2016 Validacion de maxima longitud al input de nº tarjeta de credito, fecha de vencimiento y cedula*/
+    $("input:eq(3)").attr("maxlength","16"); 
+    $("input:eq(4)").attr("maxlength","5");
+    $("input:eq(6)").attr("maxlength","8");
+/*Fin Billy 29/01/2016 Validacion de maxima longitud al input de nº tarjeta de credito, fecha de vencimiento y cedula*/
 
 
     //Help Topic
@@ -177,9 +329,17 @@ foreach ($_POST as $key => $value) {
             }
         });
         if($("select:eq(0)").val() == 19){
-            $("tr:eq(3)").show("slow");
+            //$("tr:eq(3)").show("slow");
             $("select:eq(2)").prop('required',true);
             $("input:eq(9)").val("Pendiente");
+        }
+        else if($("select:eq(0)").val() == 20){
+            $("tr:eq(3),tr:eq(4),tr:eq(5),tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
+            $("input:eq(9),input:eq(7),input:eq(6),input:eq(5),input:eq(4),input:eq(3),input:eq(2)").val("");
+            $("input").removeAttr('required');
+            $("#codigo").remove();
+            $("select:eq(2)").val("");
+            $("select:eq(2)").removeAttr('required');
         }
         else{
             $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
@@ -190,13 +350,15 @@ foreach ($_POST as $key => $value) {
             $("select:eq(2)").removeAttr('required');
             $("select:eq(2)").val("");
         }
+
     });
 
     $("select:eq(1)").change(function(){
         if(($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23) || ($("select:eq(0)").val() == 21 && $("select:eq(1)").val() == 33)){
             if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
-                $("tr:eq(11)").show("slow");
+                //$("tr:eq(10)").show("slow"); ////////////Billy 5/02/2016 se quito el input de la cedula para que no aparezca cuando el tipo de solicitud sea emitir localizador
                 $("input:eq(2)").prop('required',true);
+                $("tr:eq(3)").show("slow");
             }
             else{
                 $("input:eq(2)").removeAttr('required');
@@ -219,27 +381,44 @@ foreach ($_POST as $key => $value) {
             $("select:eq(3)").removeAttr('required');
             $("select:eq(3)").val("");
         }
+        if($("select:eq(1)").val() == 31){
+            $("input:eq(2)").removeAttr('required');
+            $("select:eq(2)").removeAttr('required');
+            $("tr:eq(3)").hide(0);
+            $("tr:eq(4)").hide(0);
+        }
+         else{
+            $("input:eq(2)").prop('required',true);
+            $("select:eq(2)").prop('required',true);
+        }
+        if($("select:eq(0)").val() != 19){
+            $("input:eq(2)").removeAttr('required');
+            $("select:eq(2)").removeAttr('required');
+        }
     });
 
     $('select:eq(3)').change(function(){
         if( $('select:eq(3)').val() == 14 || $('select:eq(3)').val() == 50){
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
-            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
+            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").show("slow");
             $("td:eq(10)").append("<small id='codigo' style='display:none;'>Para c&oacute;digo de seguridad de TDC y autorizaci&oacute;n, contactar por tel&eacute;fono.</small>");
+            $("td:eq(16)").append("<small id='codigo1' style='display:none;'>Ejemplo 01/16</small>"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
             $("#codigo").show("slow");
+            $("#codigo1").show("slow"); /*Billy 29/01/2016 Ejemplo de como se debe llenar la fecha de vencimiento de la tarjeta de credito*/
         }
         else{
-            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
+            $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9),tr:eq(10)").hide("slow");
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").val("");
             $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").removeAttr('required');
             $("#codigo").remove();
         }
         if( $('select:eq(3)').val() == 50){
             $("input:eq(7)").prop('required',true);
-            $("tr:eq(10)").show("slow");
+            $("tr:eq(11)").show("slow"); //Billy 5/02/2016 Agrego el campo de monto si la opcion es tdc + cash
+            
         }
         else{
-            $("tr:eq(10)").hide("slow");
+            $("tr:eq(11)").hide("slow"); ////Billy 5/02/2016 quito el campo de monto si la opcion es tdc
             $("input:eq(7)").val("");
             $("input:eq(7)").removeAttr('required');
         }
@@ -256,49 +435,37 @@ foreach ($_POST as $key => $value) {
         }
     });
 
-    // if($("select:eq(0)").val() == 19){
-    //     $("tr:eq(4)").show("slow");
-    //     $("select:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(4)").hide("slow");
-    //     $("select:eq(2)").removeAttr('required');
-    //     $("select:eq(2)").val("");
-    // }        
-    // if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
-    //     $("tr:eq(3)").show("slow");
-    //     $("input:eq(2)").prop('required',true);
-    // }
-    // else{
-    //     $("tr:eq(3)").hide("slow");
-    //     $("input:eq(2)").removeAttr('required');
-    //     $("input:eq(2)").val("");
-    // }
-    // if($("select:eq(1)").val() == 19 || $("select:eq(1)").val() == 26){
-    //     $("tr:eq(5)").show("slow");
-    //     $("select:eq(3)").prop('required',true);
-    // }
-    //  else{
-    //     $("tr:eq(5)").hide("slow");
-    //     $("select:eq(3)").removeAttr('required');
-    //     $("select:eq(3)").val("");
-    // }
-    // if($('select:eq(3)').val() == 14){
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").prop('required',true);
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").show("slow");
-    //     $("td:eq(10)").append("<small>Para c&oacute;digo de seguridad de TDC, proporcionarlo por tel&eacute;fono.</small>");
-    // }
-    // else{
-    //     $("tr:eq(6),tr:eq(7),tr:eq(8),tr:eq(9)").hide("slow");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").val("");
-    //     $("input:eq(6),input:eq(5),input:eq(4),input:eq(3)").removeAttr('required');
-    // }
-
-    $("#create").click(function(){
-        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(8).text() == ""){
-            $("div").eq(8).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
+    $("tr:eq(4) td:eq(1)").append("<div id='repeat' style='display:none;color:#F00;'><big><br>El ticket no puede ser creado. Localizador duplicado. Contacte a su asesor.<br><br></big></div>");
+    $('input:eq(2),select:eq(0),select:eq(1),select:eq(2)').change(function(){
+        if($('select:eq(0)').val() == 19 && $('select:eq(1)').val() == 19 && $('input:eq(2)').val() != "" && parseFloat("<?=$limiteDisponible;?>") > 0){
+            $.ajax({
+                data: { menu : "localizador", localizador : $('input:eq(2)').val(), gds : $('select:eq(2)').val() },
+                type: "POST",
+                url: 'include/client/ajax_login.php',
+                success: function(response){
+                    if(response == 1){
+                        $("#repeat").show("slow");
+                        $("#create").hide();
+                    }
+                    else{
+                        $("#repeat").hide();
+                        $("#create").show();
+                    }
+                }
+            });
+        }
+        else{
+            $("#repeat").hide();
         }
     });
+
+    $("#create").click(function(){
+        if($("select:eq(0)").val() != "" && $("select:eq(1)").val() != "" && $("div").eq(10).text() == ""){
+            $("div").eq(10).prepend("<b>"+$('select:eq(0) :selected').text()+" - "+$('select:eq(1) :selected').text()+"</b><br><br>");
+        }
+    });
+
+    $("input:eq(2)").attr("pattern","[A-Za-z0-9]{6}");
         
 </script>
 
@@ -383,3 +550,7 @@ $result->close();
 $mysqli->close();
 
 ?>
+
+<!--Inicio Billy 29/01/2016-->
+<script type="text/javascript" src="/upload/js/autoNumeric.js"></script>
+<!--Fin Billy 29/01/2016-->

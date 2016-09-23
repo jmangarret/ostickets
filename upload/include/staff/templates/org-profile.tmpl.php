@@ -22,7 +22,7 @@ if ($info['error']) {
         ><i class="icon-fixed-width icon-cogs faded"></i>&nbsp;<?php
         echo __('Settings'); ?></a></li>
 </ul>
-<form method="post" class="org" action="<?php echo $action; ?>">
+<form id="org_informacion" method="post" class="org" action="<?php echo $action; ?>" onsubmit="return false">
 
 <div class="tab_content" id="tab-profile" style="margin:5px;">
 <?php
@@ -39,6 +39,145 @@ if ($ticket && $ticket->getOwnerId() == $user->getId())
     ?>
     </table>
 </div>
+
+<?php
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+$limit="select date from ost_auditoria_limite_credito where org_id=". $org->getId()." ORDER BY date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion
+
+$limit2 = $mysqli->query($limit);
+$row = $limit2->fetch_array();
+
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+?>
+
+<script>
+
+    // function formatoNumero(numero, decimales, separadorDecimal, separadorMiles) {
+    //     var partes, array;
+    //     if ( !isFinite(numero) || isNaN(numero = parseFloat(numero)) ) {
+    //         return "";
+    //     }
+    //     if (typeof separadorDecimal==="undefined") {
+    //         separadorDecimal = ",";
+    //     }
+    //     if (typeof separadorMiles==="undefined") {
+    //         separadorMiles = "";
+    //     }
+    //     // Redondeamos
+    //     if ( !isNaN(parseInt(decimales)) ) {
+    //         if (decimales >= 0) {
+    //             numero = numero.toFixed(decimales);
+    //         } else {
+    //             numero = (
+    //                 Math.round(numero / Math.pow(10, Math.abs(decimales))) * Math.pow(10, Math.abs(decimales))
+    //             ).toFixed();
+    //         }
+    //     } else {
+    //         numero = numero.toString();
+    //     }
+    //     // Damos formato
+    //     partes = numero.split(".", 2);
+    //     array = partes[0].split("");
+    //     for (var i=array.length-3; i>0 && array[i-1]!=="-"; i-=3) {
+    //         array.splice(i, 0, separadorMiles);
+    //     }
+    //     numero = array.join("");
+    //     if (partes.length>1) {
+    //         numero += separadorDecimal + partes[1];
+    //     }
+    //     return numero;
+    // }
+
+    // $(function(){
+
+
+    //     alert(formatoNumero("-123456.78","2",".",",")) ;
+    // });
+
+    // $("#org_informacion input:eq(3)").change(function(){
+    //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),"2",".",","));
+    // });
+
+    // $("#org_informacion input:eq(3)").focusin(function() { $("#org_informacion input:eq(3)").val("") });
+
+    jQuery(function($) {
+        // $("#org_informacion input:eq(3)").replace(".",",");
+        // $("#org_informacion input:eq(4)").replace(".",",");
+        $("#org_informacion input:eq(3)").autoNumeric({aSep: '.', aDec: ','});
+        $("#org_informacion input:eq(4)").autoNumeric({aSep: '.', aDec: ','});
+    });
+
+    $("#org_informacion input:eq(3)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
+    $("#org_informacion tr:eq(4) td:eq(1)").append("<small>Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>");
+    $("#org_informacion input:eq(4)").attr("title","Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12");
+    $("#org_informacion tr:eq(5) td:eq(1)").append("<small>Actualizado al <?=date("d-m-Y h:i:s a",strtotime($row['date']))?><br> Solo números y separador de decimales por punto. Hasta 2 decimales. Ej: 1234.12</small>"); //Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible
+
+    // $("#org_informacion input:eq(3),#org_informacion input:eq(4)").keydown(function(event) {
+    //     if(event.shiftKey){
+    //         event.preventDefault();
+    //     }
+    //     if (event.keyCode == 46 || event.keyCode == 8)    {}
+    //     else {
+    //         if (event.keyCode < 95) {
+    //             if (event.keyCode < 48 || event.keyCode > 57) {
+    //                 event.preventDefault();
+    //             }
+    //         } 
+    //         else {
+    //             if (event.keyCode != 190 && event.keyCode != 189) {
+    //                 event.preventDefault();
+    //             }
+    //         }
+    //     }
+    // });
+
+    // $("#org_informacion").change(function(){
+    //     $("#org_informacion input:eq(3)").val(formatoNumero($("#org_informacion input:eq(3)").val(),2,",","."));
+    // });
+/*
+    var num = "123,456.78";
+
+    var negativo = 0;
+
+    if(num.indexOf('-'))
+        negativo = 1;
+
+    var res = num.replace(",","").replace("-","").split(".");
+
+    alert(res[0]);
+
+    for (var i = res[0].length - 1; i >= 0; i--) {
+        
+    };
+
+    
+
+    function formatoBsF(data){
+        for (var i = data.length - 1; i >= 0; i--) {
+            data[i]
+        };
+    }
+
+    jQuery(function($) {
+        $("#org_informacion input:eq(3)").autoNumeric( 'init' );
+        $("#org_informacion input:eq(4)").autoNumeric( 'init' );
+    });
+
+    $("#org_informacion input:eq(3)").focusout(function(){
+        $("#org_informacion input:eq(3)").val($("#org_informacion input:eq(3)").autoNumeric('get'));
+    });
+    $("#org_informacion input:eq(4)").focusout(function(){
+        $("#org_informacion input:eq(4)").val($("#org_informacion input:eq(4)").autoNumeric('get'));
+    });
+
+    */
+
+</script>
 
 <div class="tab_content" id="contact-settings" style="display:none;margin:5px;">
     <table style="width:100%">
@@ -173,3 +312,6 @@ $(function() {
     $("#primary_contacts").multiselect({'noneSelectedText':'<?php echo __('Select Contacts'); ?>'});
 });
 </script>
+
+
+

@@ -23,14 +23,21 @@ require_once(INCLUDE_DIR.'class.json.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 require_once(INCLUDE_DIR.'class.export.php');       // For paper sizes
 
-if(isset($_POST["estado_localizador"])){
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
+/*INICIO
+Anthony Parisi
+2016-03-28*/
+require_once(INCLUDE_DIR.'PHPMailer/PHPMailerAutoload.php');       // Necesario para cambiar remitente 
+/*FIN*/
+
+$mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
 
     /* check connection */
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
     }
+
+if(isset($_POST["estado_localizador"])){
 
     $query = "  SELECT c.entry_id
                 FROM ost_ticket a, ost_form_entry b, ost_form_entry_values c
@@ -88,6 +95,51 @@ if($_POST && !$errors):
         $lock=$ticket->getLock(); //Ticket lock if any
         switch(strtolower($_POST['a'])):
         case 'reply':
+
+            /*INICIO
+            Anthony Parisi
+            2016-03-28*/
+
+            $query = "  SELECT user.org_id, user.name, email.address, CONCAT( staff.firstname,  ' ', staff.lastname ) , staff.email
+                        FROM ost_user user
+                        INNER JOIN ost_ticket ticket ON ( ticket.user_id = user.id ) 
+                        INNER JOIN ost_user_email email ON ( email.user_id = ticket.user_id ) 
+                        INNER JOIN ost_staff staff ON ( staff.staff_id = ticket.staff_id ) 
+                        WHERE ticket.ticket_id = '".$_REQUEST["id"]."'
+                        LIMIT 1";
+            $result = $mysqli->query($query);
+            $row = $result->fetch_array();
+
+            if($row[0] == "30"){
+
+                $_POST["emailreply"] = 0;
+
+                $mail = new PHPMailer;
+
+                $mail->isSMTP();                                      // Set mailer to use SMTP
+                $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+                $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                $mail->Username = 'info@tuagencia24.com';                 // SMTP username
+                $mail->Password = 'AUDEtuagencia24';                           // SMTP password
+                $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                $mail->Port = 587;                                    // TCP port to connect to
+
+                $mail->addReplyTo($row[4], $row[3]);
+                $mail->setFrom('info@tuagencia24.com', 'Tuagencia24');
+                $mail->addAddress($row[2], $row[1]);               // Name is optional
+
+                $mail->isHTML(true);                                  // Set email format to HTML
+
+                $mail->Subject = "Cotizacion";
+                $mail->Body    = $_POST["response"];
+                $mail->AltBody = $_POST["response"];
+
+                $mail->send();
+
+            }
+
+            /*FIN*/
+
             if(!$thisstaff->canPostReply())
                 $errors['err'] = __('Action denied. Contact admin for access');
             else {
@@ -410,6 +462,16 @@ $nav->setTabActive('tickets');
 $open_name = _P('queue-name',
     /* This is the name of the open ticket queue */
     'Open');
+
+//Inicio Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets abiertos en ella de lo contrario lo haga en la vista lista//
+if ($_REQUEST['vista']=='detalle'){
+$nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
+                            'title'=>__('Open Tickets'),
+                            'href'=>'tickets.php?vista=detalle&status=open',
+                            'iconclass'=>'Ticket'),
+                        (!$_REQUEST['status'] || $_REQUEST['status']=='open'));
+
+} else {
 if($cfg->showAnsweredTickets()) {
     $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
                             'title'=>__('Open Tickets'),
@@ -435,8 +497,20 @@ if($cfg->showAnsweredTickets()) {
                             ($_REQUEST['status']=='answered'));
     }
 }
+}
+//Fin Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets abiertos en ella de lo contrario lo haga en la vista lista//
 
-if($stats['assigned']) {
+
+//Inicio Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
+if($stats['assigned'] && $_REQUEST['vista']=='detalle') {
+
+    $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
+                           'title'=>__('Assigned Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=assigned',
+                           'iconclass'=>'assignedTickets'),
+                        ($_REQUEST['status']=='assigned'));
+} else {
 
     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
                            'title'=>__('Assigned Tickets'),
@@ -445,8 +519,23 @@ if($stats['assigned']) {
                         ($_REQUEST['status']=='assigned'));
 }
 
-if($stats['overdue']) {
+//Fin Billy 1/04/2016 Se agrego si esta definida la vista detalle muestre mis tickets en ella de lo contrario lo haga en la vista lista//
+
+
+//Inicio Billy 29/03/2016 Se agrego si esta definida la vista detalle muestre los tickets vencidos en ella de lo contrario lo haga en la vista lista//
+if($stats['overdue'] && $_REQUEST['vista']=='detalle') {
     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
+                           'title'=>__('Stale Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=overdue',
+                           'iconclass'=>'overdueTickets'),
+                        ($_REQUEST['status']=='overdue'));
+
+    if(!$sysnotice && $stats['overdue']>10)
+        $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
+
+} else {
+
+$nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
                            'title'=>__('Stale Tickets'),
                            'href'=>'tickets.php?status=overdue',
                            'iconclass'=>'overdueTickets'),
@@ -454,7 +543,19 @@ if($stats['overdue']) {
 
     if(!$sysnotice && $stats['overdue']>10)
         $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
+
 }
+//Fin Billy 29/03/2016 Se agrego si esta definida la vista detalle muestre los tickets vencidos en ella de lo contrario lo haga en la vista lista//
+
+
+//Inicio Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets cerrados en ella de lo contrario lo haga en la vista lista//
+if ($_REQUEST['vista']=='detalle'){
+    $nav->addSubMenu(array('desc' => __('Closed').' ('.number_format($stats['closed']).')',
+                           'title'=>__('Closed Tickets'),
+                           'href'=>'tickets.php?vista=detalle&status=closed',
+                           'iconclass'=>'closedTickets'),
+                        ($_REQUEST['status']=='closed'));
+} else {
 
 if($thisstaff->showAssignedOnly() && $stats['closed']) {
     $nav->addSubMenu(array('desc'=>__('My Closed Tickets').' ('.number_format($stats['closed']).')',
@@ -470,6 +571,8 @@ if($thisstaff->showAssignedOnly() && $stats['closed']) {
                            'iconclass'=>'closedTickets'),
                         ($_REQUEST['status']=='closed'));
 }
+}
+//Fin Billy 30/03/2016 Se agrego si esta definida la vista detalle muestre los tickets cerrados en ella de lo contrario lo haga en la vista lista//
 
 if($thisstaff->canCreateTickets()) {
     $nav->addSubMenu(array('desc'=>__('New Ticket'),
@@ -498,7 +601,7 @@ if($ticket) {
     } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
         $errors['err'] = __('Internal error: Unable to export the ticket to PDF for print.');
 } else {
-	$inc = 'tickets.inc.php';
+    $inc = 'tickets.inc.php';
     if($_REQUEST['a']=='open' && $thisstaff->canCreateTickets())
         $inc = 'ticket-open.inc.php';
     elseif($_REQUEST['a'] == 'export') {

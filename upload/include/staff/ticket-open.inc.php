@@ -99,12 +99,104 @@ if ($_POST)
         <tr>
             <td width="160"><?php echo __('Ticket Notice'); ?>:</td>
             <td>
-            <input type="checkbox" name="alertuser" <?php echo (!$errors || $info['alertuser'])? 'checked="checked"': ''; ?>><?php
+            <input type="checkbox" name="alertuser" <?php //echo (!$errors || $info['alertuser'])? 'checked="checked"': ''; ?>><?php
                 echo __('Send alert to user.'); ?>
             </td>
         </tr>
         <?php
         } ?>
+        <tr>    
+            <td>
+                L&iacute;mite de Cr&eacute;dito Total:
+            </td>
+            <td>
+<?php
+
+if(isset($_REQUEST["uid"])){
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 90
+                    AND c.id = ".$_REQUEST["uid"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+    echo "BsF ".number_format($limite,2,",",".");
+}
+
+?>
+            </td>
+        </tr>
+        <tr>    
+            <td>
+                Disponible:
+            </td>
+            <td>
+<?php
+
+if(isset($_REQUEST["uid"])){
+    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+    $limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=".$_REQUEST['uid'] ." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion
+
+    $limit2 = $mysqli->query($limit);
+    $row = $limit2->fetch_array();
+
+//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
+
+    /* check connection */
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 91
+                    AND c.id = ".$_REQUEST["uid"];
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $limite = $filas[0];
+    
+//Inicio Billy 12/02/2016 Validacion si el saldo disponible es menor a 0 muestre el saldo en rojo
+    if($limite <= 0){
+
+        echo "BsF <font color='FF0000'><b>".number_format($filas[0],2,",",".")." Saldo deudor pendiente. </b></font> Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
+    }else{
+        echo "BsF ".number_format($limite,2,",",".") ." Actualizado al " .date("d-m-Y h:i:s a",strtotime($row['date']));
+    }
+
+//Fin Billy 12/02/2016 Validacion si el saldo disponible es menor a 0 muestre el saldo en rojo
+
+}
+
+?>
+            </td>
+        </tr>
     </tbody>
     <tbody>
         <tr>
@@ -120,7 +212,12 @@ if ($_POST)
                 <select name="source">
                     <option value="Phone" selected="selected"><?php echo __('Phone'); ?></option>
                     <option value="Email" <?php echo ($info['source']=='Email')?'selected="selected"':''; ?>><?php echo __('Email'); ?></option>
+                    <option value="Whatapp El Rosal" <?php echo ($info['source']=='Whatapp El Rosal')?'selected="selected"':''; ?>><?php echo __('Whatapp El Rosal'); ?></option>
+                    <option value="Pop-up WEB" <?php echo ($info['source']=='Pop-up WEB')?'selected="selected"':''; ?>><?php echo __('Pop-up WEB'); ?></option>
+                    <option value="Facebook" <?php echo ($info['source']=='Facebook')?'selected="selected"':''; ?>><?php echo __('Facebook'); ?></option>
+                    <option value="AOL" <?php echo ($info['source']=='AOL')?'selected="selected"':''; ?>><?php echo __('AOL'); ?></option>
                     <option value="Other" <?php echo ($info['source']=='Other')?'selected="selected"':''; ?>><?php echo __('Other'); ?></option>
+                    <option value="Instagram" <?php echo ($info['source']=='Instagram')?'selected="selected"':''; ?>><?php echo __('Instagram'); ?></option>
                 </select>
                 &nbsp;<font class="error"><b>*</b>&nbsp;<?php echo $errors['source']; ?></font>
             </td>
@@ -382,7 +479,7 @@ print $response_form->getField('attachments')->render();
     </tbody>
 </table>
 <p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>">
+    <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>" id="open">
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="javascript:
         $('.richtext').each(function() {
@@ -426,5 +523,30 @@ $(function() {
     <?php
     } ?>
 });
+
+$("td:contains('Status Localizador:')").parent().hide(0);
+
 </script>
 
+<!--Inicio Billy 12/02/2016 Validacion si el saldo es deudor el boton de abrir tickets lo oculte-->
+<?php
+ if($limite <= 0){
+
+?>
+<script type="text/javascript">
+$("select:eq(6)").change(function(){
+                if($("select:eq(6)").val() != 19){
+                    $("#open").fadeIn('slow');
+                }
+                else{
+                    $("#open").fadeOut("fast");
+                }
+            });
+</script>
+
+<?php
+
+}
+
+?>
+<!--Fin Billy 12/02/2016 Validacion si el saldo es deudor el boton de abrir tickets lo ocult-->

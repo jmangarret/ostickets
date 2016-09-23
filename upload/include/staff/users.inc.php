@@ -307,5 +307,10 @@ $(function() {
         catch (e) { }
     });
 });
+
+//Inicio Billy 10/02/2016 Script para mantener el tamaño del container del administrador///////
+$("#container").css("width","960px"); 
+//Fin Billy 10/02/2016 Script para mantener el tamaño del container del administrador///////
+
 </script>
 
