@@ -1,5 +1,10 @@
 <?php
 
+//04/11/2016 RURIEPE - SE CAPTURA EL id_staff DE LA SESSION ABIERTA PARA OBTENER EL ID DEL AGENTE CONECTADO.
+session_start();
+$id_staff = $_SESSION["_auth"]["staff"]["id"];
+//04/11/2016 RURIEPE - FIN
+
 //Note that ticket obj is initiated in tickets.php.
 if(!defined('OSTSCPINC') || !$thisstaff || !is_object($ticket) || !$ticket->getId()) die('Invalid path');
 
@@ -75,7 +80,8 @@ if($ticket->isOverdue())
             // Status change options
             echo TicketStatus::status_options();
 
-            if ($thisstaff->canEditTickets()) { ?>
+            if ($thisstaff->canEditTickets()) { 
+            	?>
                 <a class="action-button pull-right" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=edit"><i class="icon-edit"></i> <?php
                     echo __('Edit'); ?></a>
             <?php
@@ -89,11 +95,21 @@ if($ticket->isOverdue())
 
             <?php
             }?>
+
             <span class="action-button pull-right" data-dropdown="#action-dropdown-print">
                 <i class="icon-caret-down pull-right"></i>
                 <a id="ticket-print" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print"><i class="icon-print"></i> <?php
                     echo __('Print'); ?></a>
             </span>
+
+    
+
+      	<!--4/11/2016 RURIEPE - BOTON PARA ACTIVAR VENTANA EMERGENTE MEDIANTE LA FUNCION JAVASCRIPT POPUP-->
+        <a class="action-button pull-right confirm-action" href="javascript:popup('form_pdf.php?id=<?php echo $ticket->getId();?>&staffid=<?php echo $id_staff; ?>',700,390)"><i class="icon-file"></i> Términos y Condiciones</a>
+        <!--4/11/2016 RURIEPE - FIN-->
+
+            
+
             <div id="action-dropdown-print" class="action-dropdown anchor-right">
               <ul>
                  <li><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=0"><i
@@ -390,7 +406,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     /* INICIO
     */
 
-    include("../ost-config.php");
+    //include("../ost-config.php");
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     /* check connection */
     if (mysqli_connect_errno()) {
@@ -1233,3 +1249,20 @@ $("#container").css("width","960px");
 
 
 </script>
+
+<script type="text/javascript">
+
+    //07/11/2016 RURIEPE - FUNCION PARA CREAR POPUP PARA SOLICITAR LOS DATOS DEL CLIENTE
+    function popup(url,ancho,alto) 
+    {
+        var posicion_x; 
+        var posicion_y; 
+        posicion_x=(screen.width/2)-(ancho/2); 
+        posicion_y=(screen.height/2)-(alto/2); 
+        window.open(url,"Formulario","width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=no,resizable=no,left="+posicion_x+",top="+posicion_y+"");
+    }
+    //07/11/2016 RURIEPE - FIN
+</script>
+
+
+
