@@ -38,6 +38,14 @@
 
   //7/11/2016 RURIEPE - FIN
 
+  //28/11/2016 RURIEPE - CREAR CARPETA terminoscliente CON PERMISOS 775, EN CASO DE NO EXISTIR
+    $carpeta = 'terminoscliente';
+    if (!file_exists($carpeta)) 
+    {
+      mkdir($carpeta, 0775);
+    }
+  //28/11/2016 RURIEPE - FIN
+
   //16/11/2016 RURIEPE - CONSULTA PARA OBTENER EL NUMERO DE TICKET
 
     $consulta_number="SELECT number FROM ost_ticket WHERE ticket_id = ".$id_ticket;
