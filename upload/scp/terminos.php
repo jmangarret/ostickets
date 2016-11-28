@@ -268,7 +268,7 @@
 
             //19/10/2016 RURIEPE - VARIABLES PARA EL ENVIO DE CORREO ELECTRONICO
             $asunto = "Terminos y Condiciones Tu Agencia 24";
-            $mensaje = "<div style='font-size:12pt; text-align:justify;'>Estimado: <b>".$nombre_cliente."</b><br><br> En el siguiente correo usted podrá realizar la lectura de los términos y condiciones generales de TuAgencia24. Su respuesta debe ser enviada mediante la respuesta de este correo.<br><br> Sin más que agregar, quedamos atentos sus a dudas e inquitudes.<br><br></div>";
+            $mensaje = "<div style='font-size:12pt; text-align:justify;'>Estimado: <b>".$nombre_cliente."</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Su respuesta debe ser enviada mediante la respuesta de este correo.<br><br> Sin mas que agregar, quedamos atentos sus a dudas e inquitudes.<br><br></div>";
             $correo = "ruriepe18@gmail.com";
 
             $responder_a = array(
