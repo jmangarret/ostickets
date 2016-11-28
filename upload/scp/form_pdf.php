@@ -109,8 +109,8 @@
                                     //08/11/2016 RURIEPE - SE CIERRA VENTANA EMERGENTE,SE APERTURA EL PDF CREADO Y SE ACTULIZA VENTANA PADRE
                                         $('#cargando').html(); 
                                         window.close();
-                                        window.open('terminoscliente/'+filename, '_black');  
-                                        window.opener.document.location="http://192.168.1.10:8080/ostickets/upload/scp/tickets.php?id="+id;
+                                        window.opener.document.location="http://tickettest.tuagencia24.com/upload/scp/tickets.php?id="+id;
+                                        window.open('terminoscliente/'+filename, '_black');      
                                     //08/11/2016 RURIEPE - FIN
                                 }
                                 else
