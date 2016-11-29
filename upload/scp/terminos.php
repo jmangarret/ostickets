@@ -285,7 +285,7 @@
             );
  
             //19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE PHPMAILER
-            $envio=enviarEmail($correo,$asunto,$mensaje,$responder_a);
+            $envio=enviarEmail($correo_cliente,$asunto,$mensaje,$responder_a);
 
           //18/11/2016 RURIEPE -FIN
 
