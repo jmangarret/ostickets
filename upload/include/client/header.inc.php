@@ -111,6 +111,23 @@ if (($all_langs = Internationalization::availableLanguages())
             </a>
         </div>
         <div class="clear"></div>
+        <!-- jmangarret 23sept2016 integracion de cinta: cambio del dia CRM. -->
+            <?php
+            if ($_SESSION['_auth']['user']['id']>0){
+                $conex=mysql_connect(DBHOST, DBUSER, DBPASS);            
+                $sqlCintaCrm="SELECT announcement FROM vtigercrm600.vtiger_announcement";
+                $qryCintaCrm= mysql_query($sqlCintaCrm);
+                $rowCintaCrm=mysql_fetch_row($qryCintaCrm);            
+                mysql_close($conex);            
+                echo "<div style='color:dodgerblue; background-color:#fcfc96; font-family:Arial; font-weight:bold'>";
+                echo "<marquee scrolldelay=200>";
+                echo "Administrador: ";
+                echo $rowCintaCrm[0];
+                echo "</marquee>";
+                echo "</div>";
+            }                
+            ?>          
+        <!-- Fin cinta cambio del dia BD CRM. -->
         <?php
         if($nav){ ?>
         <ul id="nav" class="flush-left">
