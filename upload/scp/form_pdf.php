@@ -28,6 +28,8 @@
         $nombre_cliente = $row['name'];
         $correo = $row['address'];
     //7/11/2016 RURIEPE - FIN
+
+        $server = $_SERVER['SERVER_NAME'];
 ?>
 
 
@@ -78,7 +80,9 @@
 
         <script type="text/javascript" >
             $(document).ready(function() 
-            {   
+            { 
+                var servername = "<?php echo $server; ?>" ; 
+
                 // 7/11/2016 RURIEPE - EVENTO PARA DETECTAR CUANDO SE REALICE CLICK AL BOTON Generar PDF
                     $('#ticket-pdf').click(function()
                     { 
@@ -109,7 +113,7 @@
                                     //08/11/2016 RURIEPE - SE CIERRA VENTANA EMERGENTE,SE APERTURA EL PDF CREADO Y SE ACTULIZA VENTANA PADRE
                                         $('#cargando').html(); 
                                         window.close();
-                                        window.opener.document.location="http://tickettest.tuagencia24.com/upload/scp/tickets.php?id="+id;
+                                        window.opener.document.location="tickets.php?id="+id;
                                         window.open('terminoscliente/'+filename, '_black');      
                                     //08/11/2016 RURIEPE - FIN
                                 }
