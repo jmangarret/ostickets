@@ -2969,22 +2969,12 @@ class Ticket {
         Con las siguientes lineas de código, se actualizan los campos de 
         Detalle de su Solicitud en las tablas descritas en la Sentencia SQL*/
         if (!in_array(strtolower($origin), array('web', 'staff'))){
-           //echo "<pre>";
-            //var_dump($vars);
-            //die($vars['valores']);
-
             foreach ($ticket as $key=>$value){
                 if($key == "id") $ticket_idAPI = $value;
                 if($key == "last_message"){
                     $last_message = $value;
                     $datos    = explode("\n", $last_message);
-                    $nombre=$vars['name'];
-                    $correo =$vars['email'];
-                    $telefono=$vars['phone'];
-                    $valores =  $vars['valores'];
-                    $adicional = explode("%%", $valores);
-                    //die($adicional[4]);
-                    /*$nombre   = ucwords(strtolower(substr($datos[0], 20, strlen($datos[0])-21)));
+                    $nombre   = ucwords(strtolower(substr($datos[0], 20, strlen($datos[0])-21)));
                     $correo   = strtolower(substr($datos[1], 20, strlen($datos[1])-21));
                     $telefono = substr($datos[2], 22, strlen($datos[2])-23);
                     $i        = 5;
@@ -3012,7 +3002,7 @@ class Ticket {
                     $adultos = substr($datos[count($datos)-5], 9, strlen($datos[count($datos)-5])-10);
                     $mayores = substr($datos[count($datos)-4], 11, strlen($datos[count($datos)-4])-12);
                     $ninos = substr($datos[count($datos)-3], 9, strlen($datos[count($datos)-3])-10);
-                    $bebes = substr($datos[count($datos)-2], 8, strlen($datos[count($datos)-2])-9);*/
+                    $bebes = substr($datos[count($datos)-2], 8, strlen($datos[count($datos)-2])-9);
                 } 
             }
             $detail = '{"88":"Cotizacion PopPup"}';
@@ -3049,18 +3039,18 @@ class Ticket {
                                     '$nombre', 
                                     '$correo', 
                                     '$telefono', 
-                                    '$adicional[0]', 
-                                    '$adicional[1]', 
-                                    '$adicional[2]', 
-                                    '$adicional[3]', 
-                                    '$adicional[4]', 
-                                    '$adicional[5]', 
-                                    '$adicional[6]', 
-                                    '$adicional[7]', 
-                                    '$adicional[8]', 
-                                    '$adicional[9]', 
-                                    '$adicional[10]', 
-                                    '$adicional[11]');");
+                                    '$mensaje', 
+                                    '$pasaje', 
+                                    '$origen', 
+                                    '$destino', 
+                                    '$salida', 
+                                    '$regreso', 
+                                    '$clase', 
+                                    '$aerolinea', 
+                                    '$adultos', 
+                                    '$mayores', 
+                                    '$ninos', 
+                                    '$bebes');");
 
         }
         /* FIN */
