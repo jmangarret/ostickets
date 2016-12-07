@@ -21,8 +21,8 @@ if(!defined('INCLUDE_DIR')) die('Fatal Error');
 define('CLIENTINC_DIR',INCLUDE_DIR.'client/');
 define('OSTCLIENTINC',TRUE); //make includes happy
 
-/*require_once(INCLUDE_DIR.'class.client.php');
-require_once(INCLUDE_DIR.'class.ticket.php');*/
+require_once(INCLUDE_DIR.'class.client.php');
+require_once(INCLUDE_DIR.'class.ticket.php');
 
 if ($cfg->getClientRegistrationMode() == 'disabled'
         || isset($_POST['lticket']))
