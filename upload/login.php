@@ -133,6 +133,6 @@ if (!$nav) {
     $nav->setActiveNav('status');
 }
 
-require CLIENTINC_DIR.'header_login.php';
+require CLIENTINC_DIR.'header_login.inc.php';
 require CLIENTINC_DIR.$inc;
 ?>
