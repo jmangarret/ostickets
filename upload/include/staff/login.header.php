@@ -29,10 +29,11 @@ defined('OSTSCPINC') or die('Invalid path');
         </script>
     </head>
     <body>
-       <div class="cont">
+       <div class="cont_agente">
             <div class="demo">
                 <div class="login">
                     <div>
                         <img src="../images/logo.png"  height="130" style="position:relative; top:90px; left:-15px;" >
                     </div>
+
 
