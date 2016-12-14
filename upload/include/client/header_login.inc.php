@@ -62,5 +62,5 @@
             <div class="demo">
                 <div class="login">
                     <div>
-                        <img src="images/logo.jpg" width="210" height="200" style="position:relative; top:50px; left:50px;" >
+                        <img src="images/logo.jpg"  height="130" style="position:relative; top:90px; left:-15px;" >
                     </div>
