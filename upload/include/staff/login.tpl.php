@@ -11,6 +11,7 @@
                 <script>
                     //14/12/2016 RURIEPE - PERSONALIZACION DE ALERTS Y CAPTURA DE VARIABLE PHP
                     var msg = "<?php echo $msg; ?>";
+
                     if(msg != "Autentificación Requerida")
                     {
                         swal("Error", msg , "error");
