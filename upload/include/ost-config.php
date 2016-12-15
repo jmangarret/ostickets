@@ -43,10 +43,9 @@ define('ADMIN_EMAIL','info@tuagencia24.com');
 define('DBTYPE','mysql');
 define('DBHOST','localhost');
 define('DBNAME','osticket1911');
-#define('DBUSER','osticket');
-define('DBUSER','root');
-#define('DBPASS','0571ck37');
-define('DBPASS','ip15x0');
+define('DBUSER','osticket');
+define('DBPASS','0571ck37');
+
 
 # Table prefix
 define('TABLE_PREFIX','ost_');
