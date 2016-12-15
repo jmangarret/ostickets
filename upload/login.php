@@ -119,7 +119,7 @@ elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
             $inc = 'register.inc.php';
         }
         else {
-            $errors['err'] = __('Access Denied. Contact your help desk administrator to have an account registered for you');
+             $errors['err'] = __('Access Denied. Contact your help desk administrator to have an account registered for you');
             // fall through to show login page again
         }
     }
@@ -133,7 +133,6 @@ if (!$nav) {
     $nav->setActiveNav('status');
 }
 
-require CLIENTINC_DIR.'header.inc.php';
+require CLIENTINC_DIR.'header_login.inc.php';
 require CLIENTINC_DIR.$inc;
-require CLIENTINC_DIR.'footer.inc.php';
 ?>
