@@ -30,9 +30,18 @@
                     </svg>
                     <input type="password" class="login__input pass" name="passwd" id="pass" placeholder="<?php echo __('Password'); ?>" autocorrect="off" autocapitalize="off" />
                 </div>
-                <button type="submit" class="login__submit" name="submit">
+                <button type="submit" class="login__submit2" name="submit">
                     <b>Iniciar Sesión</b>
-                </button>         
+                </button>  
+                <a href="/ostickets/upload/">
+                    <button type="button" class="login__agente2" >
+                        <b>Soy Satélite / Freelance</b>
+                    </button>
+                </a>  
+                <div id="footer">
+                    <p>Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'osTicket.com'; ?> - All rights reserved.</p>
+                    <a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
+                </div>      
             </div> 
         </form>
         <?php
