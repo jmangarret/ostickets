@@ -33,7 +33,7 @@
                 <button type="submit" class="login__submit2" name="submit">
                     <b>Iniciar Sesión</b>
                 </button>  
-                <a href="/ostickets/upload/">
+                <a href="http://ticket.tuagencia24.com/">
                     <button type="button" class="login__agente2" >
                         <b>Soy Satélite / Freelance</b>
                     </button>
