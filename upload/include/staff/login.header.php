@@ -15,7 +15,6 @@ $ruta = "/ostickets/upload/assets/default/css";
         <meta http-equiv="pragma" content="no-cache" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.8.3.min.js?c1b5a33"></script>
-        <link rel="stylesheet" href="<?php echo $ruta; ?>/theme.css?c1b5a33" media="screen"/>
 
         <!--14/12/2016 RURIEPE - LIBRERIA JS Y CSS PARA PERSONALIZACION DE ALERTAS-->
             <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/style.css?c1b5a33"/>
@@ -29,6 +28,35 @@ $ruta = "/ostickets/upload/assets/default/css";
                 $("input:not(.dp):visible:enabled:first").focus();
             });
         </script>
+
+        <style type="text/css">
+            
+            #footer
+            {
+                text-align: center;
+                font-size: 11px;
+                color: #333;
+            }
+            #footer a 
+            {
+                color: #333;
+            }
+            #footer p 
+            {
+                margin: 10px 0 0 0;
+            }
+            #footer #poweredBy 
+            {
+                display: block;
+                width: 126px;
+                height: 23px;
+                outline: none;
+                text-indent: -9999px;
+                margin: 0 auto;
+                background: url('../assets/default/images/poweredby.png') top left no-repeat;
+                background-size: auto 20px;
+            }
+        </style>
     </head>
     <body>
        <div class="cont_agente">
