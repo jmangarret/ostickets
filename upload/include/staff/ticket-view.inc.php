@@ -1,8 +1,8 @@
 <?php
 
 //04/11/2016 RURIEPE - SE CAPTURA EL id_staff DE LA SESSION ABIERTA PARA OBTENER EL ID DEL AGENTE CONECTADO.
-session_start();
-$id_staff = $_SESSION["_auth"]["staff"]["id"];
+	session_start();
+	$id_staff = $_SESSION["_auth"]["staff"]["id"];
 //04/11/2016 RURIEPE - FIN
 
 //Note that ticket obj is initiated in tickets.php.
