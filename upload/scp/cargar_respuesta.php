@@ -56,7 +56,7 @@
         $result = $mysqli->query($consulta_staff);
         $row = $result->fetch_array();
 
-        echo $email_asesor = $row['email'];
+        $email_asesor = $row['email'];
     // 6/01/2017 RURIEPE - FIN
 
     // 6/01/2017 RURIEPE - CONSULTA PARA OBTENER EL NUMERO DE TICKET
@@ -124,11 +124,11 @@
               </tr>
             </table>';
             //$mensaje= 'Terminos y Condiciones Tuagencia24.com';
-            $correo = 'ruriepe18@gmail.com';
+            //$correo = 'ruriepe18@gmail.com';
  
             // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE PHPMAILER
            
-            $envio=enviarEmail($correo,$asunto,$mensaje);
+            $envio=enviarEmail($email_asesor,$asunto,$mensaje);
         }
     // 5/01/2016 RURIEPE - FIN
 ?>
