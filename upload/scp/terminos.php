@@ -336,7 +336,7 @@
                 <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
               </tr>
               <tr>
-                <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe ingresar en el siguiente enlace <a href="'.$_SERVER["HTTP_HOST"].'/ostickets/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'">Aceptar terminos y condiciones</a></div> para aceptar.</th>
+                <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe ingresar en el siguiente enlace <a href="'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'">Aceptar terminos y condiciones</a></div> para aceptar.</th>
               </tr>
               <tr>
                 <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
