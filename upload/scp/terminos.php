@@ -22,6 +22,7 @@
     $ip_address = $_SERVER["REMOTE_ADDR"];
     $fecha_actual=date("Y-m-d h:i:s");
     $fecha_pdf = date("Y-m-d");
+    $_REQUEST['respuesta'] = 'envio a cliente';
   // 7/11/2016 RURIEPE - FIN
 
   // 7/11/2016 RURIEPE - CONEXION A BASE DE DATOS
@@ -269,8 +270,8 @@
             $result = $mysqli->query($consulta_usuario);
             $row = $result->fetch_array();
 
-            $usuario = $row['name'];
-            $correo = $row['address'];
+            echo $usuario = $row['name'];
+            echo $correo = $row['address'];
 
           // 5/01/2017 RURIEPE - FIN
 
