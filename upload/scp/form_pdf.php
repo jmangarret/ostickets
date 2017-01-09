@@ -107,8 +107,9 @@
                             },
                 	       success: function(filename)
                 	       { 
+                            alert(filename);
                                 // 18/11/2016 RURIEPE - CONDICION QUE EVALUA EL VALOR QUE ES LEIDO DEL ARCHIVO TERMINOS.PHP, SI ESTE VALOR ES FALSE ES INDICA QUE EL RCHIVO PDF YA EXISTE POR ENDE SE LE INDICA UN MENSAJE AL USUARIO Y SE CIERRA LA VENTANA EMERGENTE, EN CASO CONTRARIO SE REALILA LA CREACION DEL PDF, SE ENVIA AL CORREO DEL CLIENTE Y SE VISUALIZA.
-                                    if(filename != "false")
+                                   /* if(filename != "false")
                                     {
 
                                         // 08/11/2016 RURIEPE - SE CIERRA VENTANA EMERGENTE,SE APERTURA EL PDF CREADO Y SE ACTULIZA VENTANA PADRE
@@ -126,7 +127,7 @@
                                         {
                                             window.close();
                                         });
-                                    } 
+                                    } */
                                 // 18/11/2016 RURIEPE - FIN
                 	       },
                 	       error: function()
