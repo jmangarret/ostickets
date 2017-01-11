@@ -270,8 +270,8 @@
             $result = $mysqli->query($consulta_usuario);
             $row = $result->fetch_array();
 
-            echo $usuario = $row['name'];
-            echo $correo = $row['address'];
+            $usuario = $row['name'];
+            $correo = $row['address'];
 
           // 5/01/2017 RURIEPE - FIN
 
@@ -288,7 +288,7 @@
               $id,
               '$correo_cliente');");
 
-              $ost_user = $mysqli->query("INSERT INTO ost_user
+             /* $ost_user = $mysqli->query("INSERT INTO ost_user
               (id,
               org_id,
               default_email_id,
@@ -303,7 +303,7 @@
               0,
               '$nombre_cliente',
               '$fecha_actual',
-              '$fecha_actual');");
+              '$fecha_actual');");*/
              
               echo("Error insert: " . mysqli_error($mysqli));
               
