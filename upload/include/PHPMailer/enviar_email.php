@@ -6,7 +6,7 @@
   	require 'PHPMailerAutoload.php';
 
 	//03/11/2016 RURIEPE- CONFIGURACION DE ENVIO DE CORREO ELECTRONICO
-	echo $_REQUEST['respuesta'];
+	//echo $_REQUEST['respuesta'];
 
 		function enviarEmail($email,$asunto,$mensaje)
 		{
@@ -38,7 +38,7 @@
 				$mail->AddAddress($email, "Asesor");
 				
 				//Con Copia a...
-				//$mail->AddCC("info@tuagencia24.com");
+				$mail->AddCC("info@tuagencia24.com");
 			}
 			else
 			{

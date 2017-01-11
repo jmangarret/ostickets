@@ -124,11 +124,11 @@
               </tr>
             </table>';
             //$mensaje= 'Terminos y Condiciones Tuagencia24.com';
-            $correo = 'ruriepe18@gmail.com';
+            //$correo = 'ruriepe18@gmail.com';
  
             // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE PHPMAILER
            
-            $envio=enviarEmail($correo,$asunto,$mensaje);
+            $envio=enviarEmail($email_asesor,$asunto,$mensaje);
         }
     // 5/01/2016 RURIEPE - FIN
 ?>
