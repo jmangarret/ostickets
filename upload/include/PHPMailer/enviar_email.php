@@ -6,6 +6,7 @@
   	require 'PHPMailerAutoload.php';
 
 	//03/11/2016 RURIEPE- CONFIGURACION DE ENVIO DE CORREO ELECTRONICO
+	echo $_REQUEST['respuesta'];
 
 		function enviarEmail($email,$asunto,$mensaje)
 		{

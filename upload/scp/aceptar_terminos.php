@@ -3,8 +3,10 @@
     ini_set('display_errors', '1');
 
     // 3/01/2017 RURIEPE - CAPTURA DE VALORES
-        $id_ticket = $_GET['enu'];
-        $id_staff = $_GET['sff'];
+        echo "1 ".$id_ticket = $_GET['enu'];
+        echo "<br>";
+        echo "2 ".$id_staff = $_GET['sff'];
+        echo "<br>";
     // 3/01/2017 RURIEPE -FIN
 
     // 3/01/2017 RURIEPE - DESENCRIPTAR NOMBRE Y CORREO
@@ -12,8 +14,9 @@
 
         $clave = "krycekvsmulder";
 
-        $nombre_desencriptado = desencriptar_AES($_GET['en'],$clave);
-        $correo_desencriptado = desencriptar_AES($_GET['ec'],$clave);
+        echo "3 ".$nombre_desencriptado = desencriptar_AES($_GET['en'],$clave);
+        echo "<br>";
+        echo "4 ". $correo_desencriptado = desencriptar_AES($_GET['ec'],$clave);
     // 3/01/2017 RURIEPE - FIN
 ?>
 
@@ -76,8 +79,8 @@ He leido y acepto los terminos y condiciones de Tuagencia24
                         data: ('numticket='+numticket+'&respuesta='+respuesta+'&nomcliente='+nomcliente+'&corrcliente='+corrcliente+'&asesor='+asesor),
                         success: function(data)
                         { 
-                            //alert(data);
-                           location.href="mensaje_terminos.html";
+                            alert(data);
+                           //location.href="mensaje_terminos.html";
                         },
                     });
                 },
@@ -92,8 +95,8 @@ He leido y acepto los terminos y condiciones de Tuagencia24
                         data: ('numticket='+numticket+'&respuesta='+respuesta+'&nomcliente='+nomcliente+'&corrcliente='+corrcliente+'&asesor='+asesor),
                         success: function(data)
                         { 
-                            //alert(data);
-                            location.href="mensaje_terminos.html";
+                            alert(data);
+                            //location.href="mensaje_terminos.html";
     
                         },
                     });
