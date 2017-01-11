@@ -304,6 +304,9 @@
               '$nombre_cliente',
               '$fecha_actual',
               '$fecha_actual');");
+             
+              echo("Error insert: " . mysqli_error($mysqli));
+              
             }
           //5/01/2017 RURIEPE - FIN
 
