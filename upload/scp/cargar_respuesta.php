@@ -4,31 +4,22 @@
     ini_set('display_errors', '1');
     
     // 4/01/2017 RURIEPE - CAPTURA DE VALORES
-        echo "1 ".$numticket = $_REQUEST['numticket'];
-        echo "<br>";
-        echo "2 ".$respuesta = $_REQUEST['respuesta'];
-        echo "<br>";
-        echo "3 ".$nomcliente = $_REQUEST['nomcliente'];
-        echo "<br>";
-        echo "4 ".$corrcliente = $_REQUEST['corrcliente'];
-        echo "<br>";
-        echo "5 ".$asesor = $_REQUEST['asesor'];
-        echo "<br>";
-        echo "6 ".$ip_address = $_SERVER["REMOTE_ADDR"];
-        echo "<br>";
-        echo "7 ".$fecha_actual=date("Y-m-d h:i:s");
-        echo "<br>";
-        echo "8 ".$_REQUEST['respuesta'] = 'respuesta_cliente';
-        echo "<br>";
+        $numticket = $_REQUEST['numticket'];
+        $respuesta = $_REQUEST['respuesta'];
+        $nomcliente = $_REQUEST['nomcliente'];
+        $corrcliente = $_REQUEST['corrcliente'];
+        $asesor = $_REQUEST['asesor'];
+        $ip_address = $_SERVER["REMOTE_ADDR"];
+        $fecha_actual=date("Y-m-d h:i:s");
+        $_REQUEST['respuesta'] = 'respuesta_cliente';
 
     // 4/01/2017 RURIEPE - FIN
      
     // 4/01/2017 RURIEPE - LIMPIAR CADENA PARA ELIMINAR LOS ESPACIOS AL FINAL.
         include_once('encriptacion-aes-inc.php');
 
-        echo "9 ".$nombre_cliente = limpiar_cadena($nomcliente);
-        echo "<br>";
-        echo "10 ".$correo_cliente = limpiar_cadena($corrcliente);
+        $nombre_cliente = limpiar_cadena($nomcliente);
+        $correo_cliente = limpiar_cadena($corrcliente);
 
     // 4/01/2017 RURIEPE - FIN
 
@@ -55,11 +46,9 @@
         WHERE us.name = '".$nombre_cliente."' AND ue.address='".$correo_cliente."'";
         $result = $mysqli->query($consulta_usuario);
         $row = $result->fetch_array();
-echo "<br>";
-        echo "11 ".$usuario = $row['name'];
-        echo "<br>";
-        echo "12 ".$id_usuario = $row['id'];
-        echo "<br>";
+
+        $usuario = $row['name'];
+        $id_usuario = $row['id'];
     // 5/01/2017 RURIEPE - FIN
 
     // 6/01/2017 RURIEPE - CONSULTA PARA OBTENER EL CORREO DEL ASESOR
@@ -67,8 +56,7 @@ echo "<br>";
         $result = $mysqli->query($consulta_staff);
         $row = $result->fetch_array();
 
-        echo "13 ".$email_asesor = $row['email'];
-        echo "<br>";
+        $email_asesor = $row['email'];
     // 6/01/2017 RURIEPE - FIN
 
     // 6/01/2017 RURIEPE - CONSULTA PARA OBTENER EL NUMERO DE TICKET
@@ -76,8 +64,7 @@ echo "<br>";
         $result = $mysqli->query($consulta_ticket);
         $row = $result->fetch_array();
 
-        echo "14 ".$number = $row['number'];
-        echo "<br>";
+        $number = $row['number'];
     // 6/01/2017 RURIEPE - FIN
 
     // 5/01/2017 RURIEPE - CONSULTA PARA OBTENER EL NOMBRE Y ID DEL USUARIO
