@@ -328,6 +328,13 @@
               $correo_encriptado = encriptar_AES($correo_cliente,$clave);
             // 3/01/2017 RURIEPE - FIN
 
+              $valor = explode("@", $correo_cliente);
+              
+              if($valor[1] != "hotmail.com" && $valor[1] != "HOTMAIL.COM" && $valor[1] && "Hotmail.com")
+              {
+
+
+
             $mensaje = '<table>
               <tr>
                 <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
@@ -345,6 +352,14 @@
                 <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
               </tr>
             </table>';
+          }
+          else
+          {
+
+            $link = '<b>'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'</b>';
+
+            $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe coiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br>'.$link.'</p>';
+          }
  
             // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE 
             $envio=enviarEmail($correo_cliente,$asunto,$mensaje);
