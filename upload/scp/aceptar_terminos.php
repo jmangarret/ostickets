@@ -76,8 +76,8 @@ He leido y acepto los terminos y condiciones de Tuagencia24
                         data: ('numticket='+numticket+'&respuesta='+respuesta+'&nomcliente='+nomcliente+'&corrcliente='+corrcliente+'&asesor='+asesor),
                         success: function(data)
                         { 
-                            //alert(data);
-                           location.href="mensaje_terminos.html";
+                            alert(data);
+                           //location.href="mensaje_terminos.html";
                         },
                     });
                 },
@@ -92,9 +92,8 @@ He leido y acepto los terminos y condiciones de Tuagencia24
                         data: ('numticket='+numticket+'&respuesta='+respuesta+'&nomcliente='+nomcliente+'&corrcliente='+corrcliente+'&asesor='+asesor),
                         success: function(data)
                         { 
-                            //alert(data);
-                            location.href="mensaje_terminos.html";
-    
+                            alert(data);
+                            //location.href="mensaje_terminos.html";
                         },
                     });
                 }).setting('labels',{'ok':'Acepto', 'cancel': 'No Acepto'});
