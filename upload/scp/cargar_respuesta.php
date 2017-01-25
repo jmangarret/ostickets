@@ -17,10 +17,8 @@
      
     // 4/01/2017 RURIEPE - LIMPIAR CADENA PARA ELIMINAR LOS ESPACIOS AL FINAL.
         include_once('encriptacion-aes-inc.php');
-        echo " ";
-        echo $nombre_cliente = limpiar_cadena($nomcliente);
-        echo " ";
-        echo $correo_cliente = limpiar_cadena($corrcliente);
+        $nombre_cliente = limpiar_cadena($nomcliente);
+        $correo_cliente = limpiar_cadena($corrcliente);
 
     // 4/01/2017 RURIEPE - FIN
 
@@ -47,8 +45,7 @@
         WHERE us.name = '".$nombre_cliente."' AND ue.address='".$correo_cliente."'";
         $result = $mysqli->query($consulta_usuario);
         $row = $result->fetch_array();
-        echo " ";
-        echo "usuario: ".$usuario = $row['name'];
+        $usuario = $row['name'];
         $id_usuario = $row['id'];
     // 5/01/2017 RURIEPE - FIN
 
