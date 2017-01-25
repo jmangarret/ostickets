@@ -224,12 +224,12 @@
 
           // 5/01/2017 RURIEPE - CONDICION PARA EVALUAR SI LAS VARIABLES USUARIO Y CORREO TIENEN VALORES, EN CASO CONTRARIO DE NO TENER VALORES ESO INDICA QUE LA CONSULTA NO ENCONTRO RESULTADOS EN LA BASE DE DATOS INDICANDO QUE EL CLIENTE NO SE ENCUENTRA REGISTRADO EN EL SISTEMA.
             
-            if($usuario == $nombre_cliente OR $correo == $correo_cliente)
+            /*if($usuario == $nombre_cliente OR $correo == $correo_cliente)
             {
               echo "cliente/correo";
             }
-            else
-            {
+            /*else
+            {*/
 
 
               // Instanciamos un objeto de la clase DOMPDF.
@@ -366,7 +366,7 @@
                 // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE 
                 $envio=enviarEmail($correo_cliente,$asunto,$mensaje);
               // 18/11/2016 RURIEPE -FIN
-            }
+           // }
           //5/01/2017 RURIEPE - FIN 
         // 13/10/2016 RURIEPE -FIN   
       }
