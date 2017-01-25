@@ -105,7 +105,7 @@ if($ticket->isOverdue())
     
 
       	<!--4/11/2016 RURIEPE - BOTON PARA ACTIVAR VENTANA EMERGENTE MEDIANTE LA FUNCION JAVASCRIPT POPUP-->
-        <a class="action-button pull-right confirm-action" href="javascript:popup('form_pdf.php?id=<?php echo $ticket->getId();?>&staffid=<?php echo $id_staff; ?>',700,390)"><i class="icon-file"></i> Términos y Condiciones</a>
+            <a class="action-button pull-right confirm-action" href="javascript:popup('form_pdf.php?id=<?php echo $ticket->getId();?>&staffid=<?php echo $id_staff; ?>',700,390)"><i class="icon-file"></i> Términos y Condiciones</a>
         <!--4/11/2016 RURIEPE - FIN-->
 
             

@@ -358,7 +358,7 @@
 
             $link = '<b>'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'</b>';
 
-            $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe coiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br>'.$link.'</p>';
+            $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe coiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br><a>'.$link.'</a></p>';
           }
  
             // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE 
