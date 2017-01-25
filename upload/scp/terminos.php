@@ -248,8 +248,8 @@
             $result = $mysqli->query($consulta_usuario);
             $row = $result->fetch_array();
 
-            $usuario = $row['name'];
-            $correo = $row['address'];
+            echo "Usuario: ".$usuario = $row['name'];
+            echo "Id: ".$correo = $row['address'];
 
           // 5/01/2017 RURIEPE - FIN
 
@@ -284,7 +284,7 @@
 
               // 17/11/2016 RURIEPE - SE MUEVE ARCHIVO A CARPETA terminoscliente, LUEGO DE SER CREADO
               rename ($filename,"terminoscliente/".$filename); 
-              
+
               $ost_user_email = $mysqli->query("INSERT INTO ost_user_email
               (id,
               user_id,
