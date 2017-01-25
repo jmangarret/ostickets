@@ -202,37 +202,6 @@
             $cuerpo = "Se realiza envio de terminos y condiciones al cliente: <b>".$nombre_cliente."</b><br> http://ticket.tuagencia24.com/upload/scp/terminoscliente/".$filename;
           // 7/11/2016 RURIEPE - FIN
 
-          // 7/11/2016 RURIEPE - SE CREA REGISTRO EN LA TABLA OST_THREAD PARA INDICAR Y DEJAS RASTRO DE LA CREACION Y ENVIO DE TERMINOS Y CONDICIONES A CLIENTE
-
-            $ost_thread = $mysqli->query("INSERT INTO ost_ticket_thread
-            (pid,
-            ticket_id,
-            staff_id,
-            user_id,
-            thread_type,
-            poster,
-            source,
-            title,
-            body,
-            format,
-            ip_address,
-            created,updated)
-            VALUES
-            (0,
-            $id_ticket,
-            $staffid,
-            0,
-            'R',
-            '$nombre_staff',
-            ' ',
-            'Terminos y Condiciones',
-            '$cuerpo',
-            'html',
-            '$ip_address',
-            '$fecha_actual',
-            '0000-00-00 00:00:00');");
-          // 7/11/2016 RURIEPE - FIN
-
           // 5/01/2017 RURIEPE - CONSULTAS SQL: LA PRIMERA PARA OBTENER EL ULTMO ID DEL REGISTRO DE LA TABLA ost_user_email Y LA SEGUNDA PARA OBTENER EL NOMBRE Y EL CORREO DEL USUARIO.
 
             $consulta_id_email="SELECT MAX(id) FROM  ost_user_email";
@@ -244,18 +213,18 @@
 
             $consulta_usuario="SELECT us.name, ue.address FROM  ost_user AS us
             INNER JOIN ost_user_email AS ue ON ue.id = us.default_email_id 
-            WHERE us.name = '".$nombre_cliente."' AND ue.address='".$correo_cliente."'";
+            WHERE us.name = '".$nombre_cliente."' OR ue.address='".$correo_cliente."'";
             $result = $mysqli->query($consulta_usuario);
             $row = $result->fetch_array();
 
-            echo "Usuario: ".$usuario = $row['name'];
-            echo "Id: ".$correo = $row['address'];
+            $usuario = $row['name'];
+            $correo = $row['address'];
 
           // 5/01/2017 RURIEPE - FIN
 
           // 5/01/2017 RURIEPE - CONDICION PARA EVALUAR SI LAS VARIABLES USUARIO Y CORREO TIENEN VALORES, EN CASO CONTRARIO DE NO TENER VALORES ESO INDICA QUE LA CONSULTA NO ENCONTRO RESULTADOS EN LA BASE DE DATOS INDICANDO QUE EL CLIENTE NO SE ENCUENTRA REGISTRADO EN EL SISTEMA.
             
-            if(!$usuario AND !$correo)
+            if($usuario == $nombre_cliente OR $correo == $correo_cliente)
             {
               echo "cliente/correo";
             }
@@ -284,6 +253,37 @@
 
               // 17/11/2016 RURIEPE - SE MUEVE ARCHIVO A CARPETA terminoscliente, LUEGO DE SER CREADO
               rename ($filename,"terminoscliente/".$filename); 
+
+              // 7/11/2016 RURIEPE - SE CREA REGISTRO EN LA TABLA OST_THREAD PARA INDICAR Y DEJAS RASTRO DE LA CREACION Y ENVIO DE TERMINOS Y CONDICIONES A CLIENTE
+
+                $ost_thread = $mysqli->query("INSERT INTO ost_ticket_thread
+                (pid,
+                ticket_id,
+                staff_id,
+                user_id,
+                thread_type,
+                poster,
+                source,
+                title,
+                body,
+                format,
+                ip_address,
+                created,updated)
+                VALUES
+                (0,
+                $id_ticket,
+                $staffid,
+                0,
+                'R',
+                '$nombre_staff',
+                ' ',
+                'Terminos y Condiciones',
+                '$cuerpo',
+                'html',
+                '$ip_address',
+                '$fecha_actual',
+                '0000-00-00 00:00:00');");
+              // 7/11/2016 RURIEPE - FIN
 
               $ost_user_email = $mysqli->query("INSERT INTO ost_user_email
               (id,
