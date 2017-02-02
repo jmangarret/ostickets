@@ -42,7 +42,7 @@
     // 5/01/2017 RURIEPE - CONSULTA PARA OBTENER EL NOMBRE Y ID DEL USUARIO
         $consulta_usuario="SELECT us.name,us.id, ue.address FROM  ost_user AS us
         INNER JOIN ost_user_email AS ue ON ue.id = us.default_email_id 
-        WHERE us.name = '".$nombre_cliente."' AND ue.address='".$correo_cliente."'";
+        WHERE ue.address='".$correo_cliente."'";
         $result = $mysqli->query($consulta_usuario);
         $row = $result->fetch_array();
         $usuario = $row['name'];
@@ -66,8 +66,8 @@
     // 6/01/2017 RURIEPE - FIN
 
     // 5/01/2017 RURIEPE - CONSULTA PARA OBTENER EL NOMBRE Y ID DEL USUARIO
-        if($usuario)
-        {
+       /* if($usuario)
+        {*/
             $ost_thread = $mysqli->query("INSERT INTO ost_ticket_thread
             (pid,
             ticket_id,
@@ -127,6 +127,6 @@
             // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE PHPMAILER
            
            $envio=enviarEmail($email_asesor,$asunto,$mensaje);
-        }
+       // }
     // 5/01/2016 RURIEPE - FIN
 ?>
