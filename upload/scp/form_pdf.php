@@ -109,11 +109,12 @@
                 	       { 
                                 //alert(filename);
                                 // 18/11/2016 RURIEPE - CONDICION QUE EVALUA EL VALOR QUE ES LEIDO DEL ARCHIVO TERMINOS.PHP, SI ESTE VALOR ES FALSE ES INDICA QUE EL RCHIVO PDF YA EXISTE POR ENDE SE LE INDICA UN MENSAJE AL USUARIO Y SE CIERRA LA VENTANA EMERGENTE, EN CASO CONTRARIO SE REALILA LA CREACION DEL PDF, SE ENVIA AL CORREO DEL CLIENTE Y SE VISUALIZA.
-                                   /* var validacion = filename.split("pdf");
+                                    /*var validacion = filename.split("pdf");
+                                    //alert(validacion);
                                 
-                                    if(validacion[1] == "cliente/correo")
+                                    if(validacion[1] == "correo/existe")
                                     {
-                                        alertify.alert("<b>El nombre del cliente o el correo ya se encuentra cargado en el sistema</b>", function () 
+                                        alertify.alert("<b>El correo ya se encuentra en el sistema</b>", function () 
                                         {
                                             window.close();
                                         });
@@ -138,7 +139,7 @@
                                             window.close();
                                         });
                                     } 
-                                // 18/11/2016 RURIEPE - FIN*/
+                                // 18/11/2016 RURIEPE - FIN
                 	       },
                 	       error: function()
                 	       {                     

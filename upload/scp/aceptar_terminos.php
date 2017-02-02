@@ -77,7 +77,7 @@ He leido y acepto los terminos y condiciones de Tuagencia24
                         success: function(data)
                         { 
                             //alert(data);
-                           location.href="mensaje_terminos.html";
+                            location.href="mensaje_terminos.html";
                         },
                     });
                 },

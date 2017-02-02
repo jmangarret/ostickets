@@ -197,41 +197,30 @@
           // 7/11/2016 RURIEPE - FIN
 
           // 7/11/2016 RURIEPE - SE CONCANTENA EL NOMBRE Y APELLIDO EN UNA VRIABLE Y SE CREA UNA VARIABLE CON EL TEXTO PARA AGREGAR A LA TABLA THREAD
-
             $nombre_staff = $row['firstname'].' '.$row['lastname'];
             $cuerpo = "Se realiza envio de terminos y condiciones al cliente: <b>".$nombre_cliente."</b><br> http://ticket.tuagencia24.com/upload/scp/terminoscliente/".$filename;
           // 7/11/2016 RURIEPE - FIN
 
           // 5/01/2017 RURIEPE - CONSULTAS SQL: LA PRIMERA PARA OBTENER EL ULTMO ID DEL REGISTRO DE LA TABLA ost_user_email Y LA SEGUNDA PARA OBTENER EL NOMBRE Y EL CORREO DEL USUARIO.
-
-            $consulta_id_email="SELECT MAX(id) FROM  ost_user_email";
+            $consulta_id_email="SELECT MAX(id), address FROM  ost_user_email";
             $result = $mysqli->query($consulta_id_email);
             $row = $result->fetch_array();
 
             $id_email = $row[0];
             $id = $id_email + 1;
+    
 
-            $consulta_usuario="SELECT us.name, ue.address FROM  ost_user AS us
-            INNER JOIN ost_user_email AS ue ON ue.id = us.default_email_id 
-            WHERE us.name = '".$nombre_cliente."' OR ue.address='".$correo_cliente."'";
-            $result = $mysqli->query($consulta_usuario);
+           /* $consulta_correo="SELECT address FROM  ost_user_email
+            WHERE address = '".$correo_cliente."'";
+            $result = $mysqli->query($consulta_correo);
             $row = $result->fetch_array();
 
-            $usuario = $row['name'];
-            $correo = $row['address'];
+            $email = $row['address'];*/
 
-          // 5/01/2017 RURIEPE - FIN
 
-          // 5/01/2017 RURIEPE - CONDICION PARA EVALUAR SI LAS VARIABLES USUARIO Y CORREO TIENEN VALORES, EN CASO CONTRARIO DE NO TENER VALORES ESO INDICA QUE LA CONSULTA NO ENCONTRO RESULTADOS EN LA BASE DE DATOS INDICANDO QUE EL CLIENTE NO SE ENCUENTRA REGISTRADO EN EL SISTEMA.
-            
-            /*if($usuario == $nombre_cliente OR $correo == $correo_cliente)
-            {
-              echo "cliente/correo";
-            }
-            /*else
+            /*if(!$email)
             {*/
-
-
+            
               // Instanciamos un objeto de la clase DOMPDF.
               $mipdf = new DOMPDF();
            
@@ -316,9 +305,8 @@
               // 18/11/2016 RURIEPE -ENVIO DE CORREO ELECTRONICO
 
                 // 19/10/2016 RURIEPE - SE INCLUYE ARCHIVO enviar_email.php PARA CAPTURAR EL VALOR DE LA VRAIBLE VALIDACION PARA REALILZAR EL ENVIO DEL CORREO
-                $_REQUEST['filename'];
-                include_once('../include/PHPMailer/enviar_email.php');
-
+                  $_REQUEST['filename'];
+                  include_once('../include/PHPMailer/enviar_email.php');
                 // 19/10/2016 RURIEPE - VARIABLES PARA EL ENVIO DE CORREO ELECTRONICO
 
                 $asunto = "Terminos y Condiciones Tu Agencia 24";
@@ -327,7 +315,6 @@
                   include_once('encriptacion-aes-inc.php');
               
                   $clave = "krycekvsmulder";
-              
                   $nombre_encriptado = encriptar_AES($nombre_cliente,$clave);
                   $correo_encriptado = encriptar_AES($correo_cliente,$clave);
                 // 3/01/2017 RURIEPE - FIN
@@ -339,19 +326,19 @@
 
                   $mensaje = '<table>
                   <tr>
-                    <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
                   </tr>
                   <tr>
-                    <th style="font-size:12pt;"><i>Terminos y condiciones Tuagencia24.com</i></th>
+                  <th style="font-size:12pt;"><i>Terminos y condiciones Tuagencia24.com</i></th>
                   </tr>
                   <tr>
-                    <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
                   </tr>
                   <tr>
-                    <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe ingresar en el siguiente enlace <a href="'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'">Aceptar terminos y condiciones</a></div> para aceptar.</th>
+                  <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe ingresar en el siguiente enlace <a href="'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'">Aceptar terminos y condiciones</a></div> para aceptar.</th>
                   </tr>
                   <tr>
-                    <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
                   </tr>
                   </table>';
                 }
@@ -360,13 +347,17 @@
 
                   $link = '<b>'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'</b>';
 
-                  $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe coiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br><a>'.$link.'</a></p>';
+                  $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe copiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br><a>'.$link.'</a></p>';
                 }
  
                 // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE 
                 $envio=enviarEmail($correo_cliente,$asunto,$mensaje);
               // 18/11/2016 RURIEPE -FIN
-           // }
+            /*}
+            else
+            {
+              echo "correo/existe";
+            } */
           //5/01/2017 RURIEPE - FIN 
         // 13/10/2016 RURIEPE -FIN   
       }
