@@ -42,14 +42,16 @@
 
             <!--7/11/2016 RURIEPE - LLAMADO DE LIBRERIA JQUERY-->
             <script src="../../upload/js/jquery-1.12.0.js"></script>
-             <!--17/11/2016 RURIEPE - LLAMADO DE LIBRERIA PARA ALERT ALERTIFY-->
+
+            <!--17/11/2016 RURIEPE - LLAMADO DE LIBRERIA PARA ALERT ALERTIFY-->
             <script type="text/javascript" src="../include/alertify/js/alertify.js"></script>
       
             <!--7/11/2016 RURIEPE - LLAMADO DE CSS PARA DISEÑO DE FORMULARIO-->
             <link href="css/estilo_formulario.css" rel="stylesheet" />
+            
             <!--7/11/2016 RURIEPE - LLAMADO DE CSS PARA DISEÑO DE ALERT ALERTIFY-->
-            <link rel="stylesheet" href="../include/alertify/css/alertify.core.css" />
-            <link rel="stylesheet" href="../include/alertify/css/alertify.default.css" />
+            <link rel="stylesheet" href="../include/alertify/css/alertify.css" />
+            <link rel="stylesheet" href="../include/alertify/css/default.css" />
         </head>
         <body> 
             <div class="contact_form"> 
@@ -106,25 +108,38 @@
                 	       success: function(filename)
                 	       { 
                                 //alert(filename);
-                                //18/11/2016 RURIEPE - CONDICION QUE EVALUA EL VALOR QUE ES LEIDO DEL ARCHIVO TERMINOS.PHP, SI ESTE VALOR ES FALSE ES INDICA QUE EL RCHIVO PDF YA EXISTE POR ENDE SE LE INDICA UN MENSAJE AL USUARIO Y SE CIERRA LA VENTANA EMERGENTE, EN CASO CONTRARIO SE REALILA LA CREACION DEL PDF, SE ENVIA AL CORREO DEL CLIENTE Y SE VISUALIZA.
-                                if(filename != "false")
-                                {
+                                // 18/11/2016 RURIEPE - CONDICION QUE EVALUA EL VALOR QUE ES LEIDO DEL ARCHIVO TERMINOS.PHP, SI ESTE VALOR ES FALSE ES INDICA QUE EL RCHIVO PDF YA EXISTE POR ENDE SE LE INDICA UN MENSAJE AL USUARIO Y SE CIERRA LA VENTANA EMERGENTE, EN CASO CONTRARIO SE REALILA LA CREACION DEL PDF, SE ENVIA AL CORREO DEL CLIENTE Y SE VISUALIZA.
+                                    /*var validacion = filename.split("pdf");
+                                    //alert(validacion);
+                                
+                                    if(validacion[1] == "correo/existe")
+                                    {
+                                        alertify.alert("<b>El correo ya se encuentra en el sistema</b>", function () 
+                                        {
+                                            window.close();
+                                        });
+                                    }
+                                    else*/
+                                    if(filename != "false")
+                                    {
 
-                                    //08/11/2016 RURIEPE - SE CIERRA VENTANA EMERGENTE,SE APERTURA EL PDF CREADO Y SE ACTULIZA VENTANA PADRE
-                                        $('#cargando').html(); 
-                                        window.close();
-                                        window.opener.document.location="tickets.php?id="+id;
-                                        window.open('terminoscliente/'+filename, '_black');      
-                                    //08/11/2016 RURIEPE - FIN
-                                }
-                                else
-                                {
-                                   alertify.alert("<b>Ya existe un términos y condiciones creado</b>", function () 
-                                   {
-                                        window.close();
-                                    });
-                                } 
-                                //18/11/2016 RURIEPE - FIN
+                                        // 08/11/2016 RURIEPE - SE CIERRA VENTANA EMERGENTE,SE APERTURA EL PDF CREADO Y SE ACTULIZA VENTANA PADRE
+                                            $('#cargando').html();
+                                            alertify.alert("<b>Términos y condiciones enviado</b>", function () 
+                                   		   {
+                                        	   window.close();
+                                        	   window.opener.document.location="tickets.php?id="+id;
+                                    	   });         
+                                        // 08/11/2016 RURIEPE - FIN
+                                    }
+                                    else
+                                    {
+                                        alertify.alert("<b>Ya existe un términos y condiciones creado</b>", function () 
+                                        {
+                                            window.close();
+                                        });
+                                    } 
+                                // 18/11/2016 RURIEPE - FIN
                 	       },
                 	       error: function()
                 	       {                     
