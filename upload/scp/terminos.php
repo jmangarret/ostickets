@@ -1,20 +1,19 @@
 <?php
-
+  
   /*error_reporting(E_ALL);
   ini_set('display_errors', '1');*/
- 
-  //2/11/2016 RURIEPE - SE DEFINE DIRECTORIO
+
+  // 2/11/2016 RURIEPE - SE DEFINE DIRECTORIO
   define("INCLUDE_DIR","/home/admin/public_html/ostickets/upload/include/");
 
-  //13/10/2016 RURIEPE - SE INCLUYE ARCHIVO PARA HACER USO DE LA LIBRERIA DOMPDF
+  // 13/10/2016 RURIEPE - SE INCLUYE ARCHIVO PARA HACER USO DE LA LIBRERIA DOMPDF
   require_once("../include/DOMpdf/dompdf_config.inc.php");
  
-  //7/11/2016 RURIEPE - ARCHIVO DE CONDIGURA PARA REAILAZAR CONEXION A BASE DE DATOS
+  // 7/11/2016 RURIEPE - ARCHIVO DE CONDIGURA PARA REAILAZAR CONEXION A BASE DE DATOS
   require_once("../include/ost-config.php");
 
 
-  //07/11/2016 RURIEPE - VARIABLES PARA CAPTURAR LOS DATOS A USAR
-
+  // 7/11/2016 RURIEPE - VARIABLES PARA CAPTURAR LOS DATOS A USAR
     $id_ticket = $_POST['id'];
     $nombre_cliente = $_POST['nombre_cliente'];
     $correo_cliente = $_POST['correo_cliente'];
@@ -23,11 +22,10 @@
     $ip_address = $_SERVER["REMOTE_ADDR"];
     $fecha_actual=date("Y-m-d h:i:s");
     $fecha_pdf = date("Y-m-d");
+    $_REQUEST['respuesta'] = 'envio a cliente';
+  // 7/11/2016 RURIEPE - FIN
 
-  //07/11/2016 RURIEPE - FIN
-
-  //7/11/2016 RURIEPE - CONEXION A BASE DE DATOS
-
+  // 7/11/2016 RURIEPE - CONEXION A BASE DE DATOS
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
 
     if (mysqli_connect_errno()) 
@@ -35,36 +33,30 @@
       printf("Connect failed: %s\n", mysqli_connect_error());
       exit();
     }
+  // 7/11/2016 RURIEPE - FIN
 
-  //7/11/2016 RURIEPE - FIN
-
-  //28/11/2016 RURIEPE - CREAR CARPETA terminoscliente CON PERMISOS 775, EN CASO DE NO EXISTIR
+  // 28/11/2016 RURIEPE - CREAR CARPETA terminoscliente CON PERMISOS 775, EN CASO DE NO EXISTIR
     $carpeta = 'terminoscliente';
     if (!file_exists($carpeta)) 
     {
       mkdir($carpeta, 0775);
     }
-  //28/11/2016 RURIEPE - FIN
+  // 28/11/2016 RURIEPE - FIN
 
-  //16/11/2016 RURIEPE - CONSULTA PARA OBTENER EL NUMERO DE TICKET
-
+  // 16/11/2016 RURIEPE - CONSULTA PARA OBTENER EL NUMERO DE TICKET
     $consulta_number="SELECT number FROM ost_ticket WHERE ticket_id = ".$id_ticket;
     $result = $mysqli->query($consulta_number);
     $row = $result->fetch_array();
     $ticket_number = $row['number'];
+  // 16/11/2016 RURIEPE - FIN
 
-  //16/11/2016 RURIEPE - FIN
-
-  //16/11/2016 RURIEPE - CREACION DEL NOMBRE DEL ARCHIVO PDF
-
+  // 16/11/2016 RURIEPE - CREACION DEL NOMBRE DEL ARCHIVO PDF
     $cliente =str_replace(' ', '', $nombre_cliente);
     $filename = "TerminosCondiciones".$ticket_number."_".$fecha_pdf."_".$cliente.".pdf";
     $_REQUEST['filename'] = $filename;
+  // 16/11/2016 RURIEPE - FIN
 
-  //16/11/2016 RURIEPE - FIN
-
-  //13/10/2016 RURIEPE - CUERPO DEL CONTENIDO DEL PDF SE CONCATENA EN LA VARIABLE HTML
-
+  // 13/10/2016 RURIEPE - CUERPO DEL CONTENIDO DEL PDF SE CONCATENA EN LA VARIABLE HTML
     $html="<header>";
       $html.="
       <div  style='text-align:left; border: #58ABE5 10px groove; padding: 0px 25px 60px 25px; margin: 0.9mm 0.9mm 0.9mm 2mm;'>
@@ -159,145 +151,222 @@
         </div>
       </div>
     </header>";
+  // 13/10/2016 RURIEPE - FIN
 
-  //13/10/2016 RURIEPE - FIN
-
-  //17/11/2016 RURIEPE - VALIDACION DE ARCHIVO PDF SI EXISTE O NO
-
-    //17/11/2016 RURIEPE - SE COLOCA LA RUTA DEL DIRRECTORIO DONDE SER UBICAN LOS ARCHIVOS AL LISTAR
+  // 17/11/2016 RURIEPE - VALIDACION DE ARCHIVO PDF SI EXISTE O NO
+    
+    // 17/11/2016 RURIEPE - SE COLOCA LA RUTA DEL DIRRECTORIO DONDE SER UBICAN LOS ARCHIVOS AL LISTAR
     $directorio = 'terminoscliente/';
 
-    //17/11/2016 RURIEPE - SE HACE UNSO DE LA APLICACION SCANDIR PARA OBTENER(ARRAY) EL NOMBRE DE LOS ARCHIVOS ENCONTRADOS EN EL DIRECTORIO 
+    // 17/11/2016 RURIEPE - SE HACE UNSO DE LA APLICACION SCANDIR PARA OBTENER(ARRAY) EL NOMBRE DE LOS ARCHIVOS ENCONTRADOS EN EL DIRECTORIO 
     $fichero  = scandir($directorio);
 
-    //17/11/2016 RURIEPE - CONTAR LA CANTIDAD DE ELEMENTOS DEL ARRAY 
+    // 17/11/2016 RURIEPE - CONTAR LA CANTIDAD DE ELEMENTOS DEL ARRAY 
     $contar_array = count($fichero);
 
-    //17/11/2016 RURIEPE - SE INICIALIZA EL CONTADOR EN 2 DADO A QUE LAS POSICIONES 0 Y 1 NO SERAN TOMADOS PARA EVALUACION
+    // 17/11/2016 RURIEPE - SE INICIALIZA EL CONTADOR EN 2 DADO A QUE LAS POSICIONES 0 Y 1 NO SERAN TOMADOS PARA EVALUACION
     $i=1;
 
-    //17/11/2016 RURIEPE - CICLO PARA EVALUAR LOS ELEMENTOS DE CADA POSICION
+    // 17/11/2016 RURIEPE - CICLO PARA EVALUAR LOS ELEMENTOS DE CADA POSICION
     do
     {
 
-      //17/11/2016 RURIEPE - SE AUMENTA CONTADOR
+      // 17/11/2016 RURIEPE - SE AUMENTA CONTADOR
       $i++;
 
-      //17/11/2016 RURIEPE - SE BUSCA EN LA CADENA OBTENIDA EL NUMERO DE TICKET
+      // 17/11/2016 RURIEPE - SE BUSCA EN LA CADENA OBTENIDA EL NUMERO DE TICKET
       $archivo_encontrado = strpos($fichero[$i], $ticket_number);
 
     }while($contar_array != $i  &&  $archivo_encontrado == ''); 
 
-    //17/11/2016 RURIEPE - SI EL NUMERO DE TICKET NO COINCIDE CON LO ENCONRADO EN EL DIRECTORIO SE PROCEDE A CREAR EL PDF Y EL ENVIO DEL CORREO AL CLIENTE
+    // 17/11/2016 RURIEPE - SI EL NUMERO DE TICKET NO COINCIDE CON LO ENCONRADO EN EL DIRECTORIO SE PROCEDE A CREAR EL PDF Y EL ENVIO DEL CORREO AL CLIENTE
 
       if(!$archivo_encontrado)
       {
-        //18/11/2016 RURIEPE - SE REALIZA ECHO A LA VARIABLE FILENAME PARA QUE SEA TOMADO EN EL SUCCESS
+        // 18/11/2016 RURIEPE - SE REALIZA ECHO A LA VARIABLE FILENAME PARA QUE SEA TOMADO EN EL SUCCESS
         echo $filename;
 
-        //13/10/2016 RURIEPE - CREACION DE ARCHIVO PDF
-
-          // Instanciamos un objeto de la clase DOMPDF.
-          $mipdf = new DOMPDF();
-           
-          // Definimos el tamaño y orientación del papel que queremos. O por defecto cogerá el que está en el fichero de configuración.
-          $mipdf ->set_paper("legal", "portrait");
-
-          // Cargamos el contenido HTML.
-          $mipdf->load_html($html, 'UTF-8');
-
-          // Renderizamos el documento PDF.
-          $mipdf ->render();
-
-          $pdf = $mipdf->output();//asignamos la salida a una variable
-   
-          file_put_contents($filename, $pdf);//colocamos la salida en un archivo
-
-          //24/10/2016 RURIEPE - SE LE ORTOGA TODOS LOS PERMISOS AL DOCUMENTO CREADO
-          chmod($filename, 0777);
-
-          //17/11/2016 RURIEPE - SE MUEVE ARCHIVO A CARPETA terminoscliente, LUEGO DE SER CREADO
-          rename ($filename,"terminoscliente/".$filename);
+        // 13/10/2016 RURIEPE - CREACION DE ARCHIVO PDF
   
-          //07/11/2016 RURIEPE - CONSULTA PARA OBTENER EL NOMBRE Y APELLIDO DEL AGENTE CONECTADO 
-
+          // 7/11/2016 RURIEPE - CONSULTA PARA OBTENER EL NOMBRE Y APELLIDO DEL AGENTE CONECTADO 
             $consulta_staff="SELECT firstname, lastname, email FROM ost_staff WHERE staff_id = ".$staffid;
             $result = $mysqli->query($consulta_staff);
             $row = $result->fetch_array();
 
             $asesor = $row['email'];
+          // 7/11/2016 RURIEPE - FIN
 
-          //07/11/2016 RURIEPE - FIN
-
-          //07/11/2016 RURIEPE - SE CONCANTENA EL NOMBRE Y APELLIDO EN UNA VRIABLE Y SE CREA UNA VARIABLE CON EL TEXTO PARA AGREGAR A LA TABLA THREAD
-
+          // 7/11/2016 RURIEPE - SE CONCANTENA EL NOMBRE Y APELLIDO EN UNA VRIABLE Y SE CREA UNA VARIABLE CON EL TEXTO PARA AGREGAR A LA TABLA THREAD
             $nombre_staff = $row['firstname'].' '.$row['lastname'];
             $cuerpo = "Se realiza envio de terminos y condiciones al cliente: <b>".$nombre_cliente."</b><br> http://ticket.tuagencia24.com/upload/scp/terminoscliente/".$filename;
+          // 7/11/2016 RURIEPE - FIN
 
-          //07/11/2016 RURIEPE - FIN
+          // 5/01/2017 RURIEPE - CONSULTAS SQL: LA PRIMERA PARA OBTENER EL ULTMO ID DEL REGISTRO DE LA TABLA ost_user_email Y LA SEGUNDA PARA OBTENER EL NOMBRE Y EL CORREO DEL USUARIO.
+            $consulta_id_email="SELECT MAX(id), address FROM  ost_user_email";
+            $result = $mysqli->query($consulta_id_email);
+            $row = $result->fetch_array();
 
-          //07/11/2016 RURIEPE - SE CREA REGISTRO EN LA TABLA OST_THREAD PARA INDICAR Y DEJAS RASTRO DE LA CREACION Y ENVIO DE TERMINOS Y CONDICIONES A CLIENTE
+            $id_email = $row[0];
+            $id = $id_email + 1;
+    
 
-            $ost_thread = $mysqli->query("INSERT INTO ost_ticket_thread
-            (pid,
-            ticket_id,
-            staff_id,
-            user_id,
-            thread_type,
-            poster,
-            source,
-            title,
-            body,
-            format,
-            ip_address,
-            created,updated)
-            VALUES
-            (0,
-            $id_ticket,
-            $staffid,
-            0,
-            'R',
-            '$nombre_staff',
-            ' ',
-            'Terminos y Condiciones',
-            '$cuerpo',
-            'html',
-            '$ip_address',
-            '$fecha_actual',
-            '0000-00-00 00:00:00');");
+           /* $consulta_correo="SELECT address FROM  ost_user_email
+            WHERE address = '".$correo_cliente."'";
+            $result = $mysqli->query($consulta_correo);
+            $row = $result->fetch_array();
 
-          //07/11/2016 RURIEPE - FIN
+            $email = $row['address'];*/
 
-          //18/11/2016 RURIEPE -ENVIO DE CORREO ELECTRONICO
 
-            //19/10/2016 RURIEPE - SE INCLUYE ARCHIVO enviar_email.php PARA CAPTURAR EL VALOR DE LA VRAIBLE VALIDACION PARA REALILZAR EL ENVIO DEL CORREO
-            $_REQUEST['filename'];
-            include_once('../include/PHPMailer/enviar_email.php');
+            /*if(!$email)
+            {*/
+            
+              // Instanciamos un objeto de la clase DOMPDF.
+              $mipdf = new DOMPDF();
+           
+              // Definimos el tamaño y orientación del papel que queremos. O por defecto cogerá el que está en el fichero de configuración.
+              $mipdf ->set_paper("legal", "portrait");
 
-            //19/10/2016 RURIEPE - VARIABLES PARA EL ENVIO DE CORREO ELECTRONICO
-            $asunto = "Terminos y Condiciones Tu Agencia 24";
-            $mensaje = "<div style='font-size:12pt; text-align:justify;'>Estimado: <b>".$nombre_cliente."</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Su respuesta debe ser enviada mediante la respuesta de este correo.<br><br> Sin mas que agregar, quedamos atentos sus a dudas e inquitudes.<br><br></div>";
-            $correo = "ruriepe18@gmail.com";
+              // Cargamos el contenido HTML.
+              $mipdf->load_html($html, 'UTF-8');
 
-            $responder_a = array(
-            array('correo' => $asesor, 'nombre_correo' => $nombre_staff),
-            array('correo' => 'info@tuagencia24.com', 'nombre_correo' => 'Tu Agencia 24')
-            );
+              // Renderizamos el documento PDF.
+              $mipdf ->render();
+
+              $pdf = $mipdf->output();//asignamos la salida a una variable
+   
+              file_put_contents($filename, $pdf);//colocamos la salida en un archivo
+
+              // 24/10/2016 RURIEPE - SE LE ORTOGA TODOS LOS PERMISOS AL DOCUMENTO CREADO
+              chmod($filename, 0777);
+
+              // 17/11/2016 RURIEPE - SE MUEVE ARCHIVO A CARPETA terminoscliente, LUEGO DE SER CREADO
+              rename ($filename,"terminoscliente/".$filename); 
+
+              // 7/11/2016 RURIEPE - SE CREA REGISTRO EN LA TABLA OST_THREAD PARA INDICAR Y DEJAS RASTRO DE LA CREACION Y ENVIO DE TERMINOS Y CONDICIONES A CLIENTE
+
+                $ost_thread = $mysqli->query("INSERT INTO ost_ticket_thread
+                (pid,
+                ticket_id,
+                staff_id,
+                user_id,
+                thread_type,
+                poster,
+                source,
+                title,
+                body,
+                format,
+                ip_address,
+                created,updated)
+                VALUES
+                (0,
+                $id_ticket,
+                $staffid,
+                0,
+                'R',
+                '$nombre_staff',
+                ' ',
+                'Terminos y Condiciones',
+                '$cuerpo',
+                'html',
+                '$ip_address',
+                '$fecha_actual',
+                '0000-00-00 00:00:00');");
+              // 7/11/2016 RURIEPE - FIN
+
+              $ost_user_email = $mysqli->query("INSERT INTO ost_user_email
+              (id,
+              user_id,
+              address)
+              VALUES
+              ($id,
+              $id,
+              '$correo_cliente');");
+
+              $ost_user = $mysqli->query("INSERT INTO ost_user
+              (id,
+              org_id,
+              default_email_id,
+              status,
+              name,
+              created,
+              updated)
+              VALUES
+              ($id,
+              0,
+              $id,
+              0,
+              '$nombre_cliente',
+              '$fecha_actual',
+              '$fecha_actual');");
+             
+              //echo("Error insert: " . mysqli_error($mysqli));    
+              
+              // 18/11/2016 RURIEPE -ENVIO DE CORREO ELECTRONICO
+
+                // 19/10/2016 RURIEPE - SE INCLUYE ARCHIVO enviar_email.php PARA CAPTURAR EL VALOR DE LA VRAIBLE VALIDACION PARA REALILZAR EL ENVIO DEL CORREO
+                  $_REQUEST['filename'];
+                  include_once('../include/PHPMailer/enviar_email.php');
+                // 19/10/2016 RURIEPE - VARIABLES PARA EL ENVIO DE CORREO ELECTRONICO
+
+                $asunto = "Terminos y Condiciones Tu Agencia 24";
+
+                // 3/01/2017 RURIEPE - ENCRIPTACION DE NOMBRE Y CORREO PARA SER ENVIADO URL
+                  include_once('encriptacion-aes-inc.php');
+              
+                  $clave = "krycekvsmulder";
+                  $nombre_encriptado = encriptar_AES($nombre_cliente,$clave);
+                  $correo_encriptado = encriptar_AES($correo_cliente,$clave);
+                // 3/01/2017 RURIEPE - FIN
+
+                $valor = explode("@", $correo_cliente);
+              
+                if($valor[1] != "hotmail.com" && $valor[1] != "HOTMAIL.COM" && $valor[1] && "Hotmail.com")
+                {
+
+                  $mensaje = '<table>
+                  <tr>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  </tr>
+                  <tr>
+                  <th style="font-size:12pt;"><i>Terminos y condiciones Tuagencia24.com</i></th>
+                  </tr>
+                  <tr>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  </tr>
+                  <tr>
+                  <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe ingresar en el siguiente enlace <a href="'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'">Aceptar terminos y condiciones</a></div> para aceptar.</th>
+                  </tr>
+                  <tr>
+                  <th>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
+                  </tr>
+                  </table>';
+                }
+                else
+                {
+
+                  $link = '<b>'.$_SERVER["HTTP_HOST"].'/upload/scp/aceptar_terminos.php?enu='.$id_ticket.'&sff='.$staffid.'&en='.$nombre_encriptado.'&ec='.$correo_encriptado.'</b>';
+
+                  $mensaje = '<p style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento debe copiar el siguiente enlace en la barra de navegacion de su explorador para aceptar <br><a>'.$link.'</a></p>';
+                }
  
-            //19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE PHPMAILER
-            $envio=enviarEmail($correo_cliente,$asunto,$mensaje,$responder_a);
-
-          //18/11/2016 RURIEPE -FIN
-
-        //13/10/2016 RURIEPE -FIN
+                // 19/10/2016 RURIEPE - LLAMADO DE FUNCION Y ENVIO DE LOS VALORES POR PARAMETRO, PARA REALILZAR EL ENVIO DEL CORREO MEDIANTE 
+                $envio=enviarEmail($correo_cliente,$asunto,$mensaje);
+              // 18/11/2016 RURIEPE -FIN
+            /*}
+            else
+            {
+              echo "correo/existe";
+            } */
+          //5/01/2017 RURIEPE - FIN 
+        // 13/10/2016 RURIEPE -FIN   
       }
       else
       {
-       //18/11/2016 RURIEPE - SE REALIZA ECHO PARA QUE SEA TOMADO EN EL SUCCESS
+       // 18/11/2016 RURIEPE - SE REALIZA ECHO PARA QUE SEA TOMADO EN EL SUCCESS
         echo "false";
       }
+    // 17/11/2016 RURIEPE - FIN
 
-    //17/11/2016 RURIEPE - FIN
-
-  //17/11/2016 RURIEPE - FIN
+  // 17/11/2016 RURIEPE - FIN
 ?>

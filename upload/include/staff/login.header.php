@@ -1,5 +1,6 @@
 <?php
 defined('OSTSCPINC') or die('Invalid path');
+$ruta = "/ostickets/upload/assets/default/css";
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -27,13 +28,42 @@ defined('OSTSCPINC') or die('Invalid path');
                 $("input:not(.dp):visible:enabled:first").focus();
             });
         </script>
+
+        <style type="text/css">
+            
+            #footer
+            {
+                text-align: center;
+                font-size: 11px;
+                color: #333;
+            }
+            #footer a 
+            {
+                color: #333;
+            }
+            #footer p 
+            {
+                margin: 10px 0 0 0;
+            }
+            #footer #poweredBy 
+            {
+                display: block;
+                width: 126px;
+                height: 23px;
+                outline: none;
+                text-indent: -9999px;
+                margin: 0 auto;
+                background: url('../assets/default/images/poweredby.png') top left no-repeat;
+                background-size: auto 20px;
+            }
+        </style>
     </head>
     <body>
        <div class="cont_agente">
             <div class="demo">
                 <div class="login">
                     <div>
-                        <img src="../images/logo.png"  height="130" style="position:relative; top:90px; left:-15px;" >
+                        <img src="../images/logo.png"  height="130" style="position:relative; top:60px; left:-15px;" >
                     </div>
 
 
