@@ -446,6 +446,42 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $filas  = $result->fetch_array();
     $limite2 = number_format($filas[0],2,",",".");
 
+//REBECA
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 95
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $nacional = $filas[0];
+
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 96
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $internacional = $filas[0];
+
+//REBECA
+
 
 //Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
 
@@ -461,6 +497,22 @@ $row = $limit2->fetch_array();
 
 <div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
     <table align="right">
+     <tr>
+            <td align="right">
+                <b>Freelance Plus Fee Nacional</b>:
+            </td>
+            <td align="left">
+                BsF <?=$nacional;?>
+            </td>   
+        </tr>
+         <tr>
+            <td align="right">
+                <b>Freelance Plus Fee Internacional</b>:
+            </td>
+            <td align="left">
+                BsF <?=$internacional;?>
+            </td>   
+        </tr>
         <tr>
             <td align="right">
                 <b>L&iacute;mite de Cr&eacute;dito Total</b>:
