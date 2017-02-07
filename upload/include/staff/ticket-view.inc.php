@@ -575,7 +575,7 @@ $row = $limit2->fetch_array();
 // 7/02/2017 RURIEPE - FIN
 
 
-    if($semaforo == 'Emision Rapida') 
+    if($semaforo == '{"Emision Rapida":"Emision Rapida"}') 
     {
 ?>
 
@@ -594,7 +594,7 @@ $row = $limit2->fetch_array();
         <big>
 <?php
 }
-else if($semaforo == 'Verificar Credito') 
+else if($semaforo == '{"Verifcar Credito":"Verificar Credito"}') 
 {
 ?>
 
@@ -613,7 +613,7 @@ else if($semaforo == 'Verificar Credito')
         <big>
 <?php
 }
-else if($semaforo == 'Adjuntar Pago') 
+else if($semaforo == '{"Adjuntar Pago":"Adjuntar Pago"}') 
 {
 ?>
 <div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:red;padding:4px;border-radius:4px;margin:4px;">
