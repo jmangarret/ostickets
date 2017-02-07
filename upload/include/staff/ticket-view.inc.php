@@ -446,7 +446,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $filas  = $result->fetch_array();
     $limite2 = number_format($filas[0],2,",",".");
 
-//REBECA
+//6/02/2017 RURIEPE - CONSULTA PARA OBTENER LOS VALORES DEL CAMPO FEE NACIONAL/INTERNACIONAL
 
     $query = "  SELECT 
                     a.value 
@@ -480,8 +480,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $filas  = $result->fetch_array();
     $internacional = $filas[0];
 
-//REBECA
-
+//6/02/2017 RURIEPE - FIN
 
 //Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
 
@@ -497,6 +496,7 @@ $row = $limit2->fetch_array();
 
 <div style='text-align:right;display:inline-block;background-color:#F4FAFF;width:100%;'>
     <table align="right">
+    <!--6/02/2017 RUEIEPE - SE MUESTRAN LOS VALORES-->
      <tr>
             <td align="right">
                 <b>Freelance Plus Fee Nacional</b>:
@@ -513,6 +513,7 @@ $row = $limit2->fetch_array();
                 BsF <?=$internacional;?>
             </td>   
         </tr>
+    <!--6/02/2017 RUEIEPE - SE MUESTRAN LOS VALORES-->
         <tr>
             <td align="right">
                 <b>L&iacute;mite de Cr&eacute;dito Total</b>:
@@ -546,12 +547,111 @@ $row = $limit2->fetch_array();
     */
 ?>
 
-<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
+<!--<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
     <big><big><?php echo Format::htmlchars($ticket->getSubject()); ?></big></big>
 </div>
 
 <div class="clear"></div>
-<h2 style="padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:yellow;"><big><big><?php echo Format::htmlchars($ticket->getSubject()); ?></big></big></h2>
+<h2 style="padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:yellow;"><big><big>-->
+<?php 
+
+// 7/02/2017 RURIEPE - CONSULTA PARA OBTENER EL TIPO DE SATELITE
+    $query = "  SELECT 
+                    a.value 
+                FROM 
+                    ost_form_entry_values a,
+                    ost_form_entry b,
+                    ost_user c
+                WHERE
+                    b.object_type = 'O'
+                    AND b.object_id = c.org_id
+                    AND a.entry_id = b.id
+                    AND a.field_id = 97
+                    AND c.id = ".$user->getId();
+    $result = $mysqli->query($query);
+    $filas  = $result->fetch_array();
+    $semaforo = $filas[0];
+
+// 7/02/2017 RURIEPE - FIN
+
+
+    if($semaforo == 'Emision Rapida') 
+    {
+?>
+
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:green;padding:4px;border-radius:4px;margin:4px;">
+    <big>
+        <big>
+            <?php echo Format::htmlchars($ticket->getSubject()); ?>    
+        </big>
+    </big>
+</div>
+
+<div class="clear"></div>
+<br>
+<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:green;">
+    <big>
+        <big>
+<?php
+}
+else if($semaforo == 'Verificar Credito') 
+{
+?>
+
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
+    <big>
+        <big>
+            <?php echo Format::htmlchars($ticket->getSubject()); ?>    
+        </big>
+    </big>
+</div>
+
+<div class="clear"></div>
+<br>
+<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:yellow;">
+    <big>
+        <big>
+<?php
+}
+else if($semaforo == 'Adjuntar Pago') 
+{
+?>
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:red;padding:4px;border-radius:4px;margin:4px;">
+    <big>
+        <big>
+            <?php echo Format::htmlchars($ticket->getSubject()); ?>    
+        </big>
+    </big>
+</div>
+
+<div class="clear"></div>
+<br>
+<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:red;">
+    <big>
+        <big>
+<?php
+}else
+{
+?>
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:#00D0DE;padding:4px;border-radius:4px;margin:4px;">
+    <big>
+        <big>
+            <?php echo Format::htmlchars($ticket->getSubject()); ?>    
+        </big>
+    </big>
+</div>
+
+<div class="clear"></div>
+<br>
+<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:#00D0DE;">
+    <big>
+        <big>
+<?php 
+}
+?>
+
+
+<?php echo Format::htmlchars($ticket->getSubject()); ?></big></big></h2>
 <?php
 $tcount = $ticket->getThreadCount();
 $tcount+= $ticket->getNumNotes();
