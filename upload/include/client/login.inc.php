@@ -81,4 +81,5 @@
         	<a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
     	</div>       
     </div> 
+
 </form>
