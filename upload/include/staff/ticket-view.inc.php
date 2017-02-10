@@ -594,10 +594,10 @@ $row = $limit2->fetch_array();
         <big>
 <?php
 }
-else if($semaforo == '{"Verifcar Credito":"Verificar Credito"}') 
-{
+else
+ if($semaforo == '{"Verificar Credito":"Verificar Credito"}') 
+    {
 ?>
-
 <div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
     <big>
         <big>
@@ -613,8 +613,9 @@ else if($semaforo == '{"Verifcar Credito":"Verificar Credito"}')
         <big>
 <?php
 }
-else if($semaforo == '{"Adjuntar Pago":"Adjuntar Pago"}') 
-{
+else
+ if($semaforo == '{"Pago Adjunto":"Pago Adjunto"}') 
+    {
 ?>
 <div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:red;padding:4px;border-radius:4px;margin:4px;">
     <big>
@@ -630,10 +631,11 @@ else if($semaforo == '{"Adjuntar Pago":"Adjuntar Pago"}')
     <big>
         <big>
 <?php
-}else
+}
+else
 {
 ?>
-<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:#00D0DE;padding:4px;border-radius:4px;margin:4px;">
+<div style="border:3px solid #000;position:fixed;top:0;left:0;color:#000;background-color:yellow;padding:4px;border-radius:4px;margin:4px;">
     <big>
         <big>
             <?php echo Format::htmlchars($ticket->getSubject()); ?>    
@@ -643,12 +645,14 @@ else if($semaforo == '{"Adjuntar Pago":"Adjuntar Pago"}')
 
 <div class="clear"></div>
 <br>
-<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:#00D0DE;">
+<h2 style="border:3px solid #000; border-radius:4px; padding:10px 0 5px 0; font-size:11pt;margin-bottom:10px;color:#000;background-color:yellow;">
     <big>
         <big>
-<?php 
+<?php
 }
 ?>
+
+
 
 
 <?php echo Format::htmlchars($ticket->getSubject()); ?></big></big></h2>

@@ -284,10 +284,10 @@ $(function() {
           else
               submit();
         }
-        else {
+          /*else if (!ids.length) {
             $.sysAlert(__('Oops'),
-                __('You need to select at least one item'));
-        }
+                __('You need to select at least one item....Usuario'));
+        }*/
     };
     $(document).on('click', 'a.users-action', function(e) {
         e.preventDefault();
