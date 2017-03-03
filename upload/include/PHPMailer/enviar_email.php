@@ -6,15 +6,12 @@
   	require 'PHPMailerAutoload.php';
 
 	//03/11/2016 RURIEPE- CONFIGURACION DE ENVIO DE CORREO ELECTRONICO
-	echo $_REQUEST['respuesta'];
-
-		function enviarEmail($email,$asunto,$mensaje)
+		function enviarEmail($email,$asunto,$mensaje,$asesor)
 		{
 			$server_username = "info@tuagencia24.com";
 			$mail = new PHPMailer;
 
 			//03/11/2016 RURIEPE - CONFIGURACION DE SMTP (Protocolo para la Transferencia Simple de Correo) 
-
 				$mail->isSMTP();
 				$mail->SMTPDebug = 0;
 				$mail->Debugoutput = 'html';
@@ -24,27 +21,20 @@
 				$mail->SMTPAuth = true;
 				$mail->Username = $server_username;
 				$mail->Password = "AUDEtuagencia24";
-
 			//03/11/2016 RURIEPE - SMTP
 
 			//Usamos el SetFrom para decirle al script quien envia el correo
 			$mail->SetFrom($server_username, "Tu Agencia 24");
 
-			$mail->addReplyTo('noreply@tuagencia24.com');
+			//Con respuesta a  Ases@r y  Info
+			$mail->addReplyTo($asesor,"Asesor");
+			$mail->addReplyTo("info@tuagencia24.com","TuAgencia24");
 
-			if($_REQUEST['respuesta'] == 'respuesta_cliente')
-			{
-				//Usamos el AddAddress para agregar un destinatario
-				$mail->AddAddress($email, "Asesor");
-				
-				//Con Copia a...
-				$mail->AddCC("info@tuagencia24.com");
-			}
-			else
-			{
-				//Usamos el AddAddress para agregar un destinatario
-				$mail->AddAddress($email, "Cliente - Pasajero");
-			}
+			//Usamos el AddAddress para agregar un destinatario
+			$mail->AddAddress($email, "Cliente - Pasajero");
+
+			//Con copia a info
+			$mail->AddCC("info@tuagencia24.com");
 
 			//Ponemos el asunto del mensaje
 			$mail->Subject = $asunto;
@@ -52,12 +42,9 @@
 			//Contenido del correo
 			$mail->MsgHTML($mensaje);
 
-			if($_REQUEST['respuesta'] != 'respuesta_cliente')
-			{
-				//Adjuntar archivo
-				$url ="terminoscliente/".$_REQUEST['filename'];
-				$mail->AddAttachment($url,"Terminos y Condiciones.pdf");
-			}
+			//Adjuntar archivo
+			$url ="terminoscliente/".$_REQUEST['filename'];
+			$mail->AddAttachment($url,"Terminos y Condiciones.pdf");
 
 			//Enviamos el correo
 			if(!$mail->send()) 
