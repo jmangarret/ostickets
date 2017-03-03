@@ -44,14 +44,14 @@
             <script src="../../upload/js/jquery-1.12.0.js"></script>
 
             <!--17/11/2016 RURIEPE - LLAMADO DE LIBRERIA PARA ALERT ALERTIFY-->
-            <script type="text/javascript" src="../include/alertify/js/alertify.js"></script>
+            <script type="text/javascript" src="js/alertify.js"></script>
       
             <!--7/11/2016 RURIEPE - LLAMADO DE CSS PARA DISEÑO DE FORMULARIO-->
             <link href="css/estilo_formulario.css" rel="stylesheet" />
             
             <!--7/11/2016 RURIEPE - LLAMADO DE CSS PARA DISEÑO DE ALERT ALERTIFY-->
-            <link rel="stylesheet" href="../include/alertify/css/alertify.css" />
-            <link rel="stylesheet" href="../include/alertify/css/default.css" />
+            <link rel="stylesheet" href="css/alertify.default.css" />
+            <link rel="stylesheet" href="css/alertify.core.css" />
         </head>
         <body> 
             <div class="contact_form"> 
