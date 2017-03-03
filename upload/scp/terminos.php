@@ -278,7 +278,7 @@
                 <th>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
                 </tr>
                 <tr>
-                <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento, debe enviar su respesta mediante este correo electrónico. </th>
+                <th style="font-size:12pt; text-align:justify;">Estimado: <b>'.$nombre_cliente.'</b><br><br> En el siguiente correo usted podra realizar la lectura de los terminos y condiciones generales de TuAgencia24. Luego de realizar la lectura del documento, debe enviar su respesta mediante este correo electronico. </th>
                 </tr>
                 <tr>
                 <th>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</th>
