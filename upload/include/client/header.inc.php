@@ -106,8 +106,10 @@ if (($all_langs = Internationalization::availableLanguages())
             <a class="pull-left" id="logo" href="<?php echo ROOT_PATH; ?>index.php"
             title="<?php echo __('Support Center'); ?>">
                 <span class="valign-helper"></span>
-                <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
-                echo $ost->getConfig()->getTitle(); ?>">
+               <!-- <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
+                echo $ost->getConfig()->getTitle(); ?>">-->
+                <img src="images/tuagencia24.jpg" border=0 alt="comision">
+                <img src="images/comision.gif" border=0 alt="comision" ">
             </a>
         </div>
         <div class="clear"></div>
@@ -130,8 +132,7 @@ if (($all_langs = Internationalization::availableLanguages())
         <!-- Fin cinta cambio del dia BD CRM. -->
         <?php
         if($nav){ ?>
-        <ul id="nav" class="flush-left">
-            <?php
+        <ul id="nav" class="flush-left">4            <?php
             if($nav && ($navs=$nav->getNavLinks()) && is_array($navs)){
                 foreach($navs as $name =>$nav) {/*MICOD: URL modificada*/
                     echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']."?clean=1"),$nav['desc'],"\n");
@@ -171,7 +172,7 @@ if(isset($_SESSION["_auth"]["user"]["id"])){
 
     $open = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept.ispublic, cdata.subject,dept_name, status.name 
                 as status, status.state, ticket.source, ticket.created ,count(attach_id) as attachments FROM ost_ticket ticket 
-                LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
+                LEFT J4IN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
                 ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
                 LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
                 LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 

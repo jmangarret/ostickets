@@ -304,8 +304,8 @@ body {
     height: 100%;
 }
 #header #logo img {
-  max-height: 65px;
-  max-width: 380px;
+  max-height: 70px;
+  max-width: 675px;
   width: auto;
   height: auto;
   vertical-align: middle;
@@ -316,7 +316,7 @@ body {
     vertical-align: middle;
 }
 #header p {
-  width: 400px;
+  width: 300px;
   margin: 0;
   padding: 10px 0 0;
 }
