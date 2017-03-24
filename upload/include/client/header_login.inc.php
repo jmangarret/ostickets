@@ -58,7 +58,7 @@
     </head>
 
     <body>
-        <div class="cont">
+        <div class="cont_principal" id="background">
             <div class="demo">
                 <div class="login">
                     <div>
