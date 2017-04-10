@@ -109,7 +109,7 @@ if (($all_langs = Internationalization::availableLanguages())
                <!-- <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
                 echo $ost->getConfig()->getTitle(); ?>">-->
                 <img src="images/tuagencia24.jpg" border=0 alt="comision">
-                <img src="images/comision.gif" border=0 alt="comision" ">
+                <!--<img src="images/comision.gif" border=0 alt="comision">-->
             </a>
         </div>
         <div class="clear"></div>
