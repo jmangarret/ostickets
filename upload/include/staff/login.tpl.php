@@ -33,11 +33,11 @@
                 <button type="submit" class="login__submit2" name="submit">
                     <b>Iniciar Sesión</b>
                 </button>  
-                <a href="http://ticket.tuagencia24.com/">
+                <!--<a href="http://ticket.tuagencia24.com/">
                     <button type="button" class="login__agente2" >
                         <b>Soy Satélite / Freelance</b>
                     </button>
-                </a>  
+                </a>  -->
                 <div id="footer">
                     <p style="color: white;">Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'osTicket.com'; ?> - All rights reserved.</p>
                     <a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
