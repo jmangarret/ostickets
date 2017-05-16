@@ -121,7 +121,7 @@ if (($all_langs = Internationalization::availableLanguages())
                 $qryCintaCrm= mysql_query($sqlCintaCrm);
                 $rowCintaCrm=mysql_fetch_row($qryCintaCrm);            
                 mysql_close($conex);            
-                echo "<div style='color:dodgerblue; background-color:#fcfc96; font-family:Arial; font-weight:bold'>";
+                echo "<div style='color:#0F64B4; background-color:#FAF250; font-family:Arial; font-weight:bold'>";
                 echo "<marquee scrolldelay=200>";
                 echo "Administrador: ";
                 echo $rowCintaCrm[0];
@@ -132,12 +132,13 @@ if (($all_langs = Internationalization::availableLanguages())
         <!-- Fin cinta cambio del dia BD CRM. -->
         <?php
         if($nav){ ?>
-        <ul id="nav" class="flush-left">4            <?php
+        <ul id="nav" class="flush-left"><?php
             if($nav && ($navs=$nav->getNavLinks()) && is_array($navs)){
                 foreach($navs as $name =>$nav) {/*MICOD: URL modificada*/
                     echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']."?clean=1"),$nav['desc'],"\n");
                     //ORIGINAL!!!--->echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
                 }
+                //echo '<li><a class="tickets" href="#">Emisiones</a></li>';
             } 
             ?>
         </ul>
