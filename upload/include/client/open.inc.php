@@ -395,6 +395,13 @@ $row = $limit2->fetch_array();
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
         }
+        /*Jonathan 12/05/2017 FIX TEMPORAL Para poder enfocar al Cotizar SOTO select:eq(1)=23 Cotizar SOTO / tr:eq(3)=GDS / tr:eq(4)=LOCALIZADOR */
+        /* An invalid form control with name='496fabf6e20ce01c[]' is not focusable. */
+        /* An invalid form control with name='a276bde2a28a098f' is not focusable. */
+        if($("select:eq(1)").val() == 23){                        
+            $("tr:eq(3)").show("slow");
+            $("tr:eq(4)").show("slow");            
+        }
     });
 
     $('select:eq(3)').change(function(){
