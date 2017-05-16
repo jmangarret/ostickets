@@ -7,6 +7,7 @@ html {
 body {
   margin: 0;
   font-size: 13px;
+  font-family: helvetica, arial, sans-serif;
   line-height: 1.231;
   padding: 0;
 }
@@ -130,6 +131,7 @@ h3 {
 h2, .subject {
   font-size: 16px;
   color: black;
+  font-weight: bold;
 }
 /* Helpers */
 .centered {
@@ -911,11 +913,13 @@ a.refresh {
 }
 #ticketThread table th span {
   font-weight: normal;
-  color: #888;
+  color: #000;
   padding-left: 20px;
 }
-#ticketThread .message th {
-  background: #d8efff;
+#ticketThread .message th,
+#ticketThread .message th span{
+  background: #0F64B4;
+  color: #fff;
 }
 #ticketThread .response th {
   background: #ddd;
