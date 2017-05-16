@@ -854,13 +854,13 @@ label.required {
 #ticketTable th {
   height: 24px;
   line-height: 24px;
-  background: #e1f2ff;
+  background: #0F64B4;
   border: 1px solid #aaa;
   border-right: none;
   border-top: none;
 }
 #ticketTable th a {
-  color: #000;
+  color: #fff;
 }
 #ticketTable td {
   padding: 2px;
