@@ -13,7 +13,7 @@
 
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
-require('client.inc.php');
+/*require('client.inc.php');
 $section = 'home';
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
@@ -140,5 +140,8 @@ if($cfg && $cfg->isKnowledgebaseEnabled()){
 </div>
 <?php
 } ?>
-<?php require(CLIENTINC_DIR.'footer.inc.php'); ?>
+<?php require(CLIENTINC_DIR.'footer.inc.php'); ?>*/
+
+header("Location: login.php");
+
 
