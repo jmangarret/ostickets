@@ -330,7 +330,7 @@ $row = $limit2->fetch_array();
         });
         if($("select:eq(0)").val() == 19){
             //$("tr:eq(3)").show("slow");
-            $("select:eq(2)").prop('required',true);
+            //$("select:eq(2)").prop('required',true); Se deshabilita required GDS
             $("input:eq(9)").val("Pendiente");
         }
         else if($("select:eq(0)").val() == 20){
@@ -353,7 +353,7 @@ $row = $limit2->fetch_array();
 
     });
 
-    $("select:eq(1)").change(function(){
+    $("select:eq(1)").change(function(){        
         if(($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23) || ($("select:eq(0)").val() == 21 && $("select:eq(1)").val() == 33)){
             if($("select:eq(0)").val() == 19 && $("select:eq(1)").val() != 23){
                 //$("tr:eq(10)").show("slow"); ////////////Billy 5/02/2016 se quito el input de la cedula para que no aparezca cuando el tipo de solicitud sea emitir localizador
@@ -366,6 +366,7 @@ $row = $limit2->fetch_array();
             }   
             $("tr:eq(4)").show("slow");
             $("input:eq(2)").prop('required',true);
+
         }
         else{
             $("tr:eq(4)").hide("slow");
@@ -375,9 +376,12 @@ $row = $limit2->fetch_array();
         if($("select:eq(1)").val() == 19 || $("select:eq(1)").val() == 26){
             $("tr:eq(5)").show("slow");
             $("select:eq(3)").prop('required',true);
+            $("input:eq(2)").prop('required',true);
+            $("select:eq(2)").prop('required',true);
         }
-         else{
+        else{
             $("tr:eq(5)").hide("slow");
+            $("select:eq(2)").removeAttr('required');
             $("select:eq(3)").removeAttr('required');
             $("select:eq(3)").val("");
         }
@@ -387,14 +391,19 @@ $row = $limit2->fetch_array();
             $("tr:eq(3)").hide(0);
             $("tr:eq(4)").hide(0);
         }
-         else{
-            $("input:eq(2)").prop('required',true);
-            $("select:eq(2)").prop('required',true);
-        }
         if($("select:eq(0)").val() != 19){
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
         }
+        /*Jonathan 12/05/2017 FIX TEMPORAL Para poder enfocar al Cotizar SOTO 
+        select:eq(0)=19 Aereo  - Tipo de Solicitud 
+        select:eq(1)=23 Cotizar SOTO - Detalle de Solicitud
+        select:eq(2)=11 SOTO -GDS 
+        tr:eq(3)=GDS 
+        tr:eq(4)=LOCALIZADOR */
+        /* An invalid form control with name='496fabf6e20ce01c[]' is not focusable. */
+        /* An invalid form control with name='a276bde2a28a098f' is not focusable. */
+
     });
 
     $('select:eq(3)').change(function(){
@@ -552,5 +561,5 @@ $mysqli->close();
 ?>
 
 <!--Inicio Billy 29/01/2016-->
-<script type="text/javascript" src="/upload/js/autoNumeric.js"></script>
+<script src="<?php echo ROOT_PATH; ?>js/autoNumeric.js"></script>
 <!--Fin Billy 29/01/2016-->
