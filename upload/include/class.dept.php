@@ -507,7 +507,7 @@ class Dept {
             if (isset($vars['id']))
                 $sql .= ', dept_id='.db_input($vars['id']);
 
-            $sql='INSERT INTO '.DEPT_TABLE.' '.$sql.',created=NOW()';
+           $sql='INSERT INTO '.DEPT_TABLE.' '.$sql.',created=NOW()';
             if(db_query($sql) && ($id=db_insert_id()))
                 return $id;
 

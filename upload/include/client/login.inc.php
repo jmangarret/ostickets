@@ -52,10 +52,43 @@
 <?php 
     } 
 ?>
+<script type="text/javascript">
+
+    $(document).ready(function() 
+    {
+        $("#login_user").hide(); 
+        $("#sat_free").click(function(event) 
+        {
+            $("#background").addClass("cont");
+            $("#login_general").hide();             
+            $("#login_user").show();
+        });
+    });         
+</script>
+
+<div class="login__form" id="login_general">
+    <button type="submit" class="login__submit" id="sat_free">
+        <b>Satélite / Freelance</b>
+    </button>  
+    <br><br>
+     <a href="<?php echo ROOT_PATH; ?>scp/">
+        <button type="button" class="login__agente">
+            <b>Asesor TuAgencia24.com</b>
+        </button>
+    </a>
+    <br><br><br><br>
+    <div id="footer">
+        <p style="color: white;">Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'osTicket.com'; ?> - All rights reserved.</p>
+        <a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
+    </div>       
+</div> 
 
 <form action="login.php" method="POST" autocomplete="off">
     <?php csrf_token(); ?>
-    <div class="login__form">
+
+    <div class="login__form" id="login_user">
+    <p style="font-size: 22px; color: white; text-shadow: -1px -1px 1px #000, 2px -2px 2px #000, -1px 1px 1px #000, 2px 2px 2px #000;">Satélite / Freelance</p>
+    <br>
         <div class="login__row">
             <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
                 <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
@@ -68,13 +101,15 @@
             </svg>
             <input type="password" class="login__input pass" placeholder="Contraseña" id="lpasswd" name="lpasswd"/>
         </div>
+        <br>
         <button type="submit" class="login__submit">
             <b>Iniciar Sesión</b>
-        </button>  
-        <a href="<?php echo ROOT_PATH; ?>scp/">
-            <button type="button" class="login__agente" >
-                <b>Soy Agente</b>
-            </button>
-        </a>        
+        </button> 
+        <br>
+        <div id="footer">
+        	<p style="color: white;">Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'osTicket.com'; ?> - All rights reserved.</p>
+        	<a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
+    	</div>       
     </div> 
+
 </form>

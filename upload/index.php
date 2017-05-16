@@ -144,3 +144,4 @@ if($cfg && $cfg->isKnowledgebaseEnabled()){
 
 header("Location: login.php");
 
+

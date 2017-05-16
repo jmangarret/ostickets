@@ -58,9 +58,10 @@
     </head>
 
     <body>
-        <div class="cont">
+        <div class="cont_principal" id="background">
             <div class="demo">
                 <div class="login">
                     <div>
-                        <img src="images/logo.png"  height="130" style="position:relative; top:90px; left:-15px;" >
+                        <img src="images/logo.png"  height="130" style="position:relative; top:60px; left:-15px;" >
                     </div>
+                    
