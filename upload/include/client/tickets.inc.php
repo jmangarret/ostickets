@@ -1,9 +1,18 @@
 <!--Inicio Billy 25/01/2016-->
+<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.min.css"/>
+<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css"/>
+<script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
+<!--
+
+<script src="<?php echo ROOT_PATH; ?>js/jquery-1.12.0.js"></script>
 
 <link rel="stylesheet" href="/upload/css/bootstrap.min.css">
 <script src=" /upload/css/bootstrap.min.js"></script>
 
-<!--Fin Billy 25/01/2016-->
+Fin Billy 25/01/2016-->
 
 
 <?php
@@ -402,10 +411,6 @@ $n_cerrados = mysqli_num_rows($result_close);
 
 <!--////////////////////////////inicio 25/01/2016 Billy Modal para busqueda avanzada////////////////////////////////////////////-->
 
-<link rel="stylesheet" href="/upload/css/bootstrap.css">
-  <script src="/upload/js/jquery-1.12.0.js"></script>
-  <script src="/upload/js/bootstrap.min.js"></script>
-
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -541,17 +546,17 @@ $n_cerrados = mysqli_num_rows($result_close);
         <tr>
             <th><b>Desde</b></th>
             <td>
-            <input type="text" id ="datepicker" name="des"> <!--Billy 1/02/2016 Input para el datepicker desde-->
+            <input type="text" id ="datepicker" name="des" style="width:80px"> <!--Billy 1/02/2016 Input para el datepicker desde-->
                         </td>
             <th><b>Hasta</b></th>
             <td>
-                <input type="text" id ="datepicker2" name="has"> <!--Billy 1/02/2016 Input para el datepicker hasta-->
+                <input type="text" id ="datepicker2" name="has" style="width:80px"> <!--Billy 1/02/2016 Input para el datepicker hasta-->
             </td>
         </tr>
         <tr>
             <th><b>Localizador</b></th>
             <td>
-                <input type="text" name="loc" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="off">
+                <input type="text" name="loc" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="off" style="width:80px">
             </td>
 
             <th></th>
@@ -609,7 +614,7 @@ $n_cerrados = mysqli_num_rows($result_close);
 
 
 <!--Inicio Billy 27/01/2016 se agregaron los campos GDS y Pago a la tabla y se ancho la tabla-->
-<table id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
+<table id="ticketTable" class="table" width="100%" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
             <th nowrap>
@@ -628,12 +633,12 @@ $n_cerrados = mysqli_num_rows($result_close);
                 <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><b><?php echo __('Department');?></a>
             </th>
 
-            <th width="120"><b>GDS</th>
+            <th width="120"><a href="#"><b>GDS</th>
 
-            <th width="120"><b>Localizador</th>
-            <th width="120"><b>Status</th>
+            <th width="120"><a href="#"><b>Localizador</th>
+            <th width="120"><a href="#"><b>Status</th>
 
-            <th width="120"><b>Pago</th>
+            <th width="120"><a href="#"><b>Pago</b></th>
 
            <!--Fin Billy 27/01/2016 se agregaron los campos GDS y Pago a la tabla y se ancho la tabla-->
         </tr>
@@ -764,12 +769,13 @@ if($res && $num>0) {
 
 ?>
   
-<!--Inicio Billy 1/02/2016 Agrego las clases del datepicker-->
+<!--jmangarret 15/05/2017 librerias subidas al inicio del script
+Inicio Billy 1/02/2016 Agrego las clases del datepicker blue 135 226 100 0F64B4 / yellow 38 227 155 FAF250
 
-  <script src="/upload/js/jquery-1.12.0.js"></script>
-  <script src="/upload/js/jquery-ui.js"></script>
+  <script src="<?php echo ROOT_PATH; ?>js/jquery-1.12.0.js"></script>
+  <script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
 
-<!--Fin Billy 1/02/2016 Agrego las clases del datepicker-->
+Fin Billy 1/02/2016 Agrego las clases del datepicker-->
 
 <!--Inicio Billy 1/02/2016 Funciones para el datepicker-->
 <script>
