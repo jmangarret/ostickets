@@ -1,20 +1,3 @@
-<!--Inicio Billy 25/01/2016-->
-<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.min.css"/>
-<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css"/>
-<script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>
-
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
-<!--
-
-<script src="<?php echo ROOT_PATH; ?>js/jquery-1.12.0.js"></script>
-
-<link rel="stylesheet" href="/upload/css/bootstrap.min.css">
-<script src=" /upload/css/bootstrap.min.js"></script>
-
-Fin Billy 25/01/2016-->
-
-
 <?php
 if(!defined('OSTCLIENTINC') || !is_object($thisclient) || !$thisclient->isValid()) die('Access Denied');
 
