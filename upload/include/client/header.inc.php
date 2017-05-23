@@ -147,16 +147,13 @@ if (($all_langs = Internationalization::availableLanguages())
                     echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']."?clean=1"),$nav['desc'],"\n");
                     //ORIGINAL!!!--->echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
                 }
-                //<!-- jmangarret - 15/05/2017 Ajax Query para consultar boletos del CRM -->
-                //Agregamos Pestaña Emisiones
+                //<!-- jmangarret - 15/05/2017 Pestaña Emisiones -->                
                 echo '<li><a id="emisiones" class="tickets" href="#">Emisiones</a></li>';
                 //Consultamos la organizacion a la que pertence el usuario para luego buscar todos los usuarios de la misma org
                 $sqlOrg="SELECT org_id FROM osticket1911.ost_user WHERE id=".$_SESSION['_auth']['user']['id'];
                 $qryOrg= mysql_query($sqlOrg);
                 $rowOrg=mysql_fetch_row($qryOrg);            
-                $org_id=$rowOrg[0];
-
-                
+                $org_id=$rowOrg[0];                
             } 
             ?>
         </ul>
