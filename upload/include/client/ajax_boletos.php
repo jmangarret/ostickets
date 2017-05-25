@@ -65,6 +65,7 @@ $totGeneralDol=0;
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
             <script type="text/javascript">
             $("#buscar").click(function(){
+                $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
                 $.ajax({
                     data: { 
                         org_id : $("#org_id").val(),
@@ -130,9 +131,9 @@ $totGeneralDol=0;
         <td nowrap><?php echo $row[4]; ?></td>
         <td nowrap><?php echo $row[5]; ?></td>
         <td nowrap><?php echo $row[6]; ?></td>
-        <td nowrap><?php echo $row[7]; ?></td>        
-        <td nowrap><?php echo $total; ?></td>
+        <td nowrap><?php echo $row[7]; ?></td>                
         <td nowrap><?php echo $row[8]; ?></td>
+        <td nowrap><?php echo $total; ?></td>
         <td nowrap><?php echo $row[9]; ?></td>        
     </tr>
     
