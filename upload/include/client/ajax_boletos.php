@@ -17,9 +17,10 @@ while ($rowEmail=mysql_fetch_row($qryEmail)) {
 $matches = "'".implode("','",$emails)."'";
 /// Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
+$bd="crmtest";
 /// $db nombre de base de datos del CRM en Produccion ///
 $query	= "		
-	SELECT fecha_emision, l.localizador, passenger, boleto1, gds, itinerario, paymentmethod, amount, currency, b.status
+	SELECT fecha_emision, l.localizador, passenger, boleto1, gds, paymentmethod, b.fee, amount, currency, b.status
 		FROM $bd.vtiger_account as a 
 			INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
 			INNER JOIN $bd.vtiger_localizadores as l ON l.contactoid=c.contactid
@@ -43,6 +44,12 @@ if ($fecha1 && $fecha2){
 $query.=" ORDER BY fecha_emision DESC";
 $result = mysql_query($query);
 $totreg = mysql_num_rows($result);
+$totTarifa=0;
+$totFee=0;
+$totGeneral=0;
+$totTarifaDol=0;
+$totFeeDol=0;
+$totGeneralDol=0;
 //echo $query;
 ?>
 
@@ -85,22 +92,35 @@ $totreg = mysql_num_rows($result);
 <table id="ticketTable" class="table" width="100%" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
-            <th width="120"><a href="#"><b>Fecha</b></a></th>    
-            <th width="120"><a href="#"><b>Localizador</b></a></th>            
-            <th width="120"><a href="#"><b>Pasajero</b></a></th>
-            <th width="120"><a href="#"><b>Boleto</b></a></th>                              
-            <th width="120"><a href="#"><b>GDS</b></a></th>
-            <th width="120"><a href="#"><b>Ruta</b></a></th>            
-            <th width="120"><a href="#"><b>F. de Pago</b></a></th>           
-            <th width="120"><a href="#"><b>Tarifa</b></a></th>           
-            <th width="120"><a href="#"><b>Moneda</b></a></th>           
-            <th width="120"><a href="#"><b>Status</b></a></th>           
+            <th width="120"><a href="#"><b>Fecha</b></th>    
+            <th width="120"><a href="#"><b>Localizador</b></th>            
+            <th width="120"><a href="#"><b>Pasajero</b></th>
+            <th width="120"><a href="#"><b>Boleto</b></th>                              
+            <th width="120"><a href="#"><b>GDS</b></th>                    
+            <th width="120"><a href="#"><b>F. de Pago</b></th>           
+            <th width="120"><a href="#"><b>Fee</b></th>           
+            <th width="120"><a href="#"><b>Tarifa</b></th>           
+            <th width="120"><a href="#"><b>Total</b></th>           
+            <th width="120"><a href="#"><b>Moneda</b></th>           
+            <th width="120"><a href="#"><b>Status</b></th>           
         </tr>
     </thead>
     <tbody>
    <?php
    while ($row=mysql_fetch_row($result)) { 
-    $fecha = date("d/m/Y", strtotime($row[0]));       
+    $fecha = date("d/m/Y", strtotime($row[0])); 
+    $total      =$row[6] + $row[7]; 
+    if ($row[8]=="VEF"){
+        $totFee     =$totFee + $row[6];    
+        $totTarifa  =$totTarifa + $row[7];  
+        $totGeneral =$totGeneral + $row[6] + $row[7];        
+    }      
+    if ($row[8]=="USD"){
+        $totFeeDol     =$totFeeDol + $row[6];    
+        $totTarifaDol  =$totTarifaDol + $row[7];  
+        $totGeneralDol =$totGeneralDol + $row[6] + $row[7];        
+    }  
+    
     ?>
     <tr>
         <td nowrap><?php echo $fecha; ?></td>
@@ -110,14 +130,31 @@ $totreg = mysql_num_rows($result);
         <td nowrap><?php echo $row[4]; ?></td>
         <td nowrap><?php echo $row[5]; ?></td>
         <td nowrap><?php echo $row[6]; ?></td>
-        <td nowrap><?php echo $row[7]; ?></td>
+        <td nowrap><?php echo $row[7]; ?></td>        
+        <td nowrap><?php echo $total; ?></td>
         <td nowrap><?php echo $row[8]; ?></td>
         <td nowrap><?php echo $row[9]; ?></td>        
     </tr>
     
 	<?php
-	}        
+	}            
    ?>
+    <tr>
+        <td colspan="6"><b>Total USD.</b></td>
+        <td><b><?php echo number_format($totFeeDol,2); ?></b></td>
+        <td><b><?php echo number_format($totTarifaDol,2); ?></b></td>        
+        <td><b><?php echo number_format($totGeneralDol,2); ?></b></td>
+        <td><b>USD</b></td>
+        <td><b></b></td>
+    </tr>
+    <tr>
+        <td colspan="6"><b>Total VEF.</b></td>
+        <td><b><?php echo number_format($totFee,2); ?></b></td>
+        <td><b><?php echo number_format($totTarifa,2); ?></b></td>        
+        <td><b><?php echo number_format($totGeneral,2); ?></b></td>
+        <td><b>VEF</b></td>
+        <td><b></b></td>
+    </tr>
     </tbody>
 </table>
 
