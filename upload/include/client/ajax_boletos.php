@@ -18,16 +18,14 @@ $matches = "'".implode("','",$emails)."'";
 /// Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
 /// $db nombre de base de datos del CRM en Produccion ///
-$query	= "		
-	SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, b.fee, amount, currency
+$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, b.fee, amount, currency
 		FROM $bd.vtiger_account as a 
 			INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
 			INNER JOIN $bd.vtiger_localizadores as l ON l.contactoid=c.contactid
 				AND localizadoresid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Localizadores') 
 			INNER JOIN $bd.vtiger_boletos as b ON b.localizadorid=l.localizadoresid 
 				AND boletosid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Boletos')
-		WHERE email1 IN ($matches) OR email IN ($matches)		
-";
+		WHERE email1 IN ($matches) OR email IN ($matches)";
 if (!$strbus && !$fecha1 && !$fecha2){
     $criterio = " Todos los boletos ";
 }
@@ -51,6 +49,14 @@ $totFeeDol=0;
 $totGeneralDol=0;
 //echo $query;
 ?>
+
+<script type="text/javascript">
+<?php 
+//CONSOLE.LOG PARA DEBUG
+$LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
+echo "console.log(\"".$LOG."\")"; 
+?>
+</script>
 
 <div id="basic_search">
     <table>
