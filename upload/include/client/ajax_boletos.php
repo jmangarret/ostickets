@@ -111,9 +111,9 @@ $totGeneralDol=0;
     $fecha = date("d/m/Y", strtotime($row[0])); 
     $total      =$row[7] + $row[8]; 
     if ($row[9]=="VEF"){
-        $totFee     =$totFee + $row[6];    
-        $totTarifa  =$totTarifa + $row[7];  
-        $totGeneral =$totGeneral + $row[6] + $row[7];        
+        $totFee     =$totFee + $row[7];    
+        $totTarifa  =$totTarifa + $row[8];  
+        $totGeneral =$totGeneral + $row[7] + $row[8];        
     }      
     if ($row[9]=="USD"){
         $totFeeDol     =$totFeeDol + $row[7];    

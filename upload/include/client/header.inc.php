@@ -176,6 +176,7 @@ if (($all_langs = Internationalization::availableLanguages())
         <!-- jmangarret - 15/05/2017 Ajax Query para consultar boletos del CRM -->
         <script type="text/javascript">
         $("#emisiones").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
             $("#emisiones").parent().prev().children("a").removeClass("active");
             $("#emisiones").addClass("active");
             $.ajax({
