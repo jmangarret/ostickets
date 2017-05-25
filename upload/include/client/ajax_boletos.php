@@ -71,20 +71,26 @@ echo "console.log(\"".$LOG."\")";
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
             <script type="text/javascript">
             $("#buscar").click(function(){
+                var org_id = $("#org_id").val();
+                var strbus = $("#strbus").val();
+                var fecha1 = $("#fecha1").val();
+                var fecha2 = $("#fecha2").val();
+
                 $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+
                 $.ajax({
                     data: { 
-                        org_id : $("#org_id").val(),
-                        strbus : $("#strbus").val(),
-                        fecha1 : $("#fecha1").val(),
-                        fecha2 : $("#fecha2").val()
+                        org_id : org_id,
+                        strbus : strbus,
+                        fecha1 : fecha1,
+                        fecha2 : fecha2
                     },
                     type: "POST",
                     url: 'include/client/ajax_boletos.php',
                     success: function(response){                                                                  
-                        $("#content").html(response);
-                        }
-                    });
+                      $("#content").html(response);
+                    }
+                });
             });
             </script>            
         </tr>
