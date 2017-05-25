@@ -17,10 +17,9 @@ while ($rowEmail=mysql_fetch_row($qryEmail)) {
 $matches = "'".implode("','",$emails)."'";
 /// Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
-$bd="crmtest";
 /// $db nombre de base de datos del CRM en Produccion ///
 $query	= "		
-	SELECT fecha_emision, l.localizador, passenger, boleto1, gds, paymentmethod, b.fee, amount, currency, b.status
+	SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, b.fee, amount, currency
 		FROM $bd.vtiger_account as a 
 			INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
 			INNER JOIN $bd.vtiger_localizadores as l ON l.contactoid=c.contactid
@@ -95,30 +94,31 @@ $totGeneralDol=0;
             <th width="120"><a href="#"><b>Fecha</b></th>    
             <th width="120"><a href="#"><b>Localizador</b></th>            
             <th width="120"><a href="#"><b>Pasajero</b></th>
-            <th width="120"><a href="#"><b>Boleto</b></th>                              
+            <th width="120"><a href="#"><b>Boleto</b></th>                                                
             <th width="120"><a href="#"><b>GDS</b></th>                    
+            <th width="120"><a href="#"><b>Status</b></th>     
             <th width="120"><a href="#"><b>F. de Pago</b></th>           
             <th width="120"><a href="#"><b>Fee</b></th>           
             <th width="120"><a href="#"><b>Tarifa</b></th>           
             <th width="120"><a href="#"><b>Total</b></th>           
             <th width="120"><a href="#"><b>Moneda</b></th>           
-            <th width="120"><a href="#"><b>Status</b></th>           
+            
         </tr>
     </thead>
     <tbody>
    <?php
    while ($row=mysql_fetch_row($result)) { 
     $fecha = date("d/m/Y", strtotime($row[0])); 
-    $total      =$row[6] + $row[7]; 
-    if ($row[8]=="VEF"){
+    $total      =$row[7] + $row[8]; 
+    if ($row[9]=="VEF"){
         $totFee     =$totFee + $row[6];    
         $totTarifa  =$totTarifa + $row[7];  
         $totGeneral =$totGeneral + $row[6] + $row[7];        
     }      
-    if ($row[8]=="USD"){
-        $totFeeDol     =$totFeeDol + $row[6];    
-        $totTarifaDol  =$totTarifaDol + $row[7];  
-        $totGeneralDol =$totGeneralDol + $row[6] + $row[7];        
+    if ($row[9]=="USD"){
+        $totFeeDol     =$totFeeDol + $row[7];    
+        $totTarifaDol  =$totTarifaDol + $row[8];  
+        $totGeneralDol =$totGeneralDol + $row[7] + $row[8];        
     }  
     
     ?>
@@ -140,20 +140,18 @@ $totGeneralDol=0;
 	}            
    ?>
     <tr>
-        <td colspan="6"><b>Total USD.</b></td>
+        <td colspan="7"><b>Total USD.</b></td>
         <td><b><?php echo number_format($totFeeDol,2); ?></b></td>
         <td><b><?php echo number_format($totTarifaDol,2); ?></b></td>        
         <td><b><?php echo number_format($totGeneralDol,2); ?></b></td>
-        <td><b>USD</b></td>
-        <td><b></b></td>
+        <td><b>USD</b></td>        
     </tr>
     <tr>
-        <td colspan="6"><b>Total VEF.</b></td>
+        <td colspan="7"><b>Total VEF.</b></td>
         <td><b><?php echo number_format($totFee,2); ?></b></td>
         <td><b><?php echo number_format($totTarifa,2); ?></b></td>        
         <td><b><?php echo number_format($totGeneral,2); ?></b></td>
-        <td><b>VEF</b></td>
-        <td><b></b></td>
+        <td><b>VEF</b></td>        
     </tr>
     </tbody>
 </table>
