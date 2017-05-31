@@ -1,14 +1,6 @@
-<!--Inicio Billy 25/01/2016-->
-
-<link rel="stylesheet" href="/upload/css/bootstrap.css">
-  <script src="/upload/css/bootstrap.min.js"></script>
-
-<!--Fin Billy 25/01/2016-->
-
 <script type="text/javascript">
     $("#container").css("width","90%");
 </script>
-
 <?php
 if(!defined('OSTSCPINC') || !$thisstaff || !@$thisstaff->isStaff()) die('Access Denied');
 

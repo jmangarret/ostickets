@@ -20,6 +20,9 @@ if (($lang = Internationalization::getCurrentLanguage())
         .tip_shadow { display:block !important; }
     </style>
     <![endif]-->
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css">
+    <script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>
+
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.8.3.min.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.10.3.custom.min.js?c1b5a33"></script>
     <script type="text/javascript" src="./js/scp.js?c1b5a33"></script>
@@ -45,7 +48,6 @@ if (($lang = Internationalization::getCurrentLanguage())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/loadingbar.css?c1b5a33"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?c1b5a33"/>
     <script type="text/javascript" src="./js/jquery.dropdown.js?c1b5a33"></script>
-
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
