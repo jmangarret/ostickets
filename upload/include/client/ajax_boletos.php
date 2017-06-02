@@ -145,7 +145,9 @@ echo "console.log(\"".$LOG."\")";
         $totBaseBs  =$totBaseBs + $row["monto_base"];          
         if ($comision==true) {
             //Calculamos Comision Bs. MontoBase*Porcentaje / 100
-            $comisionBs     =$row["monto_base"]*$porcentaje/100;           
+            $comisionBs     =$row["monto_base"]*$porcentaje/100; 
+            if ($row["gds"]<>"Amadeus")          
+                $comisionBs=0;
             $total          =$total-$comisionBs;
             $totComisionBs  =$totComisionBs+$comisionBs;   
         }       
