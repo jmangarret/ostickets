@@ -17,7 +17,7 @@ $matches = "'".implode("','",$emails)."'";
 /// Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
 /// $db nombre de base de datos del CRM en Produccion ///
-$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, b.fee, amount, currency, b.monto_base 
+$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
 		      FROM $bd.vtiger_account as a 
 			     INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
 			     INNER JOIN $bd.vtiger_localizadores as l ON l.contactoid=c.contactid
@@ -41,6 +41,8 @@ $query.=" ORDER BY fecha_emision DESC";
 $result = mysql_query($query);
 $totreg = mysql_num_rows($result);
 $totTarifa=0;
+$totBaseBs=0;
+$totBaseDol=0;
 $totFee=0;
 $totGeneral=0;
 $totTarifaDol=0;
@@ -109,7 +111,7 @@ echo "console.log(\"".$LOG."\")";
 <br>
 <b>Mostrando 1 - <?php echo $totreg . $criterio; ?></b>
 
-<table id="ticketTable" class="table" width="100%" cellspacing="0" cellpadding="0">
+<table id="ticketTable" class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
             <th width="120"><a href="#"><b>Fecha</b></th>    
@@ -118,79 +120,95 @@ echo "console.log(\"".$LOG."\")";
             <th width="120"><a href="#"><b>Boleto</b></th>                                                
             <th width="120"><a href="#"><b>GDS</b></th>                    
             <th width="120"><a href="#"><b>Status</b></th>     
-            <th width="120"><a href="#"><b>F. de Pago</b></th>           
-            <th width="120"><a href="#"><b>MontoBase</b></th>           
-            <th width="120"><a href="#"><b>Fee</b></th>           
+            <th width="120"><a href="#"><b>F.de.Pago</b></th>                       
             <th width="120"><a href="#"><b>Tarifa</b></th>           
-            <th width="120"><a href="#"><b>Total</b></th>    
+            <th width="120"><a href="#"><b>MontoBase</b></th>             
             <?php 
             if ($comision==true){
             echo '<th width="120"><a href="#"><b>Comision</b></th>';
             }                       
             ?>
+            <th width="120"><a href="#"><b>Fee</b></th>        
+            <th width="120"><a href="#"><b>Total</b></th>       
             <th width="120"><a href="#"><b>Moneda</b></th>           
             
         </tr>
     </thead>
     <tbody>
    <?php
-   while ($row=mysql_fetch_row($result)) { 
-    $fecha = date("d/m/Y", strtotime($row[0])); 
-    $total      =$row[7] + $row[8]; 
-    if ($row[9]=="VEF"){
-        $totFee     =$totFee + $row[7];    
-        $totTarifa  =$totTarifa + $row[8];  
-        $totGeneral =$totGeneral + $row[7] + $row[8];        
-         //Calculamos Comision Bs. MontoBase*Porcentaje / 100
-        $comisionBs=$row[10]*$porcentaje/100;
-        $totComisionBs=$totComisionBs+$comisionBs;
+   while ($row=mysql_fetch_array($result)) { 
+    $fecha = date("d/m/Y", strtotime($row["fecha_emision"]));     
+    $total =$row["amount"] + $row["fee"]; 
+    if ($row["currency"]=="VEF"){
+        $totFee     =$totFee + $row["fee"];    
+        $totTarifa  =$totTarifa + $row["amount"];          
+        $totBaseBs  =$totBaseBs + $row["monto_base"];          
+        if ($comision==true) {
+            //Calculamos Comision Bs. MontoBase*Porcentaje / 100
+            $comisionBs     =$row["monto_base"]*$porcentaje/100;           
+            $total          =$total-$comisionBs;
+            $totComisionBs  =$totComisionBs+$comisionBs;   
+        }       
+        $totGeneral =$totGeneral + $total; 
     }      
-    if ($row[9]=="USD"){
-        $totFeeDol     =$totFeeDol + $row[7];    
-        $totTarifaDol  =$totTarifaDol + $row[8];  
-        $totGeneralDol =$totGeneralDol + $row[7] + $row[8];        
+    if ($row["currency"]=="USD"){
+        $totFeeDol     =$totFeeDol + $row["fee"];    
+        $totBaseDol    =$totBaseDol + $row["monto_base"];
+        $totTarifaDol  =$totTarifaDol + $row["amount"];  
+        $totGeneralDol =$totGeneralDol + $row["amount"] + $row["fee"];        
     }  
     
     ?>
     <tr>
         <td nowrap><?php echo $fecha; ?></td>
-        <td nowrap><?php echo $row[1]; ?></td>
-        <td nowrap><?php echo $row[2]; ?></td>
-        <td nowrap><?php echo $row[3]; ?></td>
-        <td nowrap><?php echo $row[4]; ?></td>
-        <td nowrap><?php echo $row[5]; ?></td>
-        <td nowrap><?php echo $row[6]; ?></td>
-        <td nowrap><?php echo number_format($row[10],2); ?></td>
-        <td nowrap><?php echo number_format($row[7],2); ?></td>                
-        <td nowrap><?php echo number_format($row[8],2); ?></td>
-        <td nowrap><?php echo number_format($total,2); ?></td>
+        <td nowrap><?php echo $row["localizador"]; ?></td>
+        <td nowrap><?php echo substr($row["passenger"],0,30); //Solo 30 Caracteres ?></td>
+        <td nowrap><?php echo $row["boleto1"]; ?></td>
+        <td nowrap><?php echo $row["gds"]; ?></td>
+        <td nowrap><?php echo $row["status"]; ?></td>
+        <td nowrap><?php echo $row["paymentmethod"]; ?></td>
+        <td nowrap><?php echo number_format($row["amount"],2); ?></td>
+        <td nowrap><?php echo number_format($row["monto_base"],2); ?></td>                        
         <?php 
         if ($comision==true){
         echo '<td nowrap>'.number_format($comisionBs,2).'</td>';
         }                       
         ?>            
-        <td nowrap><?php echo $row[9]; ?></td>        
-    </tr>
-    
+        <td nowrap><?php echo number_format($row["fee"],2); ?></td>
+        <td nowrap><?php echo number_format($total,2); ?></td>
+        <td nowrap><?php echo $row["currency"]; ?></td>        
+    </tr>    
 	<?php
 	}            
    ?>
     <tr>
-        <td colspan="8"><b>Total USD.</b></td>
-        <td><b><?php echo number_format($totFeeDol,2); ?></b></td>
+        <td colspan="7"><b>Total USD.</b></td>        
         <td><b><?php echo number_format($totTarifaDol,2); ?></b></td>        
+        <td><b><?php echo number_format($totBaseDol,2); ?></b></td>        
+        <?php 
+        if ($comision==true){
+        echo '<td><b>0.00</b></td>';
+        }                       
+        ?>          
+        <td><b><?php echo number_format($totFeeDol,2); ?></b></td>        
         <td><b><?php echo number_format($totGeneralDol,2); ?></b></td>
-        <td><b>0.00</b></td>        
         <td><b>USD</b></td>        
     </tr>
+
     <tr>
-        <td colspan="8"><b>Total VEF.</b></td>
-        <td><b><?php echo number_format($totFee,2); ?></b></td>
+        <td colspan="7"><b>Total VEF.</b></td>        
         <td><b><?php echo number_format($totTarifa,2); ?></b></td>        
+        <td><b><?php echo number_format($totBaseBs,2); ?></b></td>        
+        <?php 
+        if ($comision==true){
+        echo '<td><b>'.number_format($totComisionBs,2).'</b></td>';
+        }                       
+        ?>                  
+        <td><b><?php echo number_format($totFee,2); ?></b></td>        
         <td><b><?php echo number_format($totGeneral,2); ?></b></td>
-        <td><b><?php echo number_format($totComisionBs,2); ?></b></td>
         <td><b>VEF</b></td>        
     </tr>
+
     </tbody>
 </table>
 
