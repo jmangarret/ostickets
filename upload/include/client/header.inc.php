@@ -42,6 +42,16 @@ if (($lang = Internationalization::getCurrentLanguage())
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor.min.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-fonts.js?c1b5a33"></script>
+
+
+<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.min.css"/>
+<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css"/>
+<script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
+
+
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -119,8 +129,7 @@ if (($all_langs = Internationalization::availableLanguages())
                 $conex=mysql_connect(DBHOST, DBUSER, DBPASS);            
                 $sqlCintaCrm="SELECT announcement FROM vtigercrm600.vtiger_announcement";
                 $qryCintaCrm= mysql_query($sqlCintaCrm);
-                $rowCintaCrm=mysql_fetch_row($qryCintaCrm);            
-                mysql_close($conex);            
+                $rowCintaCrm=mysql_fetch_row($qryCintaCrm);                                    
                 echo "<div style='color:#0F64B4; background-color:#FAF250; font-family:Arial; font-weight:bold'>";
                 echo "<marquee scrolldelay=200>";
                 echo "Administrador: ";
@@ -138,7 +147,13 @@ if (($all_langs = Internationalization::availableLanguages())
                     echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']."?clean=1"),$nav['desc'],"\n");
                     //ORIGINAL!!!--->echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
                 }
-                //echo '<li><a class="tickets" href="#">Emisiones</a></li>';
+                //<!-- jmangarret - 15/05/2017 Pestaña Emisiones -->                
+                echo '<li><a id="emisiones" class="tickets" href="#">Emisiones</a></li>';
+                //Consultamos la organizacion a la que pertence el usuario para luego buscar todos los usuarios de la misma org
+                $sqlOrg="SELECT org_id FROM osticket1911.ost_user WHERE id=".$_SESSION['_auth']['user']['id'];
+                $qryOrg= mysql_query($sqlOrg);
+                $rowOrg=mysql_fetch_row($qryOrg);            
+                $org_id=$rowOrg[0];                
             } 
             ?>
         </ul>
@@ -158,48 +173,19 @@ if (($all_langs = Internationalization::availableLanguages())
             <div id="msg_warning"><?php echo $warn; ?></div>
          <?php } ?>
 
-<!--
-
-<?php
-
-if(isset($_SESSION["_auth"]["user"]["id"])){
-
-    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
-
-    $open = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept.ispublic, cdata.subject,dept_name, status.name 
-                as status, status.state, ticket.source, ticket.created ,count(attach_id) as attachments FROM ost_ticket ticket 
-                LEFT J4IN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
-                ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
-                LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
-                LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
-                AND status.state IN ('open') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
-                GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
-    $result_open = $mysqli->query($open);
-    $n_abiertos = mysqli_num_rows($result_open);
-
-
-    $close = "SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, dept.ispublic, cdata.subject,dept_name, status.name 
-                as status, status.state, ticket.source, ticket.created ,count(attach_id) as attachments FROM ost_ticket ticket 
-                LEFT JOIN ost_ticket_status status ON (status.id = ticket.status_id) LEFT JOIN ost_ticket__cdata cdata 
-                ON (cdata.ticket_id = ticket.ticket_id) LEFT JOIN ost_department dept ON (ticket.dept_id=dept.dept_id) 
-                LEFT JOIN ost_ticket_collaborator collab ON (collab.ticket_id = ticket.ticket_id AND collab.user_id = ".$thisclient->getId()." ) 
-                LEFT JOIN ost_ticket_attachment attach ON ticket.ticket_id=attach.ticket_id WHERE ( ticket.user_id= ".$thisclient->getId()." OR collab.user_id= ".$thisclient->getId()." ) 
-                AND status.state IN ('closed') AND cast(cdata.localizador as char(100) charset utf8) LIKE '%%' 
-                GROUP BY ticket.ticket_id ORDER BY ticket.created ASC";
-    $result_close = $mysqli->query($close);
-    $n_cerrados = mysqli_num_rows($result_close);
-
-}
-
-?>
-
-<script type="text/javascript">
-    $("#nav li a:eq(2)").text("Tickets (<?=($n_cerrados+$n_abiertos)?>)");
-</script>   
-
--->
+        <!-- jmangarret - 15/05/2017 Ajax Query para consultar boletos del CRM -->
+        <script type="text/javascript">
+        $("#emisiones").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#emisiones").parent().prev().children("a").removeClass("active");
+            $("#emisiones").addClass("active");
+            $.ajax({
+                data: { org_id : <?php echo $org_id; ?>},
+                type: "POST",
+                url: 'include/client/ajax_boletos.php',
+                success: function(response){                                                                  
+                    $("#content").html(response);
+                    }
+                });
+        });
+        </script>   
