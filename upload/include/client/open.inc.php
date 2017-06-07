@@ -34,7 +34,7 @@ foreach ($_POST as $key => $value) {
 <form id="ticketForm" method="post" action="open.php" enctype="multipart/form-data" onsubmit="">
   <?php csrf_token(); ?>
   <input type="hidden" name="a" value="open">
-  <table width="800" cellpadding="1" cellspacing="0" border="0">
+  <table width="80%" cellpadding="1" cellspacing="0" border="0">
     <tbody>
     <tr style="">
         <td class="required"><?php echo __('Tipo de Solicitud');?>:</td>

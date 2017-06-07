@@ -21,20 +21,24 @@ if (($lang = Internationalization::getCurrentLanguage())
     <meta name="description" content="customer support platform">
     <meta name="keywords" content="osTicket, Customer support system, support ticket system">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css"/>
+    
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css?c1b5a33" media="screen"/>
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css?c1b5a33" media="screen"/>
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/print.css?c1b5a33" media="print"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/typeahead.css?c1b5a33"
-         media="screen" />
-    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?c1b5a33"
-        rel="stylesheet" media="screen" />
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/typeahead.css?c1b5a33" media="screen" />         
+    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?c1b5a33" rel="stylesheet" media="screen" />    
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/thread.css?c1b5a33" media="screen"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?c1b5a33" media="screen"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?c1b5a33"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?c1b5a33"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?c1b5a33"/>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.8.3.min.js?c1b5a33"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.10.3.custom.min.js?c1b5a33"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.10.3.custom.min.js?c1b5a33"></script>  
     <script src="<?php echo ROOT_PATH; ?>js/osticket.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/filedrop.field.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery.multiselect.min.js?c1b5a33"></script>
@@ -42,15 +46,9 @@ if (($lang = Internationalization::getCurrentLanguage())
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor.min.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-fonts.js?c1b5a33"></script>
-
-
-<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.min.css"/>
-<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/bootstrap.css"/>
-<script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>
-
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
-
+    
+    <script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>    
+    <script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
 
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
