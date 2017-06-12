@@ -77,6 +77,26 @@ echo "console.log(\"".$LOG."\")";
                 Desde: <input type="text" id ="fecha1" name="desde" style="width:90px" placeholder="aaaa-mm-dd"> 
                 Hasta: <input type="text" id ="fecha2" name="hasta" style="width:90px" placeholder="aaaa-mm-dd"> &nbsp;
             </td>
+            <?php
+            //Si la org es cero, es Perfil Agente - Viene de include/staff/header.inc.php
+            if (!$org_id){
+                echo "<td>";
+                echo "Satelite: <select name='satelites' id='satelites'>";
+                echo "<option value=0>Seleccionar</option>";
+                echo "</select>";
+                echo "</td>";  
+                $query="SELECT id,name FROM osticket1911.ost_organization ORDER BY name";
+                $result = mysql_query($query);                          
+                while ($fila = mysql_fetch_array($result)) {
+                    $orgs.='<option value="'.$fila["id"].'">'.$fila["name"].'</option>';
+                }
+                echo mysql_error();      
+                echo "<script>";
+                echo "$(\"#satelites\").html('".$orgs."').fadeIn();";
+                echo "</script>";
+            }
+            //Fin org staff
+            ?>
             <td><input type="button" name="buscar" id="buscar" value="Buscar"></td>   
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
             <script type="text/javascript">

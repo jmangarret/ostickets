@@ -130,7 +130,25 @@ if (($lang = Internationalization::getCurrentLanguage())
 } # endif X_PJAX ?>
     <ul id="nav">
 <?php include STAFFINC_DIR . "templates/navigation.tmpl.php"; ?>
-    </ul>
+
+    <!--jmangarret - 09-06-2017 - Pestaña para consultar emisiones por satelites - Perfil agentes -->
+    <li class="inactive"><a id="emisiones" class="tickets" href="#">Emisiones CRM</a></li>
+    <script type="text/javascript">
+    $("#emisiones").click(function(){        
+        $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");                
+        $.ajax({
+            data: { org_id : "0"},
+            type: "POST",
+            url: '../include/client/ajax_boletos.php',
+            success: function(response){                                                                  
+                $("#content").html(response);
+                }
+            });
+    });
+    </script>   
+    <!-- Fin pestaña -->
+
+    </ul>    
     <ul id="sub_nav">
 <?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
     </ul>
