@@ -1,10 +1,12 @@
 <?php
 $conex=mysql_connect("localhost", "osticket", "0571ck37");   
 //Consultamos los email de los usuarios de la organizacion filtrar los boletos.
-$org_id=$_REQUEST["org_id"];
-$strbus=trim($_REQUEST["strbus"]);
-$fecha1=trim($_REQUEST["fecha1"]);
-$fecha2=trim($_REQUEST["fecha2"]);
+$org_id =$_REQUEST["org_id"];
+$org_name =$_REQUEST["org_name"];
+$isStaff=$_REQUEST["isStaff"];
+$strbus =trim($_REQUEST["strbus"]);
+$fecha1 =trim($_REQUEST["fecha1"]);
+$fecha2 =trim($_REQUEST["fecha2"]);
 
 $sqlEmail=" SELECT address FROM osticket1911.ost_user_email 
             WHERE user_id IN (SELECT id FROM osticket1911.ost_user WHERE org_id=$org_id)";
@@ -14,9 +16,8 @@ while ($rowEmail=mysql_fetch_row($qryEmail)) {
     $emails[]=$rowEmail[0];                    
 }        
 $matches = "'".implode("','",$emails)."'";
-/// Colocar nombre de base de datos del CRM en Produccion ///
+/// $db Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
-/// $db nombre de base de datos del CRM en Produccion ///
 $query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
 		      FROM $bd.vtiger_account as a 
 			     INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
@@ -24,11 +25,11 @@ $query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status
 				    AND localizadoresid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Localizadores') 
 			     INNER JOIN $bd.vtiger_boletos as b ON b.localizadorid=l.localizadoresid 
 				    AND boletosid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Boletos')
-		      WHERE email1 IN ($matches) OR email IN ($matches)";
+		      WHERE (email1 IN ($matches) OR email IN ($matches))";
+
 if (!$strbus && !$fecha1 && !$fecha2){
     $criterio = " Todos los boletos ";
 }
-
 if ($strbus){
     $query.=" AND (l.localizador LIKE '%$strbus%' OR boleto1 LIKE '%$strbus%' OR passenger LIKE '%$strbus%') ";
     $criterio = " Coincidencias de $strbus ";
@@ -49,22 +50,21 @@ $totTarifaDol=0;
 $totFeeDol=0;
 $totGeneralDol=0;
 $totComisionBs=0;
-//echo $query;
 
 //Validamos si es una Satelite con comision adicional
+//Id 4- Bestravel
+//Id 8- BEstravel Sucursal
 if ($org_id==4 || $org_id==8){
-    //Id 4- Bestravel
-    //Id 8- BEstravel Sucursal
     $comision=true;
     $porcentaje=1.5;
 }
 ?>
-
 <!--CONSOLE.LOG PARA DEBUG-->
 <script type="text/javascript">
 <?php 
+//Elimnamos satos de linea, break line, tabulaciones para poder mostrarlos en el console.log
 $LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
-echo "console.log(\"".$LOG."\")"; 
+echo "console.log(\"".$matches."\")"; 
 ?>
 </script>
 
@@ -72,31 +72,59 @@ echo "console.log(\"".$LOG."\")";
     <table>
         <tbody>
         <tr>
-            <td>
+            <td nowrap>
                 <input type="text" id="strbus" name="strbus" size="30" placeholder="Localizador, boleto, pasajero">                
                 Desde: <input type="text" id ="fecha1" name="desde" style="width:90px" placeholder="aaaa-mm-dd"> 
-                Hasta: <input type="text" id ="fecha2" name="hasta" style="width:90px" placeholder="aaaa-mm-dd"> &nbsp;
-            </td>
+                Hasta: <input type="text" id ="fecha2" name="hasta" style="width:90px" placeholder="aaaa-mm-dd">&nbsp;
+            <?php
+            /////Si inicia sesion como Agente, es Perfil Staff y la peticion viene de include/staff/header.inc.php
+            if ($isStaff){
+                //retrocedemos un directorio para salir de la carpeta SCP
+                $urlAjax="../include/client/ajax_boletos.php";
+                echo "<td>";
+                echo "Satelite: <select name='satelite' id='select_satelites' onchange='setOrganizacion(this)'>";
+                echo "<option value=0>Seleccionar</option>";
+                echo "</select>";
+                echo "</td>";  
+                $sqlOrg="SELECT id,name FROM osticket1911.ost_organization ORDER BY name";
+                $qryOrg = mysql_query($sqlOrg);                          
+                while ($rowOrg = mysql_fetch_row($qryOrg)) {
+                    ?>
+                     <script type="text/javascript">                        
+                        $("#select_satelites").append(new Option("<?php echo $rowOrg[1]; ?>", "<?php echo $rowOrg[0]; ?>"));                        
+                    </script>
+                    <?php                    
+                }
+            }else{
+                $urlAjax="include/client/ajax_boletos.php";
+            }
+            /////Fin org staff
+            ?>              
             <td><input type="button" name="buscar" id="buscar" value="Buscar"></td>   
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
+            <td><input type="hidden" name="org_name" id="org_name" value="<?php echo $org_name; ?>"></td>   
+            <td><input type="hidden" name="isStaff" id="isStaff" value="<?php echo $isStaff; ?>"></td>   
             <script type="text/javascript">
             $("#buscar").click(function(){
                 var org_id = $("#org_id").val();
+                var org_name = $("#org_name").val();
                 var strbus = $("#strbus").val();
                 var fecha1 = $("#fecha1").val();
                 var fecha2 = $("#fecha2").val();
-
+                var isStaff= $("#isStaff").val();
                 $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
 
                 $.ajax({
                     data: { 
                         org_id : org_id,
+                        org_name : org_name,
                         strbus : strbus,
                         fecha1 : fecha1,
-                        fecha2 : fecha2
+                        fecha2 : fecha2,
+                        isStaff: isStaff
                     },
                     type: "POST",
-                    url: 'include/client/ajax_boletos.php',
+                    url: '<?php echo $urlAjax; ?>',
                     success: function(response){                                                                  
                       $("#content").html(response);
                     }
@@ -109,7 +137,7 @@ echo "console.log(\"".$LOG."\")";
 </div>
 
 <br>
-<b>Mostrando 1 - <?php echo $totreg . $criterio; ?></b>
+<b>Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b>
 
 <table id="ticketTable" class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
@@ -146,8 +174,7 @@ echo "console.log(\"".$LOG."\")";
         if ($comision==true) {
             //Calculamos Comision Bs. MontoBase*Porcentaje / 100
             $comisionBs     =$row["monto_base"]*$porcentaje/100; 
-            if ($row["gds"]<>"Amadeus")          
-                $comisionBs=0;
+            if ($row["gds"]<>"Amadeus") $comisionBs=0;
             $total          =$total-$comisionBs;
             $totComisionBs  =$totComisionBs+$comisionBs;   
         }       
@@ -164,7 +191,7 @@ echo "console.log(\"".$LOG."\")";
     <tr>
         <td nowrap><?php echo $fecha; ?></td>
         <td nowrap><?php echo $row["localizador"]; ?></td>
-        <td nowrap><?php echo substr($row["passenger"],0,30); //Solo 30 Caracteres ?></td>
+        <td nowrap><?php echo substr($row["passenger"],0,25); //Solo 30 Caracteres ?></td>
         <td nowrap><?php echo $row["boleto1"]; ?></td>
         <td nowrap><?php echo $row["gds"]; ?></td>
         <td nowrap><?php echo $row["status"]; ?></td>
@@ -215,6 +242,10 @@ echo "console.log(\"".$LOG."\")";
 </table>
 
 <script>
+function setOrganizacion(elem){
+    document.getElementById("org_id").value=elem.value;
+    document.getElementById("org_name").value=elem.options[elem.selectedIndex].text;
+}
 $(function() {
     $("#fecha1").datepicker();
     $("#fecha1").datepicker('option', {dateFormat: 'yy-mm-dd'});
