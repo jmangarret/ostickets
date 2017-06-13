@@ -64,7 +64,7 @@ if ($org_id==4 || $org_id==8){
 <?php 
 //Elimnamos satos de linea, break line, tabulaciones para poder mostrarlos en el console.log
 $LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
-echo "console.log(\"".$LOG."\")"; 
+echo "console.log(\"".$matches."\")"; 
 ?>
 </script>
 
