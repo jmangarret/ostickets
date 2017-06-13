@@ -98,7 +98,8 @@ if (($lang = Internationalization::getCurrentLanguage())
         </a>
     </div>
     <!-- jmangarret 23sept2016 integracion de cinta: cambio del dia CRM. -->
-        <?php
+        <?php        
+
         if ($_SESSION['_auth']['staff']['id']>0){            
             $conex=mysql_connect(DBHOST, DBUSER, DBPASS);            
             $sqlCintaCrm="SELECT announcement FROM vtigercrm600.vtiger_announcement";
@@ -110,8 +111,18 @@ if (($lang = Internationalization::getCurrentLanguage())
             echo "Administrador: ";
             echo $rowCintaCrm[0];            
             echo "</marquee>";
-            echo "</div>";          
+            echo "</div>";        
+            //Consultamos la organizacion a la que pertence el agente para luego buscar todos los usuarios de la misma org
+            /*
+            $sqlOrg="SELECT org_id FROM osticket1911.ost_user WHERE id=".$_SESSION['_auth']['staff']['id'];
+            $qryOrg= mysql_query($sqlOrg);
+            $rowOrg=mysql_fetch_row($qryOrg);            
+            $org_id=$rowOrg[0];    
+            */
         }                
+        //jmangarret - 12jun2017 - Consulta de emiones por Satelite 
+        //Seteamos organizacion 5 (TuAgencia24) para consulta de emisiones por defecto.
+        $org_id=5;
         ?>          
     <!-- Fin cinta cambio del dia BD CRM. -->
     <div id="pjax-container" class="<?php if ($_POST) echo 'no-pjax'; ?>">
@@ -135,9 +146,14 @@ if (($lang = Internationalization::getCurrentLanguage())
     <li class="inactive"><a id="emisiones" class="tickets" href="#">Emisiones CRM</a></li>
     <script type="text/javascript">
     $("#emisiones").click(function(){        
+        
+        $("ul#nav li").removeClass("active");
+        $("ul#nav li").addClass("inactive");
+        $("ul#nav li:nth-child(5)").addClass("active");             
+
         $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");                
         $.ajax({
-            data: { org_id : "0"},
+            data: { org_id : <?php echo $org_id ? $org_id : 5; ?>, isStaff : true},
             type: "POST",
             url: '../include/client/ajax_boletos.php',
             success: function(response){                                                                  
