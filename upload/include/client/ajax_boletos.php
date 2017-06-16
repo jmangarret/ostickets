@@ -50,7 +50,7 @@ $totTarifaDol=0;
 $totFeeDol=0;
 $totGeneralDol=0;
 $totComisionBs=0;
-
+$comisionBs=0;
 //Validamos si es una Satelite con comision adicional
 //Id 4- Bestravel
 //Id 8- BEstravel Sucursal
@@ -164,52 +164,52 @@ echo "console.log(\"".$matches."\")";
     </thead>
     <tbody>
    <?php
-   while ($row=mysql_fetch_array($result)) { 
-    $fecha = date("d/m/Y", strtotime($row["fecha_emision"]));     
-    $total =$row["amount"] + $row["fee"]; 
-    if ($row["currency"]=="VEF"){
-        $totFee     =$totFee + $row["fee"];    
-        $totTarifa  =$totTarifa + $row["amount"];          
-        $totBaseBs  =$totBaseBs + $row["monto_base"];          
-        if ($comision==true) {
-            //Calculamos Comision Bs. MontoBase*Porcentaje / 100
-            $comisionBs     =$row["monto_base"]*$porcentaje/100; 
-            if ($row["gds"]<>"Amadeus") $comisionBs=0;
-            $total          =$total-$comisionBs;
-            $totComisionBs  =$totComisionBs+$comisionBs;   
-        }       
-        $totGeneral =$totGeneral + $total; 
-    }      
-    if ($row["currency"]=="USD"){
-        $totFeeDol     =$totFeeDol + $row["fee"];    
-        $totBaseDol    =$totBaseDol + $row["monto_base"];
-        $totTarifaDol  =$totTarifaDol + $row["amount"];  
-        $totGeneralDol =$totGeneralDol + $row["amount"] + $row["fee"];        
-    }  
-    
-    ?>
-    <tr>
-        <td nowrap><?php echo $fecha; ?></td>
-        <td nowrap><?php echo $row["localizador"]; ?></td>
-        <td nowrap><?php echo substr($row["passenger"],0,25); //Solo 30 Caracteres ?></td>
-        <td nowrap><?php echo $row["boleto1"]; ?></td>
-        <td nowrap><?php echo $row["gds"]; ?></td>
-        <td nowrap><?php echo $row["status"]; ?></td>
-        <td nowrap><?php echo $row["paymentmethod"]; ?></td>
-        <td nowrap><?php echo number_format($row["amount"],2); ?></td>
-        <td nowrap><?php echo number_format($row["monto_base"],2); ?></td>                        
-        <?php 
-        if ($comision==true){
-        echo '<td nowrap>'.number_format($comisionBs,2).'</td>';
-        }                       
-        ?>            
-        <td nowrap><?php echo number_format($row["fee"],2); ?></td>
-        <td nowrap><?php echo number_format($total,2); ?></td>
-        <td nowrap><?php echo $row["currency"]; ?></td>        
-    </tr>    
+   while ($row=mysql_fetch_array($result)){ 
+        $fecha = date("d/m/Y", strtotime($row["fecha_emision"]));     
+        $total =$row["amount"] + $row["fee"]; 
+        if ($row["currency"]=="VEF"){
+            $totFee     =$totFee + $row["fee"];    
+            $totTarifa  =$totTarifa + $row["amount"];          
+            $totBaseBs  =$totBaseBs + $row["monto_base"];          
+            if ($comision==true && $row["status"]<>"Anulado") {
+                //Calculamos Comision Bs. MontoBase*Porcentaje / 100
+                $comisionBs     =$row["monto_base"]*$porcentaje/100; 
+                if ($row["gds"]<>"Amadeus") $comisionBs=0;
+                $total          =$total-$comisionBs;
+                $totComisionBs  =$totComisionBs+$comisionBs;   
+            }       
+            $totGeneral =$totGeneral + $total; 
+        }      
+        if ($row["currency"]=="USD"){
+            $totFeeDol     =$totFeeDol + $row["fee"];    
+            $totBaseDol    =$totBaseDol + $row["monto_base"];
+            $totTarifaDol  =$totTarifaDol + $row["amount"];  
+            $totGeneralDol =$totGeneralDol + $row["amount"] + $row["fee"];        
+        }  
+        
+        ?>
+        <tr>
+            <td nowrap><?php echo $fecha; ?></td>
+            <td nowrap><?php echo $row["localizador"]; ?></td>
+            <td nowrap><?php echo substr($row["passenger"],0,25); //Solo 30 Caracteres ?></td>
+            <td nowrap><?php echo $row["boleto1"]; ?></td>
+            <td nowrap><?php echo $row["gds"]; ?></td>
+            <td nowrap><?php echo $row["status"]; ?></td>
+            <td nowrap><?php echo $row["paymentmethod"]; ?></td>
+            <td nowrap><?php echo number_format($row["amount"],2); ?></td>
+            <td nowrap><?php echo number_format($row["monto_base"],2); ?></td>                        
+            <?php 
+            if ($comision==true){
+            echo '<td nowrap>'.number_format($comisionBs,2).'</td>';
+            }                       
+            ?>            
+            <td nowrap><?php echo number_format($row["fee"],2); ?></td>
+            <td nowrap><?php echo number_format($total,2); ?></td>
+            <td nowrap><?php echo $row["currency"]; ?></td>        
+        </tr>    
 	<?php
-	}            
-   ?>
+	} //Fin While         
+    ?>
     <tr>
         <td colspan="7"><b>Total USD.</b></td>        
         <td><b><?php echo number_format($totTarifaDol,2); ?></b></td>        
