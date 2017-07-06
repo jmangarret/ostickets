@@ -1,4 +1,5 @@
 <?php
+
 /*********************************************************************
     class.ticket.php
 
@@ -3015,52 +3016,100 @@ class Ticket {
                     $bebes = substr($datos[count($datos)-2], 8, strlen($datos[count($datos)-2])-9);*/
                 } 
             }
-            $detail = '{"88":"Cotizacion PopPup"}';
+
+            // 6/07/2017 RURIEPE - CAMBIO DE ASUNTO PARA RESERVA
+
             $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-            $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
-            $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='88', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='88';");
 
-            $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
-            $rowUser = mysqli_num_rows($sqlUser);
+            if($adicional[0] == 'reserva')
+            {
+                $detail = '{"110":"Reserva Web"}';
+                $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
+                $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='110', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='110';");
+                $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
+                $rowUser = mysqli_num_rows($sqlUser);
 
-            if($rowUser <= 0)
+                if($rowUser <= 0)
                 $mysqli->query("UPDATE ost_user SET `org_id` = 30, `updated` = NOW() WHERE id = ".($user->getId())." LIMIT 1;");
 
-            $mysqli->query("INSERT INTO 
-                                `ost_cotizaciones` (
-                                    `ticket_id`, 
-                                    `nombre`, 
-                                    `correo`, 
-                                    `telefono`, 
-                                    `mensaje`, 
-                                    `tipo_vuelo`, 
-                                    `origen`, 
-                                    `destino`, 
-                                    `salida`, 
-                                    `regreso`, 
-                                    `clase`, 
-                                    `aerolinea`, 
-                                    `adultos`, 
-                                    `mayores`, 
-                                    `ninos`, 
-                                    `bebe`) 
-                                VALUES (
-                                    '$ticket_idAPI', 
-                                    '$nombre', 
-                                    '$correo', 
-                                    '$telefono', 
-                                    '$adicional[0]', 
-                                    '$adicional[1]', 
-                                    '$adicional[2]', 
-                                    '$adicional[3]', 
-                                    '$adicional[4]', 
-                                    '$adicional[5]', 
-                                    '$adicional[6]', 
-                                    '$adicional[7]', 
-                                    '$adicional[8]', 
-                                    '$adicional[9]', 
-                                    '$adicional[10]', 
-                                    '$adicional[11]');");
+                $mysqli->query("INSERT INTO `ost_reservas`(
+                `ticket_id`, 
+                `nombre`, 
+                `correo`, 
+                `telefono`, 
+                `pnr`, 
+                `fecha_hora_salida`, 
+                `fecha_hora_llegada`, 
+                `origen`, 
+                `destino`, 
+                `aerolinea`, 
+                `tarifa_neta`, 
+                `impuesto`, 
+                `cargos`, 
+                `total`) 
+                VALUES (
+                '$ticket_idAPI', 
+                '$nombre', 
+                '$correo', 
+                '$telefono', 
+                '$adicional[1]', 
+                '$adicional[2]', 
+                '$adicional[3]', 
+                '$adicional[4]', 
+                '$adicional[5]', 
+                '$adicional[6]', 
+                '$adicional[7]', 
+                '$adicional[8]',
+                '$adicional[9]', 
+                '$adicional[10]');");
+            }
+            else
+            {
+                $detail = '{"88":"Cotizacion PopPup"}';
+                //$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+                $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
+                $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='88', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='88';");
+                $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
+                $rowUser = mysqli_num_rows($sqlUser);
+
+                if($rowUser <= 0)
+                $mysqli->query("UPDATE ost_user SET `org_id` = 30, `updated` = NOW() WHERE id = ".($user->getId())." LIMIT 1;");
+
+                $mysqli->query("INSERT INTO `ost_cotizaciones`(
+                `ticket_id`, 
+                `nombre`, 
+                `correo`, 
+                `telefono`, 
+                `mensaje`, 
+                `tipo_vuelo`,
+                `origen`, 
+                `destino`, 
+                `salida`, 
+                `regreso`, 
+                `clase`, 
+                `aerolinea`, 
+                `adultos`, 
+                `mayores`,
+                `ninos`, 
+                `bebe`) 
+                VALUES(
+                '$ticket_idAPI', 
+                '$nombre', 
+                '$correo', 
+                '$telefono', 
+                '$adicional[0]', 
+                '$adicional[1]', 
+                '$adicional[2]', 
+                '$adicional[3]', 
+                '$adicional[4]', 
+                '$adicional[5]', 
+                '$adicional[6]', 
+                '$adicional[7]', 
+                '$adicional[8]', 
+                '$adicional[9]', 
+                '$adicional[10]', 
+                '$adicional[11]');");
+            }
 
         }
         /* FIN */
