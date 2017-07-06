@@ -3017,13 +3017,15 @@ class Ticket {
                 } 
             }
 
+            // 6/07/2017 RURIEPE - CAMBIO DE ASUNTO PARA RESERVA
+
             $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
 
             if($adicional[0] == 'reserva')
             {
-                $detail = '{"103":"Reserva Web"}';
+                $detail = '{"110":"Reserva Web"}';
                 $mysqli->query("UPDATE `ost_form_entry_values` SET `value` = '$detail' WHERE field_id = '20' AND `entry_id` = (SELECT id FROM ost_form_entry WHERE object_id = '$ticket_idAPI' AND object_type = 'T');");
-                $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='103', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='103';");
+                $mysqli->query("INSERT INTO `ost_ticket__cdata` SET `subject`='110', `ticket_id`= '$ticket_idAPI' ON DUPLICATE KEY UPDATE `subject`='110';");
                 $sqlUser = $mysqli->query("SELECT id FROM ost_user WHERE id = '".($user->getId())."' AND `org_id` = 30 LIMIT 1;");
                 $rowUser = mysqli_num_rows($sqlUser);
 
