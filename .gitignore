@@ -1,3 +1,5 @@
 upload/include/ost-config.php
-upload/scp/terminoscliente
+upload/scp/terminoscliente/
 terminoscliente
+terminoscliente/*
+

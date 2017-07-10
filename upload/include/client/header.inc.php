@@ -146,12 +146,15 @@ if (($all_langs = Internationalization::availableLanguages())
                     //ORIGINAL!!!--->echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
                 }
                 //<!-- jmangarret - 15/05/2017 Pestaña Emisiones -->                
-                echo '<li><a id="emisiones" class="tickets" href="#">Emisiones</a></li>';
+                echo '<li><a id="emisiones" href="#"><img src="assets/default/images/icons/open_tickets.gif"> Emisiones</a></li>';
                 //Consultamos la organizacion a la que pertence el usuario para luego buscar todos los usuarios de la misma org
                 $sqlOrg="SELECT org_id FROM osticket1911.ost_user WHERE id=".$_SESSION['_auth']['user']['id'];
                 $qryOrg= mysql_query($sqlOrg);
                 $rowOrg=mysql_fetch_row($qryOrg);            
-                $org_id=$rowOrg[0];                
+                $org_id=$rowOrg[0];               
+
+                //<!-- jmangarret - 06/07/2017 Pestaña Buscador SOTO -->                
+                echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
             } 
             ?>
         </ul>
@@ -185,5 +188,20 @@ if (($all_langs = Internationalization::availableLanguages())
                     $("#content").html(response);
                     }
                 });
+        });        
+        $("#buscadorsoto").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#buscadorsoto").parent().prev().children("a").removeClass("active");
+            $("#buscadorsoto").addClass("active");
+
+            $("#content").html("<iframe width=1240 height=600 frameborder=0 src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
+            //Load jquery 1.8
+            //$("#content").load('http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1');
+            
+            //Load con jquery >= 1.9
+            //$.get("http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1", 
+            //function(htmlexterno){
+              //  $("#content").html(htmlexterno);
+            //});
         });
         </script>   
