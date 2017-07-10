@@ -144,9 +144,9 @@ if (($lang = Internationalization::getCurrentLanguage())
 
     <!--jmangarret - 09-06-2017 - Pestaña para consultar emisiones por satelites - Perfil agentes -->
     <li class="inactive"><a id="emisiones" class="tickets" href="#">Emisiones CRM</a></li>
+    <li class="inactive"><a id="buscadorsoto" class="tickets" href="#">Buscador SOTO</a></li>
     <script type="text/javascript">
-    $("#emisiones").click(function(){        
-        
+    $("#emisiones").click(function(){    
         $("ul#nav li").removeClass("active");
         $("ul#nav li").addClass("inactive");
         $("ul#nav li:nth-child(5)").addClass("active");             
@@ -163,6 +163,18 @@ if (($lang = Internationalization::getCurrentLanguage())
     });
     </script>   
     <!-- Fin pestaña -->
+
+    <!--jmangarret - 09-07-2017 - Pestaña Buscador SOTO - Perfil agentes -->    
+    <script type="text/javascript">
+        $("#buscadorsoto").click(function(){        
+        $("ul#nav li").removeClass("active");
+        $("ul#nav li").addClass("inactive");
+        $("ul#nav li:nth-child(6)").addClass("active");             
+        $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+        $("#content").html("<iframe width=1240 height=600 frameborder=0 src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
+    });
+    </script>  
+    <!-- Fin buscador soto -->
 
     </ul>    
     <ul id="sub_nav">
