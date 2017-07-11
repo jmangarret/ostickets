@@ -171,7 +171,7 @@ if (($lang = Internationalization::getCurrentLanguage())
         $("ul#nav li").addClass("inactive");
         $("ul#nav li:nth-child(6)").addClass("active");             
         $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
-        $("#content").html("<iframe width=1240 height=600 frameborder=0 src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
+        $("#content").html("<iframe width=100% height=600 frameborder=0 align=middle src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
     });
     </script>  
     <!-- Fin buscador soto -->
