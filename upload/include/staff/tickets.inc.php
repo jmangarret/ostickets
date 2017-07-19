@@ -1,6 +1,14 @@
+<!--Inicio Billy 25/01/2016-->
+
+<link rel="stylesheet" href="/upload/css/bootstrap.css">
+  <script src="/upload/css/bootstrap.min.js"></script>
+
+<!--Fin Billy 25/01/2016-->
+
 <script type="text/javascript">
     $("#container").css("width","90%");
 </script>
+
 <?php
 if(!defined('OSTSCPINC') || !$thisstaff || !@$thisstaff->isStaff()) die('Access Denied');
 
@@ -474,29 +482,7 @@ Tipo de Vista
   <tr>
 
   <td width="50%" style="vertical-align: top;">
-  
-<div>
-        <div class="pull-left flush-left">
-            <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
-                title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
-                $results_type.$showing; ?></a></h2>
-        </div>
-        <div class="pull-right flush-right">
 
-            <?php
-            if ($thisstaff->canDeleteTickets()) { ?>
-            <a id="tickets-delete" class="action-button pull-right tickets-action"
-                href="#tickets/status/delete"><i
-            class="icon-trash"></i> <?php echo __('Delete'); ?></a>
-            <?php
-            } ?>
-            <?php
-            if ($thisstaff->canManageTickets()) {
-                echo TicketStatus::status_options();
-            }
-            ?>
-        </div>
-</div>
 
 
 <div class="clear" style="margin-bottom:10px;"></div>
@@ -1470,3 +1456,22 @@ if (url.indexOf("vista=detalle")>-1){
 }
 </script>
 <!--Fin Billy 16/03/2016 Funcion para mostrar la vista dependiendo de la seleccionada-->
+<script type="text/javascript">
+$(function() {
+    $(document).off('.tickets');
+    $(document).on('click.tickets', 'a.tickets-action', function(e) {
+        e.preventDefault();
+        var count = checkbox_checker($('form#tickets'), 1);
+        if (count) {
+            var url = 'ajax.php/'
+            +$(this).attr('href').substr(1)
+            +'?count='+count
+            +'&_uid='+new Date().getTime();
+            $.dialog(url, [201], function (xhr) {
+                window.location.href = window.location.href;
+             });
+        }
+        return false;
+    });
+});
+</script>
