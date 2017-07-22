@@ -49,7 +49,7 @@ if (($lang = Internationalization::getCurrentLanguage())
     
     <script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>    
     <script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
-
+    
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -155,6 +155,8 @@ if (($all_langs = Internationalization::availableLanguages())
 
                 //<!-- jmangarret - 06/07/2017 Pestaña Buscador SOTO -->                
                 echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
+                //<!-- jmangarret - 06/07/2017 Pestaña Pagos -->                
+                echo '<li><a id="pagos" href="#"><img src="assets/default/images/icons/money.png"> Registro de Pagos</a></li>'; 
             } 
             ?>
         </ul>
@@ -186,8 +188,8 @@ if (($all_langs = Internationalization::availableLanguages())
                 url: 'include/client/ajax_boletos.php',
                 success: function(response){                                                                  
                     $("#content").html(response);
-                    }
-                });
+                }
+            });
         });        
         $("#buscadorsoto").click(function(){
             $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
@@ -203,5 +205,18 @@ if (($all_langs = Internationalization::availableLanguages())
             //function(htmlexterno){
               //  $("#content").html(htmlexterno);
             //});
+        });        
+        $("#pagos").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#pagos").parent().prev().children("a").removeClass("active");
+            $("#pagos").addClass("active");
+            $.ajax({
+                data: {},
+                type: "POST",
+                url: 'include/client/pagos.php',
+                success: function(response){                                                                  
+                    $("#content").html(response);
+                }
+            });
         });
         </script>   
