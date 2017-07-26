@@ -474,7 +474,7 @@ Tipo de Vista
   <tr>
 
   <td width="50%" style="vertical-align: top;">
-  
+  <!--jmangarret - ruriepe - 25jul2017 - Se deshablita por conflicto al cambiar de estado
 <div>
         <div class="pull-left flush-left">
             <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
@@ -497,7 +497,7 @@ Tipo de Vista
             ?>
         </div>
 </div>
-
+-->
 
 <div class="clear" style="margin-bottom:10px;"></div>
 <form action="tickets.php" method="POST" name='tickets' id="tickets">
