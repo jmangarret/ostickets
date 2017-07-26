@@ -1,14 +1,6 @@
-<!--Inicio Billy 25/01/2016-->
-
-<link rel="stylesheet" href="/upload/css/bootstrap.css">
-  <script src="/upload/css/bootstrap.min.js"></script>
-
-<!--Fin Billy 25/01/2016-->
-
 <script type="text/javascript">
     $("#container").css("width","90%");
 </script>
-
 <?php
 if(!defined('OSTSCPINC') || !$thisstaff || !@$thisstaff->isStaff()) die('Access Denied');
 
@@ -482,8 +474,30 @@ Tipo de Vista
   <tr>
 
   <td width="50%" style="vertical-align: top;">
-
-
+  <!--jmangarret - ruriepe - 25jul2017 - Se deshablita por conflicto al cambiar de estado
+<div>
+        <div class="pull-left flush-left">
+            <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
+                title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
+                $results_type.$showing; ?></a></h2>
+        </div>
+        <div class="pull-right flush-right">
+ 
+            <?php
+            if ($thisstaff->canDeleteTickets()) { ?>
+            <a id="tickets-delete" class="action-button pull-right tickets-action"
+                href="#tickets/status/delete"><i
+            class="icon-trash"></i> <?php echo __('Delete'); ?></a>
+            <?php
+            } ?>
+            <?php
+            if ($thisstaff->canManageTickets()) {
+                echo TicketStatus::status_options();
+            }
+            ?>
+        </div>
+</div>
+-->
 
 <div class="clear" style="margin-bottom:10px;"></div>
 <form action="tickets.php" method="POST" name='tickets' id="tickets">
