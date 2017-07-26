@@ -482,7 +482,7 @@ Tipo de Vista
                 $results_type.$showing; ?></a></h2>
         </div>
         <div class="pull-right flush-right">
-
+ 
             <?php
             if ($thisstaff->canDeleteTickets()) { ?>
             <a id="tickets-delete" class="action-button pull-right tickets-action"
@@ -1470,3 +1470,22 @@ if (url.indexOf("vista=detalle")>-1){
 }
 </script>
 <!--Fin Billy 16/03/2016 Funcion para mostrar la vista dependiendo de la seleccionada-->
+<script type="text/javascript">
+$(function() {
+    $(document).off('.tickets');
+    $(document).on('click.tickets', 'a.tickets-action', function(e) {
+        e.preventDefault();
+        var count = checkbox_checker($('form#tickets'), 1);
+        if (count) {
+            var url = 'ajax.php/'
+            +$(this).attr('href').substr(1)
+            +'?count='+count
+            +'&_uid='+new Date().getTime();
+            $.dialog(url, [201], function (xhr) {
+                window.location.href = window.location.href;
+             });
+        }
+        return false;
+    });
+});
+</script>
