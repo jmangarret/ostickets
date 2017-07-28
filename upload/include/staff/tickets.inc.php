@@ -474,7 +474,7 @@ Tipo de Vista
   <tr>
 
   <td width="50%" style="vertical-align: top;">
-  
+  <!--jmangarret - ruriepe - 25jul2017 - Se deshablita por conflicto al cambiar de estado
 <div>
         <div class="pull-left flush-left">
             <h2><a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
@@ -482,7 +482,7 @@ Tipo de Vista
                 $results_type.$showing; ?></a></h2>
         </div>
         <div class="pull-right flush-right">
-
+ 
             <?php
             if ($thisstaff->canDeleteTickets()) { ?>
             <a id="tickets-delete" class="action-button pull-right tickets-action"
@@ -497,7 +497,7 @@ Tipo de Vista
             ?>
         </div>
 </div>
-
+-->
 
 <div class="clear" style="margin-bottom:10px;"></div>
 <form action="tickets.php" method="POST" name='tickets' id="tickets">
@@ -586,8 +586,13 @@ Tipo de Vista
                 else $color_tr2 ="";
                 /*FIN*/
                 ?>
+<<<<<<< HEAD
                 <!--Ruriepe 26/07 - Codigo repetido-->
             <!--
+=======
+                  <!--Ruriepe 26/07 - Codigo repetido-->
+    <!--
+>>>>>>> master
             <tr id="<?php echo $row['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
 
@@ -1474,3 +1479,22 @@ if (url.indexOf("vista=detalle")>-1){
 }
 </script>
 <!--Fin Billy 16/03/2016 Funcion para mostrar la vista dependiendo de la seleccionada-->
+<script type="text/javascript">
+$(function() {
+    $(document).off('.tickets');
+    $(document).on('click.tickets', 'a.tickets-action', function(e) {
+        e.preventDefault();
+        var count = checkbox_checker($('form#tickets'), 1);
+        if (count) {
+            var url = 'ajax.php/'
+            +$(this).attr('href').substr(1)
+            +'?count='+count
+            +'&_uid='+new Date().getTime();
+            $.dialog(url, [201], function (xhr) {
+                window.location.href = window.location.href;
+             });
+        }
+        return false;
+    });
+});
+</script>
