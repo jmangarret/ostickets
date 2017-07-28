@@ -586,6 +586,8 @@ Tipo de Vista
                 else $color_tr2 ="";
                 /*FIN*/
                 ?>
+                <!--Ruriepe 26/07 - Codigo repetido-->
+            <!--
             <tr id="<?php echo $row['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
 
@@ -597,7 +599,7 @@ Tipo de Vista
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $row['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <?php } ?>
+                <?php } ?>-->
 <?php
 
 $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
@@ -701,9 +703,11 @@ if (mysqli_connect_errno()) {
             $ferror=__('There are no tickets matching your criteria.');
         endif; ?>
     </tbody>
+      <!--Ruriepe 26/07 - Codigo repetido-->
+    <!--
     <tfoot>
      <tr>
-        <td colspan="14"> <!--Se agrego mas celdas al coslpan-->
+        <td colspan="14"> 
             <?php if($res && $num && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
@@ -716,7 +720,7 @@ if (mysqli_connect_errno()) {
             } ?>
         </td>
      </tr>
-    </tfoot>
+    </tfoot>-->
     </table>
 
     <!--////////////////////Inicio Billy 25/01/2016 Paginador Administrador/////////////////////////////////////////////-->

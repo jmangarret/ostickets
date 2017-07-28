@@ -155,7 +155,7 @@ if (($lang = Internationalization::getCurrentLanguage())
         $.ajax({
             data: { org_id : <?php echo $org_id ? $org_id : 5; ?>, isStaff : true},
             type: "POST",
-            url: '../include/client/ajax_boletos.php',
+            url: '../include/crm/ajax_boletos.php',
             success: function(response){                                                                  
                 $("#content").html(response);
                 }
