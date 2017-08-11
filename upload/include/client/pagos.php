@@ -3,18 +3,19 @@
     input[type=text],select{ width: 200px; }
 </style>
 
-<form action="" method="post" id="form_pago" >
- <h1>Añadir nuevo pago</h1>
+<form action="" method="post" id="form_pago" > 
  <table class="form_table" width="95%" border="0" cellspacing="5" cellpadding="5">
     <tbody>
         <tr>
             <td width="180" class="required">
-               Nro de Ticket:
+              <!-- Nro de Ticket:-->
             </td>
             <td>
+            <!--
                 <select name="nrodeticket" id="nrodeticket">
                     <option value="">Seleccione...</option>
                 </select>                
+            -->
             </td>
             <td width="180" class="required">
                Fecha del Pago:
@@ -75,7 +76,7 @@
             </td>
         
         </tr>        
-
+<!--
         <tr>
             <td width="180" colspan="2">
                 Adjuntar pago:
@@ -87,6 +88,7 @@
                 ?>
             </td>
         </tr>
+    -->
     </tbody>
 </table>
 <p style="text-align:center;">
