@@ -188,9 +188,9 @@
             $("select:eq(2)").removeAttr('required');
         }
         //onchange para abrir modal de pagos: apgo de reorte en curso y pago de reporte pasado
-        if ($(this).val()==27 || $(this).val()==28){
-            //$('.modal-dialog').css('width','800px');
-            //$('.modal-dialog').css( 'margin-left','50%');
+        if ($(this).val()==27 || $(this).val()==28 || $(this).val()==19){
+            $('.modal-content').css('width','800px');
+            $('.modal-dialog').css( 'margin-left','25%');
             $('#modalPagos').modal('show');          
         }
 
@@ -268,3 +268,24 @@
     });
 
     $("input:eq(2)").attr("pattern","[A-Za-z0-9]{6}");
+
+    $(function($){
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '<Ant',
+        nextText: 'Sig>',
+        currentText: 'Hoy',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+});

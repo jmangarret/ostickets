@@ -1,13 +1,19 @@
 <script src="js/selects_crm.js"></script>
 <style type="text/css">
-    input[type=text],select{ width: 200px; }
+    input[type=text],select{ width: 160px; }
 </style>
 
 <form action="" method="post" id="form_pago" > 
- <table class="form_table" width="95%" border="0" cellspacing="5" cellpadding="5">
+ <table class="table" width="95%" border="0">
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td width="150" class="required">
+               Fecha del Pago:
+            </td>
+            <td>
+                <input type="text" size="30" name="fechadepago" id="fechadepago" value="">
+            </td>        
+            <td width="150" class="required">
               <!-- Nro de Ticket:-->
             </td>
             <td>
@@ -17,15 +23,10 @@
                 </select>                
             -->
             </td>
-            <td width="180" class="required">
-               Fecha del Pago:
-            </td>
-            <td>
-                <input type="text" size="30" name="fechadepago" id="fechadepago" value="">
-            </td>
+
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Metodo de Pago:
             </td>
             <td>
@@ -33,7 +34,7 @@
                     <option value="">Seleccione...</option>
                 </select>
             </td>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Referencia Bancaria:
             </td>
             <td>
@@ -41,7 +42,7 @@
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Banco Emisor:
             </td>
             <td>
@@ -49,7 +50,7 @@
                     <option value="">Seleccione...</option>
                 </select>
             </td>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Banco Receptor:
             </td>
             <td>
@@ -59,7 +60,7 @@
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Moneda:
             </td>
             <td>
@@ -68,7 +69,7 @@
                 </select>
 
             </td>
-            <td width="180" class="required">
+            <td width="150" class="required">
                Monto Pagado:
             </td>
             <td>
@@ -78,7 +79,7 @@
         </tr>        
 <!--
         <tr>
-            <td width="180" colspan="2">
+            <td width="150" colspan="2">
                 Adjuntar pago:
             </td>
         <tr>            
@@ -93,8 +94,7 @@
 </table>
 <p style="text-align:center;">
     <input type="submit" name="submit" id="save" value="Agregar pago">
-    <input type="reset"  name="reset"  value="Restablecer">
-    <input type="button" name="cancel" value="Cancelar">
+    <input type="reset"  name="reset"  value="Restablecer">    
 </p>
 </form>
 <div id="result_pagos"></div>
