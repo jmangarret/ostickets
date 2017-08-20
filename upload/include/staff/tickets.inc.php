@@ -586,8 +586,8 @@ Tipo de Vista
                 else $color_tr2 ="";
                 /*FIN*/
                 ?>
-                  <!--Ruriepe 26/07 - Codigo repetido-->
-    <!--
+            <!--Ruriepe 26/07 - Codigo repetido-->
+            <!-- jmangarret 19ago2017 - Se descomenta TR para genere filas de la tabla. No mostraba vista detalle correctamente -->
             <tr id="<?php echo $row['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
 
@@ -599,7 +599,7 @@ Tipo de Vista
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $row['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <?php } ?>-->
+                <?php } ?>
 <?php
 
 $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
