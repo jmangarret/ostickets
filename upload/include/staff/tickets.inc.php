@@ -944,6 +944,7 @@ if((($pageNav->getPage())-1) <= 0)
                 else $color_tr2 ="";
                 /*FIN*/
                 ?>
+                <!-- Se descomenta TR. El mismo fue comentado por rebe por error, creando conficto al dividir la vista detalle -->
             <tr id="<?php echo $row['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
 
