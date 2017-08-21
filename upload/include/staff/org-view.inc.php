@@ -108,4 +108,4 @@ $(function() {
 });
 </script>
 
-<script type="text/javascript" src="/upload/js/autoNumeric.js"></script>
+<script type="text/javascript" src="../js/autoNumeric.js"></script>
