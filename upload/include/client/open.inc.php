@@ -133,8 +133,12 @@ foreach ($_POST as $key => $value) {
 
 <?php
 //jmangarret - 08ago2017 - Refactorizacion de codigo - Pase de query a funciones php y validaciones javascript a archivo js
-include("open.functions.php");
-    
+include("functions.custom.php");
+
+//jmangarret - 23ago2017 - Obtencion de tipo de satelite en div oculto para leerlo con jquery
+$tipoSatelite=getTipoSatelite($thisclient->getId());
+echo "<div id=tipoSatelite style=display:none>$tipoSatelite</div>";
+
 $limite = getLimiteCredito();
 
 $limiteDisponible=getLimiteDisponible();

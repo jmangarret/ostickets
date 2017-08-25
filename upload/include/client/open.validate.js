@@ -187,11 +187,15 @@
             $("input:eq(2)").removeAttr('required');
             $("select:eq(2)").removeAttr('required');
         }
-        //onchange para abrir modal de pagos: apgo de reorte en curso y pago de reporte pasado
-        if ($(this).val()==27 || $(this).val()==28 || $(this).val()==19){
-            $('.modal-content').css('width','800px');
-            $('.modal-dialog').css( 'margin-left','25%');
-            $('#modalPagos').modal('show');          
+        //jmangarret ago2017 - onchange para abrir modal pagos: 
+        //opciones pago de reporte en curso y pago de reporte pasado
+        if ($(this).val()==27 || $(this).val()==28 || $(this).val()==19){            
+            //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
+            if ($("#tipoSatelite").text()=="Verificar Credito" || $("#tipoSatelite").text()=="Pago Adjunto"){
+                $('.modal-content').css('width','800px');
+                $('.modal-dialog').css( 'margin-left','25%');
+                $('#modalPagos').modal('show');          
+            }            
         }
 
     });

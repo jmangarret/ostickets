@@ -397,6 +397,8 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 </table>
 
 <?php
+    //jmangarret - archivo de funciones para centralizar y reducir codigo
+    include_once("../include/functions.custom.php");
 
     /*
     /* Nombre: Anthony Parisi
@@ -405,10 +407,10 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     /* 
     /* INICIO
     */
-
+/*
     //include("../ost-config.php");
     $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-    /* check connection */
+    
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
@@ -429,6 +431,9 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite = number_format($filas[0],2,",",".");
+*/
+/*
+    $limite=getLimiteCredito($user->getId());
 
     $query = "  SELECT 
                     a.value 
@@ -445,9 +450,11 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $limite2 = number_format($filas[0],2,",",".");
+*/
+$limite2=getLimiteDisponible($user->getId());
 
 //6/02/2017 RURIEPE - CONSULTA PARA OBTENER LOS VALORES DEL CAMPO FEE NACIONAL/INTERNACIONAL
-
+/*
     $query = "  SELECT a.value FROM 
     ost_form_entry_values a,
     ost_form_entry b,
@@ -461,6 +468,9 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $nacional = $filas[0];
+*/
+    /*
+$nacional=getFeeNacional($user->getId());
 
     $query = "  SELECT a.value FROM 
     ost_form_entry_values a,
@@ -475,19 +485,25 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $internacional = $filas[0];
+*/
+
+$internacional=getFeeNacional($user->getId());
 
 //6/02/2017 RURIEPE - FIN
 
 //Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
-
+/*
 $limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $user->getId()." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
 
 $limit2 = $mysqli->query($limit);
 $row = $limit2->fetch_array();
+*/
 
+$ultimaFecha=getFechaModificacionSaldo($user->getId());
 //Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
 
 // 7/02/2017 RURIEPE - CONSULTA PARA OBTENER EL TIPO DE SATELITE
+/*
     $query = "  SELECT 
                     a.value 
                 FROM 
@@ -503,11 +519,16 @@ $row = $limit2->fetch_array();
     $result = $mysqli->query($query);
     $filas  = $result->fetch_array();
     $semaforo = $filas[0];
+*/
+    
+    $semaforo=getTipoSatelite($user->getId());
+    //Validar semaforo funcione - Funcion retorna string literal "Emision Rapida"
 
 // 7/02/2017 RURIEPE - FIN
 
 
-    if($semaforo == '{"Emision Rapida":"Emision Rapida"}') 
+    //if($semaforo == '{"Emision Rapida":"Emision Rapida"}') 
+    if($semaforo == 'Emision Rapida') 
     {
 
 ?>
@@ -515,7 +536,8 @@ $row = $limit2->fetch_array();
 <?php
 }
 else
- if($semaforo == '{"Verificar Credito":"Verificar Credito"}') 
+ //if($semaforo == '{"Verificar Credito":"Verificar Credito"}') 
+ if($semaforo == 'Verificar Credito') 
     {
 ?>
 <div style='text-align:right;display:inline-block;background-color:yellow;width:100%; border:3px solid #000;border-radius:4px;'>
@@ -523,7 +545,8 @@ else
 <?php
 }
 else
- if($semaforo == '{"Pago Adjunto":"Pago Adjunto"}') 
+ //if($semaforo == '{"Pago Adjunto":"Pago Adjunto"}') 
+ if($semaforo == 'Pago Adjunto') 
     {
 ?>
 <div style='text-align:right;display:inline-block;background-color:#F44336;width:100%; border:3px solid #000;border-radius:4px;'>
@@ -578,7 +601,9 @@ else
                 <b>Actualizado al</b>:
             </td>
             <td align="left">
-                 <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
+
+                 <?php echo date("d-m-Y h:i:s a",strtotime($ultimaFecha)); ?> 
+                 <!--jmangarret - 22ago $ultimaFecha - Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
             </td>   
         </tr>
     </table>
@@ -860,10 +885,9 @@ print $response_form->getField('attachments')->render();
                 </td>
             </tr>
 <?php
-
+/*
     $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
 
-    /* check connection */
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
@@ -883,6 +907,8 @@ print $response_form->getField('attachments')->render();
     $result2 = $mysqli->query($query2);
     $row2 = $result2->fetch_array();
     $loc = $row2[0];
+*/
+    $loc=getLocalizadorStatus($$_REQUEST["id"]);
 
 ?>
             <tr>
