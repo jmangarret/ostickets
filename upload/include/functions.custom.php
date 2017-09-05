@@ -20,6 +20,7 @@ function getLimiteCredito($userId=0){
             b.object_type = 'O'
             AND b.object_id = c.org_id
             AND a.entry_id = b.id
+            
             AND a.field_id = 90
             AND c.id = ".$userId;
     $result = $mysqli->query($query);

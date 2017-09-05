@@ -118,14 +118,15 @@ foreach ($_POST as $key => $value) {
     <div class="modal-dialog" width="100%">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" id="close-modal">&times;</button >
                 <h1>Añadir nuevo pago</h1>
             </div>            
             <div class="modal-body">
+            <?php $user_id=$thisclient->getId(); ?>
             <?php include("pagos.php"); ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-info" data-dismiss="modal" id="close-pagos">Cerrar</button>
             </div>
         </div>
     </div>

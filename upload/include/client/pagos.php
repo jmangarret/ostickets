@@ -2,7 +2,7 @@
 <style type="text/css">
     input[type=text],select{ width: 160px; }
 </style>
-
+<?php if (!$user_id) $user_id=0; ?>
 <form action="" method="post" id="form_pago" > 
  <table class="table" width="95%" border="0">
     <tbody>
@@ -13,17 +13,12 @@
             <td>
                 <input type="text" size="30" name="fechadepago" id="fechadepago" value="">
             </td>        
-            <td width="150" class="required">
-              <!-- Nro de Ticket:-->
+            <td width="150" class="required"> 
+            <!-- Campo Oculto con id de usuario-->           
             </td>
-            <td>
-            <!--
-                <select name="nrodeticket" id="nrodeticket">
-                    <option value="">Seleccione...</option>
-                </select>                
-            -->
+            <td>            
+               <input type="hidden" size="30" name="user_id" value="<?php echo $user_id; ?>">
             </td>
-
         </tr>
         <tr>
             <td width="150" class="required">
@@ -74,27 +69,14 @@
             </td>
             <td>
                 <input type="text" size="30" name="amount" value="">
-            </td>
-        
-        </tr>        
-<!--
-        <tr>
-            <td width="150" colspan="2">
-                Adjuntar pago:
-            </td>
-        <tr>            
-            <td colspan="4">
-                <?php
-                 include("templates/redactor.tmpl.php") 
-                ?>
-            </td>
-        </tr>
-    -->
+            </td>        
+        </tr>    
     </tbody>
 </table>
 <p style="text-align:center;">
     <input type="submit" name="submit" id="save" value="Agregar pago">
-    <input type="reset"  name="reset"  value="Restablecer">    
+    <input type="reset"  name="reset2"  value="Restablecer">    
+    <input type="hidden" name="option"  value="create">    
 </p>
 </form>
 <div id="result_pagos"></div>
@@ -105,21 +87,39 @@
         $("#fechadepago" ).datepicker('option', {dateFormat: 'dd-mm-yy'});
     });
 
+    $("input[name='reset2']").click(function(){        
+        $("#paymentmethod").val('').trigger('change');
+        $("#bancoemisor").val('').trigger('change');
+        $("#bancoreceptor").val('').trigger('change');
+        $("#currency").val('').trigger('change');
+    });
+
     $("#form_pago").submit(function(event){      
      var parametros = $(this).serialize();
         $.ajax({
             type: "POST",
-            url: "include/crm/registrar_pago_crm.php",
+            url: "include/ajax_ost_pagos.php",
             data: parametros,
              beforeSend: function(objeto){
-                $("#result_pagos").html("<b>Registrando pago en CRM...</b>");
+                $("#result_pagos").html("<b>Registrando pago...</b>");
               },
-            success: function(result){
-                if (result=="Exito"){
-                    alert("Registro de pagos creado en CRM con Exito!")
-                    $("#content").load("include/client/pagos.php");
+            success: function(response){
+                if (response=="Exito"){
+                    $.ajax({
+                        type: "POST",
+                        url: "include/ajax_ost_pagos.php",
+                        data: {
+                            "option": "list",
+                            "user_id": <?php echo $user_id; ?>
+                        },
+                        success: function(response){
+                            $("#result_pagos").html(response);  
+                            $("input[name='reset2']").click();
+                        }
+                    });
+                    
                 }else{
-                    $("#content").html(response);
+                    $("#result_pagos").html(response);
                 }            
             }
         });
