@@ -52,6 +52,14 @@ if ($_POST) {
     Draft::deleteForNamespace('ticket.client.'.substr(session_id(), -12));
     //Ticket::create...checks for errors..
     if(($ticket=Ticket::create($vars, $errors, SOURCE))){
+        //jmangarret - 28ago2017 - Obtenemos datos para registrar pagos en crm
+        $userid     =$vars["uid"];        
+        $ticketid   =$ticket->getId();
+        $detalleid  =$vars["625747b2abc65cc2"];
+        $dir_actual=getcwd();        
+        include("include/crm/ajax_pago_crm.php");     //VERIFICAR RUTAS   **************
+        //fin jmangarret - 28ago2017
+
         $msg=__('Support ticket request created');
         // Drop session-backed form data
         unset($_SESSION[':form-data']);
