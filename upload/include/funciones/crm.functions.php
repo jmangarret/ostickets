@@ -65,7 +65,26 @@ function setPagosCrm($data){
 
 		echo "Exito";
 	}
+}
 
+function validarReferenciaBancaria($data){
+	global $mysqli_crm;
+	$ref=$data["ref"];
+	$emi=$data["emisor"];
+	$sql ="SELECT registrodepagosid, registrodeventasid, bancoemisor, paymentmethod, fechapago ";
+	$sql.="FROM vtiger_registrodepagos ";
+	$sql.="WHERE referencia LIKE '%$ref' AND bancoemisor='$emi' ";
+
+	$qry=$mysqli_crm->query($sql);	
+	$num=$qry->num_rows;
+	if ($num>0){
+		$row=$qry->fetch_array();
+		$pago 	=$row[0];
+		$banco 	=$row[2];
+		$metodo =$row[3];
+		$fpago=new DateTime($row[4]);
+		echo "El Num. de Referencia ya existe! Coincide con un(a) $metodo del Pago: $pago, por el banco $banco del dia ".date_format($fpago,"d/m/Y");
+	}	
 }
 
 ?>

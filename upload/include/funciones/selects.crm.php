@@ -1,5 +1,5 @@
 <?php
-include("conexion_crm.php");
+include("crm.functions.php");
 $data="";
 switch ($_REQUEST["select"]) {
 	case 'paymentmethod':
