@@ -34,7 +34,7 @@ foreach ($_POST as $key => $value) {
 <form id="ticketForm" method="post" action="open.php" enctype="multipart/form-data" onsubmit="">
   <?php csrf_token(); ?>
   <input type="hidden" name="a" value="open">
-  <table width="80%" cellpadding="1" cellspacing="0" border="0">
+  <table width="80%" cellpadding="1" cellspacing="0" border="0" id="tabla1">
     <tbody>
     <tr style="">
         <td class="required"><?php echo __('Tipo de Solicitud');?>:</td>
@@ -100,6 +100,8 @@ foreach ($_POST as $key => $value) {
     <tr><td colspan=2>&nbsp;</td></tr>
     </tbody>
   </table>
+  <?php /* jmangarret - sept2017 - DIV para mostrar pagos cargados */ ?>
+  <div id="listadoPagos"></div>
 <hr/>
   <p style="text-align:center;">
         <input type="submit" value="<?php echo __("Create Ticket");?>" id="create">
@@ -123,7 +125,7 @@ foreach ($_POST as $key => $value) {
             </div>            
             <div class="modal-body">
             <?php $user_id=$thisclient->getId(); ?>
-            <?php include("pagos.php"); ?>
+            <?php include("include/pagos/form_pagos.php"); ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-info" data-dismiss="modal" id="close-pagos">Cerrar</button>
@@ -134,7 +136,7 @@ foreach ($_POST as $key => $value) {
 
 <?php
 //jmangarret - 08ago2017 - Refactorizacion de codigo - Pase de query a funciones php y validaciones javascript a archivo js
-include("functions.custom.php");
+include("include/funciones/commons.php");
 
 //jmangarret - 23ago2017 - Obtencion de tipo de satelite en div oculto para leerlo con jquery
 $tipoSatelite=getTipoSatelite($thisclient->getId());

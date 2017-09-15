@@ -57,7 +57,7 @@ if ($_POST) {
         $ticketid   =$ticket->getId();
         $detalleid  =$vars["625747b2abc65cc2"];
         $dir_actual=getcwd();        
-        include("include/crm/ajax_pago_crm.php");     //VERIFICAR RUTAS   **************
+        include("include/pagos/guardar_pago_crm.php");    
         //fin jmangarret - 28ago2017
 
         $msg=__('Support ticket request created');

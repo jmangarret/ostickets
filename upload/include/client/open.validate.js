@@ -1,7 +1,3 @@
-   $(document).ready(function() {
-
-    });
-
    $("#fm tr:eq(11) td:eq(0) div:eq(0)").css("display","block"); //10/02/2016 Billy se sumo 1 al tr
 
    function setLimiteCredito(limite,disponible,fecha){    
@@ -188,10 +184,19 @@
             $("select:eq(2)").removeAttr('required');
         }
         //jmangarret ago2017 - onchange para abrir modal pagos: 
-        //opciones pago de reporte en curso y pago de reporte pasado
-        if ($(this).val()==27 || $(this).val()==28 || $(this).val()==19){            
+        //opciones pago de reporte en curso y pago de reporte pasado (credito)
+        if ($(this).val()==27 || $(this).val()==28){            
             //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
-            if ($("#tipoSatelite").text()=="Verificar Credito" || $("#tipoSatelite").text()=="Pago Adjunto"){
+            if ($("#tipoSatelite").text()=="Verificar Credito"){
+                $('.modal-content').css('width','800px');
+                $('.modal-dialog').css( 'margin-left','25%');
+                $('#modalPagos').modal('show');          
+            }            
+        }                
+        //opciones emitir localizador (pago adjunto)
+        if ($(this).val()==19){            
+            //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
+            if ($("#tipoSatelite").text()=="Pago Adjunto"){
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
