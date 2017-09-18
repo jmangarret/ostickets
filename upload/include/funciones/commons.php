@@ -1,6 +1,9 @@
 <?php
+DEFINE("INCLUDE_DIR","../");
+include_once("../ost-config.php");
 $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
 /* check connection */
+
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
@@ -205,5 +208,28 @@ function getLocalizadorStatus($ticketId){
     $loc = $row2[0];
 
     return $loc;
+}
+
+function showResults($arrayDatos,$arrayCampos){
+    $tabla.= "<table class=table>";
+    $tabla.= "<thead>";
+    $tabla.= "<tr>";
+    for ($i=0; $i < count($arrayCampos); $i++) { 
+        $tabla.= "<td><b>".$arrayCampos[$i]."</b></td>";
+    }        
+    $tabla.= "</tr>";
+    $tabla.= "</thead>";
+    $tabla.= "<tbody>";    
+    foreach ($arrayDatos as $pos => $result) {
+        $tabla.= "<tr id=tr$pos class=resaltar>";
+        foreach ($result as $key => $value) {
+            $tabla.= "<td>".$value."</td>";
+        }            
+        $tabla.= "</tr>";
+    }
+    $tabla.= "</tbody>";
+    $tabla.= "</table>";
+
+    return $tabla;
 }
 ?>

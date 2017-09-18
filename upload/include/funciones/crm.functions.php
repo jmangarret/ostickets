@@ -87,4 +87,54 @@ function validarReferenciaBancaria($data){
 	}	
 }
 
+function getLocalizadores($contactoid){
+	global $mysqli_crm;
+	$sql= "SELECT * FROM vtiger_localizadores WHERE contactoid=$contactoid ORDER BY localizadoresid DESC LIMIT 10";
+	$qry= $mysqli_crm->query($sql);
+	$array=array();
+	//return $qry->fetch_all();
+	while ($row=$qry->fetch_array()) {
+		$locid 	= $row["localizadoresid"];
+		$loc 	= $row["localizador"];
+		$gds 	= $row["gds"];
+		$total 	= number_format($row["totalloc"],2);
+		$fecha 	= date_format(date_create(getCrmEntity($locid,"Localizadores","createdtime")),"d-m-Y");
+		
+		$array[]=array("loc"=>$loc,"fecha"=>$fecha,"gds"=>$gds,"total"=>$total);
+	}
+
+	return $array;
+}
+
+function getPagos($contactoid){
+	global $mysqli_crm;
+	$sql= "SELECT * FROM vtiger_registrodepagos WHERE contactoid=$contactoid ORDER BY registrodepagosid DESC LIMIT 10";
+	$qry= $mysqli_crm->query($sql);
+	$array=array();
+	//return $qry->fetch_all();
+	while ($row=$qry->fetch_array()) {
+		$pagoid = $row["registrodepagosid"];
+		$banco	= $row["bancoreceptor"];
+		$fecha 	= $row["fechapago"];
+		$ref 	= $row["referencia"];		
+		$total 	= number_format($row["amount"],2);
+		$fecha 	= date_format(date_create($fecha),"d-m-Y");
+		
+		$array[]=array("banco"=>$banco,"fecha"=>$fecha,"ref"=>$ref,"total"=>$total);
+	}
+
+	return $array;
+}
+
+function getCrmEntity($id,$modulo,$campo){
+	global $mysqli_crm;
+	$sql 	= "SELECT * FROM vtiger_crmentity WHERE crmid=$id AND setype='$modulo' AND deleted=0";
+	$qry 	= $mysqli_crm->query($sql);
+	$row 	= $qry->fetch_array();
+	$val 	= $row[$campo];
+	
+	return $val;	
+}
+
+
 ?>
