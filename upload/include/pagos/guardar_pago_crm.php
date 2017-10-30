@@ -20,6 +20,7 @@ foreach ($pagosTemp as $key => $row){
 	$data["bancoreceptor"]	=$row["receptor"];
 	$data["currency"]		=$row["moneda"];
 	$data["amount"]			=$row["monto"];
+	$data["concepto"]		=$row["concepto"];
 	//Cargamos pago en crm y actualizamos ticket en el temporal
 	setPagosCrm($data);
 	updatePagosTemp($row["id"],$ticketid);		

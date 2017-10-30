@@ -20,21 +20,21 @@ include("../funciones/pagos.functions.php");
   </div>
   <div class="form-group">
 		<ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#tab1">Localizadores</a></li>
-			<li><a data-toggle="tab" href="#tab2">Pagos</a></li>
+			<li class="active"><a data-toggle="tab" href="#tab1">Pagos</a></li>
+			<li><a data-toggle="tab" href="#tab2">Localizadores</a></li>
 		</ul>
 		<div class="tab-content">
 			<div id="tab1" class="tab-pane fade in active">		    
-				<label for="loc">Seleccione los localizadores...</label>
-				<input type="text" class="form-control" id="loc" placeholder="Buscar Localizador...">
-				<?php $locs  =getLocalizadores(15728); ?>
-				<?php echo showResults($locs,array("Localizador","Fecha","GDS","Total")); ?>
-			</div>
-			<div id="tab2" class="tab-pane fade">
 				<label for="pago">Seleccione los pagos...</label>
 				<input type="text" class="form-control" id="pago" placeholder="Buscar Pago...">
 				<?php $pagos  =getPagos(13052); ?>
 				<?php echo showResults($pagos,array("Banco Receptor","Fecha","Ref","Monto")); ?>
+			</div>
+			<div id="tab2" class="tab-pane fade">
+				<label for="loc">Seleccione los localizadores...</label>
+				<input type="text" class="form-control" id="loc" placeholder="Buscar Localizador...">
+				<?php $locs  =getLocalizadores(15728); ?>
+				<?php echo showResults($locs,array("Localizador","Fecha","GDS","Total")); ?>
 			</div>
 		</div>
   </div>

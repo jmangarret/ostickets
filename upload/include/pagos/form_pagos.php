@@ -12,9 +12,11 @@
             <td>
                 <input type="text" size="30" name="fechadepago" id="fechadepago" value="" required>
             </td>        
-            <td width="150" class="required">             
+            <td width="150" class="required">  
+                Concepto:
             </td>
-            <td>                           
+            <td>
+                <input type="text" size="30" name="concepto" id="concepto_de_pago" value="" required>                                      
             </td>
         </tr>
         <tr>
@@ -72,7 +74,7 @@
 <p style="text-align:center;">
     <input type="submit" name="submit" id="save" value="Agregar pago">
     <input type="reset"  name="reset2"  value="Restablecer">    
-    <input type="hidden" name="user_id"  value="<?php echo $user_id; ?>">    
+    <input type="hidden" name="user_id"  value="<?php echo $user_id; ?>">            
 </p>
 </form>
 

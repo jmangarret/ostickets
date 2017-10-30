@@ -4,6 +4,9 @@ $include_dir=dirname($dir_actual); //devuelve directorio padre o anterior
 define("INCLUDE_DIR",$include_dir."/");
 require_once INCLUDE_DIR.'ost-config.php';
 $conex=mysql_connect(DBHOST, DBUSER, DBPASS);   
+include("../funciones/commons.php");
+include("../funciones/crm.functions.php");
+include("../funciones/pagos.functions.php");
 //Consultamos los email de los usuarios de la organizacion filtrar los boletos.
 $org_id =$_REQUEST["org_id"];
 $org_name =$_REQUEST["org_name"];
@@ -11,7 +14,8 @@ $isStaff=$_REQUEST["isStaff"];
 $strbus =trim($_REQUEST["strbus"]);
 $fecha1 =trim($_REQUEST["fecha1"]);
 $fecha2 =trim($_REQUEST["fecha2"]);
-
+//Pasar funcion al popup de pagos para buscar contacto crm segun organizacion
+/*
 $sqlEmail=" SELECT address FROM osticket1911.ost_user_email 
             WHERE user_id IN (SELECT id FROM osticket1911.ost_user WHERE org_id=$org_id)";
 $qryEmail= mysql_query($sqlEmail);
@@ -20,6 +24,9 @@ while ($rowEmail=mysql_fetch_row($qryEmail)) {
     $emails[]=$rowEmail[0];                    
 }        
 $matches = "'".implode("','",$emails)."'";
+*/
+$matches=getOrgEmails($org_id);
+
 /// $db Colocar nombre de base de datos del CRM en Produccion ///
 $bd="vtigercrm600";
 $query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
@@ -73,20 +80,17 @@ echo "console.log(\"".$matches."\")";
 </script>
 
 <div id="basic_search">
-    <table>
+    <table border="0">
         <tbody>
-        <tr>
-            <td nowrap>
-                <input type="text" id="strbus" name="strbus" size="30" placeholder="Localizador, boleto, pasajero">                
-                Desde: <input type="text" id ="fecha1" name="desde" style="width:90px" placeholder="aaaa-mm-dd"> 
-                Hasta: <input type="text" id ="fecha2" name="hasta" style="width:90px" placeholder="aaaa-mm-dd">&nbsp;
+        <tr>            
             <?php
             /////Si inicia sesion como Agente, es Perfil Staff y la peticion viene de include/staff/header.inc.php
             if ($isStaff){
                 //retrocedemos un directorio para salir de la carpeta SCP
                 $urlAjax="../include/crm/ajax_boletos.php";
                 echo "<td>";
-                echo "Satelite: <select name='satelite' id='select_satelites' onchange='setOrganizacion(this)'>";
+                echo "<strong>Satelite:</strong> ";
+                echo "<select name='satelite' id='select_satelites' onchange='setOrganizacion(this)' style=width:300px>";
                 echo "<option value=0>Seleccionar</option>";
                 echo "</select>";
                 echo "</td>";  
@@ -94,8 +98,8 @@ echo "console.log(\"".$matches."\")";
                 $qryOrg = mysql_query($sqlOrg);                          
                 while ($rowOrg = mysql_fetch_row($qryOrg)) {
                     ?>
-                     <script type="text/javascript">                        
-                        $("#select_satelites").append(new Option("<?php echo $rowOrg[1]; ?>", "<?php echo $rowOrg[0]; ?>"));                        
+                    <script type="text/javascript">                        
+                        $("#select_satelites").append(new Option("<?php echo $rowOrg[1]; ?>", "<?php echo $rowOrg[0]; ?>"));
                     </script>
                     <?php                    
                 }
@@ -103,7 +107,15 @@ echo "console.log(\"".$matches."\")";
                 $urlAjax="include/crm/ajax_boletos.php";
             }
             /////Fin org staff
-            ?>              
+            ?>    
+            <td nowrap>                              
+            <strong>Desde:</strong>
+            <input type="text" id ="fecha1" name="desde" style="width:90px" placeholder="aaaa-mm-dd"> 
+            <strong>Hasta:</strong>  
+            <input type="text" id ="fecha2" name="hasta" style="width:90px" placeholder="aaaa-mm-dd">&nbsp;
+            <strong>Boleto:</strong>
+            <input type="text" id="strbus" name="strbus" size="30" placeholder="Localizador, boleto, pasajero">
+
             <td><input type="button" name="buscar" id="buscar" value="Buscar"></td>   
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
             <td><input type="hidden" name="org_name" id="org_name" value="<?php echo $org_name; ?>"></td>   
@@ -117,7 +129,6 @@ echo "console.log(\"".$matches."\")";
                 var fecha2 = $("#fecha2").val();
                 var isStaff= $("#isStaff").val();
                 $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
-
                 $.ajax({
                     data: { 
                         org_id : org_id,
@@ -136,6 +147,13 @@ echo "console.log(\"".$matches."\")";
             });
             </script>            
         </tr>
+        <tr>
+            <td colspan="3">
+               <strong>Pago: &nbsp;&nbsp;&nbsp;</strong> 
+               <input type="text" name="pago" id="pago" style="width:300px" value="">
+               <input type="button" name="btnPagos" value="..." onclick="openPagos()">
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
@@ -147,8 +165,7 @@ echo "console.log(\"".$matches."\")";
     <thead>
         <tr>
             <th width="120"><a href="#"><b>Fecha</b></th>    
-            <th width="120"><a href="#"><b>Localizador</b></th>            
-            <th width="120"><a href="#"><b>Pasajero</b></th>
+            <th width="120"><a href="#"><b>Localizador</b></th>                        
             <th width="120"><a href="#"><b>Boleto</b></th>                                                
             <th width="120"><a href="#"><b>GDS</b></th>                    
             <th width="120"><a href="#"><b>Status</b></th>     
@@ -194,8 +211,11 @@ echo "console.log(\"".$matches."\")";
         ?>
         <tr>
             <td nowrap><?php echo $fecha; ?></td>
-            <td nowrap><?php echo $row["localizador"]; ?></td>
-            <td nowrap><?php echo substr($row["passenger"],0,25); //Solo 30 Caracteres ?></td>
+            <td nowrap >
+                <a href="#" title="<?php echo $row[passenger]; ?>">
+                    <?php echo $row["localizador"]; ?>  
+                </a>
+            </td>            
             <td nowrap><?php echo $row["boleto1"]; ?></td>
             <td nowrap><?php echo $row["gds"]; ?></td>
             <td nowrap><?php echo $row["status"]; ?></td>
@@ -246,6 +266,24 @@ echo "console.log(\"".$matches."\")";
 </table>
 
 <script>
+function openPagos(){
+    var idOrg=document.getElementById("select_satelites").value;
+    if (idOrg>0){
+        popupwindow('../include/pagos/popup_pagos.php?id='+idOrg,'Pagos',800,600);
+        return true;        
+    }else{
+        alert("Debe Seleccionar un Satelite para poder ver sus Pagos...");
+        return false;
+    }
+}
+function popupwindow(url, title, w, h) {
+  var left = (screen.width/2)-(w/2);
+  var top = (screen.height/2)-(h/2);
+  return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+} 
+$(document).ready(function(){
+    $('.tooltip').tooltip(); 
+});
 function setOrganizacion(elem){
     document.getElementById("org_id").value=elem.value;
     document.getElementById("org_name").value=elem.options[elem.selectedIndex].text;
