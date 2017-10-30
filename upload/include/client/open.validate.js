@@ -191,15 +191,18 @@
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
+                if ($(this).val()==27) $("#concepto_de_pago").val("Pago de reporte en curso");
+                if ($(this).val()==28) $("#concepto_de_pago").val("Pago de reporte pasado");
             }            
         }                
         //opciones emitir localizador (pago adjunto)
         if ($(this).val()==19){            
             //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
-            if ($("#tipoSatelite").text()=="Pago Adjunto"){
+            if ($("#tipoSatelite").text()=="Pago Adjunto"){                
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
+                if ($(this).val()==19) $("#concepto_de_pago").val("Emision con pago adjunto");                
             }            
         }
 

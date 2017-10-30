@@ -101,6 +101,17 @@ $(document).ready(function() {
                 $("#listadoPagos").html(response);                              
             }
         });     
+    });    
+    $("#close-modal").click(function(event){ 
+     var parametros = $("#form_pago").serialize();   
+        $.ajax({
+            type: "POST",
+            url: "include/pagos/listar_pago_temp.php",
+            data: parametros,
+            success: function(response){
+                $("#listadoPagos").html(response);                              
+            }
+        });     
     });
 //fin document ready
 });
