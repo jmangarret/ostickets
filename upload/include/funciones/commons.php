@@ -11,13 +11,22 @@ if (mysqli_connect_errno()) {
 
 function getUserEmail($idUser){
     global $mysqli;
+
     $sqlOrg="SELECT org_id FROM osticket1911.ost_user WHERE id=".$idUser;
     $qryOrg=$mysqli->query($sqlOrg);
     $rowOrg=$qryOrg->fetch_row();            
     $org_id=$rowOrg[0];               
-    //Bsucamos todos los emails de todos los usuarios de la org
+    
+    $emails=getOrgEmails($org_id);
+
+    return $emails;
+}
+
+function getOrgEmails($idOrg){
+    //Buscamos todos los emails de todos los usuarios de la org
+    global $mysqli;
     $sqlEmail=" SELECT address FROM osticket1911.ost_user_email 
-                WHERE user_id IN (SELECT id FROM osticket1911.ost_user WHERE org_id=$org_id)";
+                WHERE user_id IN (SELECT id FROM osticket1911.ost_user WHERE org_id=$idOrg)";
     $qryEmail= $mysqli->query($sqlEmail);
     $emails=array();
     while ($rowEmail=$qryEmail->fetch_row()) {
@@ -211,7 +220,7 @@ function getLocalizadorStatus($ticketId){
 }
 
 function showResults($arrayDatos,$arrayCampos){
-    $tabla.= "<table class=table>";
+    $tabla.= "<table class=table id=tableResult>";
     $tabla.= "<thead>";
     $tabla.= "<tr>";
     for ($i=0; $i < count($arrayCampos); $i++) { 

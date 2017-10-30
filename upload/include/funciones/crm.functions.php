@@ -38,12 +38,13 @@ function setPagosCrm($data){
 	$bancoreceptor	=$data["bancoreceptor"];
 	$currency		=$data["currency"];
 	$amount			=$data["amount"];
+	$concepto		=$data["concepto"];
 	//Formateamos fecha compatible con mysql
 	$date_convert 	=date_create($fechadepago);
 	$fechadepago 	=$date_convert->format('Y-m-d');
 	//Registramos pago en tabla principal
-	$sql_pagos ="INSERT INTO vtiger_registrodepagos(registrodepagosid,fechapago,paymentmethod,referencia,bancoemisor,bancoreceptor,currency,amount,pagostatus,contactoid,ticketid) ";
-	$sql_pagos.="VALUES ('$crmId','$fechadepago','$paymentmethod','$referencia','$bancoemisor','$bancoreceptor','$currency','$amount','Por Verificar',$contactoid,$ticketid) ";
+	$sql_pagos ="INSERT INTO vtiger_registrodepagos(registrodepagosid,fechapago,paymentmethod,referencia,bancoemisor,bancoreceptor,currency,amount,pagostatus,contactoid,ticketid,observacion) ";
+	$sql_pagos.="VALUES ('$crmId','$fechadepago','$paymentmethod','$referencia','$bancoemisor','$bancoreceptor','$currency','$amount','Por Verificar',$contactoid,$ticketid,'$concepto') ";
 	$qryCrm		=$mysqli_crm->query($sql_pagos);
 
 	if ($mysqli_crm->affected_rows>0){
@@ -106,9 +107,9 @@ function getLocalizadores($contactoid){
 	return $array;
 }
 
-function getPagos($contactoid){
+function getPagosCrm($contactoid){
 	global $mysqli_crm;
-	$sql= "SELECT * FROM vtiger_registrodepagos WHERE contactoid=$contactoid ORDER BY registrodepagosid DESC LIMIT 10";
+	$sql= "SELECT * FROM vtiger_registrodepagos WHERE contactoid=$contactoid AND observacion LIKE '%Pago de reporte%' ORDER BY registrodepagosid DESC";
 	$qry= $mysqli_crm->query($sql);
 	$array=array();
 	//return $qry->fetch_all();
@@ -117,10 +118,11 @@ function getPagos($contactoid){
 		$banco	= $row["bancoreceptor"];
 		$fecha 	= $row["fechapago"];
 		$ref 	= $row["referencia"];		
+		$obs 	= $row["observacion"];		
 		$total 	= number_format($row["amount"],2);
 		$fecha 	= date_format(date_create($fecha),"d-m-Y");
 		
-		$array[]=array("banco"=>$banco,"fecha"=>$fecha,"ref"=>$ref,"total"=>$total);
+		$array[]=array("obs"=>$obs,"banco"=>$banco,"fecha"=>$fecha,"ref"=>$ref,"total"=>$total);
 	}
 
 	return $array;
