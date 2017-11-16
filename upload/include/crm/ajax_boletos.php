@@ -1,4 +1,7 @@
 <?php
+session_start();
+$_SESSION['totTarifaBs'] =0;
+$_SESSION['totTarifaDol']=0;
 $dir_actual=getcwd(); //upload/include/crm
 $include_dir=dirname($dir_actual); //devuelve directorio padre o anterior
 define("INCLUDE_DIR",$include_dir."/");
@@ -28,7 +31,7 @@ $matches = "'".implode("','",$emails)."'";
 $matches=getOrgEmails($org_id);
 
 /// $db Colocar nombre de base de datos del CRM en Produccion ///
-$bd="vtigercrm600";
+$bd="crmtuagencia24";
 $query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
 		      FROM $bd.vtiger_account as a 
 			     INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
@@ -75,7 +78,7 @@ if ($org_id==4 || $org_id==8){
 <?php 
 //Elimnamos satos de linea, break line, tabulaciones para poder mostrarlos en el console.log
 $LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
-echo "console.log(\"".$matches."\")"; 
+echo "console.log(\"".$LOG."\")"; 
 ?>
 </script>
 
@@ -147,19 +150,13 @@ echo "console.log(\"".$matches."\")";
             });
             </script>            
         </tr>
-        <tr>
-            <td colspan="3">
-               <strong>Pago: &nbsp;&nbsp;&nbsp;</strong> 
-               <input type="text" name="pago" id="pago" style="width:300px" value="">
-               <input type="button" name="btnPagos" value="..." onclick="openPagos()">
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>
 
 <br>
-<b>Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b>
+<details open="open">
+<summary><b>Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b></summary>
 
 <table id="ticketTable" class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
@@ -235,7 +232,7 @@ echo "console.log(\"".$matches."\")";
 	} //Fin While         
     ?>
     <tr>
-        <td colspan="7"><b>Total USD.</b></td>        
+        <td colspan="6"><b>Total USD.</b></td>        
         <td><b><?php echo number_format($totTarifaDol,2); ?></b></td>        
         <td><b><?php echo number_format($totBaseDol,2); ?></b></td>        
         <?php 
@@ -249,7 +246,7 @@ echo "console.log(\"".$matches."\")";
     </tr>
 
     <tr>
-        <td colspan="7"><b>Total VEF.</b></td>        
+        <td colspan="6"><b>Total VEF.</b></td>        
         <td><b><?php echo number_format($totTarifa,2); ?></b></td>        
         <td><b><?php echo number_format($totBaseBs,2); ?></b></td>        
         <?php 
@@ -261,13 +258,39 @@ echo "console.log(\"".$matches."\")";
         <td><b><?php echo number_format($totGeneral,2); ?></b></td>
         <td><b>VEF</b></td>        
     </tr>
-
     </tbody>
 </table>
+</details>
+
+<!-- TABLA RESUMEN DE PAGOS -->
+<details open="open">
+    <summary><b>Detalle de Pagos - <?php echo $org_name; ?></b></summary>
+    <a href="javascript:openPagos()"><b>Agregar pago</b></a>
+    <hr>
+    <table class="table" width="90%" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th width="120"><a href="#"><b>Concepto</b></th>    
+            <th width="120"><a href="#"><b>Banco</b></th>                        
+            <th width="120"><a href="#"><b>Fecha</b></th>                                                
+            <th width="120"><a href="#"><b>Referencia</b></th>                    
+            <th width="120"><a href="#"><b>Total</b></th>     
+            <th width="120"><a href="#"><b>Moneda</b></th>     
+        </tr>
+    </thead>
+    <tbody id="tablapagos">    
+
+    </tbody>    
+    <tbody id="totalpagos">    
+
+    </tbody>    
+    </table>
+</details>
+<!-- FIN TABLA RESUMEN DE PAGOS -->
 
 <script>
 function openPagos(){
-    var idOrg=document.getElementById("select_satelites").value;
+    var idOrg=$("#org_id").val();    
     if (idOrg>0){
         popupwindow('../include/pagos/popup_pagos.php?id='+idOrg,'Pagos',800,600);
         return true;        

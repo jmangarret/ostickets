@@ -2,9 +2,13 @@
 $host="localhost";
 $user="vtigercrm";
 $pass="AvzHricg4ejxA";
-$bd="vtigercrm600";
+
+$user="root";
+$pass="root";
+$bd="crmtuagencia24";
 
 $mysqli_crm = new mysqli($host, $user, $pass, $bd);
+$mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
 
 function getContactoPorEmails($emails){
 	global $mysqli_crm;	
@@ -12,11 +16,10 @@ function getContactoPorEmails($emails){
 		      	FROM vtiger_account as a 
 			  	INNER JOIN vtiger_contactdetails as c ON a.accountid=c.accountid			     
 		      	WHERE (email1 IN ($emails) OR email IN ($emails))";
-	$qry=$mysqli_crm->query($sql);
-	$row=$qry->fetch_array();
-
+	$qry=mysqli_query($mysqli_crm,$sql);
+	$row=mysqli_fetch_array($qry);
+	
 	return $row["contactid"];
-
 }
 
 function setPagosCrm($data){
@@ -122,9 +125,27 @@ function getPagosCrm($contactoid){
 		$total 	= number_format($row["amount"],2);
 		$fecha 	= date_format(date_create($fecha),"d-m-Y");
 		
-		$array[]=array("obs"=>$obs,"banco"=>$banco,"fecha"=>$fecha,"ref"=>$ref,"total"=>$total);
+		$array[]=array("obs"=>$obs,"banco"=>$banco,"fecha"=>$fecha,"ref"=>$ref,"total"=>$total,"id"=>$pagoid);
 	}
 
+	return $array;
+}
+
+function getPagoById($id){
+	global $mysqli_crm;
+	$array 	=array();
+	$sql 	="SELECT * FROM vtiger_registrodepagos WHERE registrodepagosid=$id";
+	$qry 	=$mysqli_crm->query($sql);		
+	$row 	=$qry->fetch_array();
+
+	$array["id"] 	= $row["registrodepagosid"];
+	$array["banco"]	= $row["bancoreceptor"];
+	$array["ref"] 	= $row["referencia"];		
+	$array["obs"] 	= $row["observacion"];		
+	$array["total"] = number_format($row["amount"],2);
+	$array["fecha"] = date_format(date_create($row["fechapago"]),"d-m-Y");
+	$array["moneda"]= $row["currency"];
+	
 	return $array;
 }
 
