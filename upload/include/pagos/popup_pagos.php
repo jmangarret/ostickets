@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="../../css/bootstrap.min.css">
 	<style type="text/css">
 	.resaltar:hover{ background-color:#FEFE4C; cursor:pointer}
 	</style>
@@ -17,11 +17,12 @@ include("../funciones/pagos.functions.php");
   <div class="form-group">
 		<div class="tab-content">
 			<div id="tab1" class="tab-pane fade in active">		    
-				<label for="buspago">Seleccione un pago...</label> 13052
+				<label for="buspago">Seleccione un pago...</label>
 				<input type="text" class="form-control" id="buspago" placeholder="Buscar Pago...">				
 				<?php $emails 		=getOrgEmails($_REQUEST["id"]); ?>
 				<?php $contactoid 	=getContactoPorEmails($emails); ?>				
 				<?php $pagos  		=getPagosCrm($contactoid); ?>
+				<?php echo "Contactoid: ".$contactoid; ?>
 				<?php echo showResults($pagos,array("Concepto","Banco Receptor","Fecha","Ref","Monto")); ?>
 			</div>
 		</div>
@@ -29,16 +30,30 @@ include("../funciones/pagos.functions.php");
   
 </form>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-	$("#tableResult tr").on("click", function(){
-			var c1=$(this).html().split("<td>").join(" ");
-			var c2=c1.split("</td>").join(" - ");
-			window.opener.document.getElementById("pago").value=c2.trim();
-		});
+<script src="../../js/jquery-1.8.3.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
 
-	</script>
+<script type="text/javascript">
+	$("#tableResult tr").on("click", function(){	  	
+        $.ajax({
+            data:{id : this.id},
+            type: "POST",
+            url: 'getPagoCrm.php',
+            success: function(response){                                                                  
+              	window.opener.$("#tablapagos").html(window.opener.$("#tablapagos").html()+response);				
+				$.ajax({
+		            data:{},
+		            type: "POST",
+		            url: 'getTotalPagosCrm.php',
+		            success: function(response){                                                                  
+		              	window.opener.$("#totalpagos").html(response);
+						window.close();
+		            }
+		        });	
+            }
+        });	
+	});
+</script>
 
 </body>
 </html>

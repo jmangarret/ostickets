@@ -230,8 +230,9 @@ function showResults($arrayDatos,$arrayCampos){
     $tabla.= "</thead>";
     $tabla.= "<tbody>";    
     foreach ($arrayDatos as $pos => $result) {
-        $tabla.= "<tr id=tr$pos class=resaltar>";
+        $tabla.= "<tr id=$result[id] class=resaltar>";
         foreach ($result as $key => $value) {
+            if ($key<>"id")
             $tabla.= "<td>".$value."</td>";
         }            
         $tabla.= "</tr>";
