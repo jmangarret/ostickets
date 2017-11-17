@@ -32,6 +32,7 @@ $matches=getOrgEmails($org_id);
 
 /// $db Colocar nombre de base de datos del CRM en Produccion ///
 $bd="crmtuagencia24";
+$bd="vtigercrm600";
 $query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
 		      FROM $bd.vtiger_account as a 
 			     INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
