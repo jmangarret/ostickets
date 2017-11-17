@@ -2,11 +2,13 @@
 $host="localhost";
 $user="vtigercrm";
 $pass="AvzHricg4ejxA";
-
+$bd="vtigercrm600";
+/*
+$host="localhost";
 $user="root";
 $pass="root";
 $bd="crmtuagencia24";
-
+*/
 $mysqli_crm = new mysqli($host, $user, $pass, $bd);
 $mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
 
