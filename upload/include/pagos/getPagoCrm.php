@@ -26,8 +26,8 @@ $fila.="<td>";
 $fila.="<b>".$pago["moneda"]."</b>";
 $fila.="</td>";
 $fila.="</tr>";		
-if ($pago["moneda"]=="VEF") $_SESSION['totTarifaBs'] +=$pago["total"];
-if ($pago["moneda"]=="USD") $_SESSION['totTarifaDol']+=$pago["total"];
+if ($pago["moneda"]=="VEF") $_SESSION['totPagosBs'] +=str_replace(",", "", $pago["total"]);
+if ($pago["moneda"]=="USD") $_SESSION['totPagosDol']+=$pago["total"];
 
 echo $fila;
 

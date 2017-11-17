@@ -2,6 +2,9 @@
 session_start();
 $_SESSION['totTarifaBs'] =0;
 $_SESSION['totTarifaDol']=0;
+$_SESSION['totPagosDol']=0;
+$_SESSION['totPagosBs']=0;
+
 $dir_actual=getcwd(); //upload/include/crm
 $include_dir=dirname($dir_actual); //devuelve directorio padre o anterior
 define("INCLUDE_DIR",$include_dir."/");
@@ -157,7 +160,7 @@ echo "console.log(\"".$LOG."\")";
 
 <br>
 <details open="open">
-<summary><b>Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b></summary>
+<summary><b>Detalle de Boletos - Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b></summary>
 
 <table id="ticketTable" class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
@@ -262,7 +265,10 @@ echo "console.log(\"".$LOG."\")";
     </tbody>
 </table>
 </details>
-
+<?php
+$_SESSION["totTarifaBs"] =$totGeneral;
+$_SESSION["totTarifaDol"]=$totGeneralDol;
+?>
 <!-- TABLA RESUMEN DE PAGOS -->
 <details open="open">
     <summary><b>Detalle de Pagos - <?php echo $org_name; ?></b></summary>

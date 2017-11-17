@@ -4,6 +4,7 @@ $user="vtigercrm";
 $pass="AvzHricg4ejxA";
 $bd="vtigercrm600";
 /*
+$host="localhost";
 $user="root";
 $pass="root";
 $bd="crmtuagencia24";
