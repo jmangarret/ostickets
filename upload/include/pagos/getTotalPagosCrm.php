@@ -34,3 +34,12 @@ if ($_SESSION['totSaldoBs']==0) $colorSaldoBs ="background-color: yellow; color:
     <td><b><?php echo number_format($_SESSION['totSaldoBs'],2); ?></b></td>        
     <td><b>VEF</b></td>        
 </tr>
+
+<?php
+echo "<p>Pagos: ";
+/*
+foreach ($_SESSION['pagosid'] as $key => $value) {
+	echo "<br>Pago: ".$value;
+}
+*/
+?>

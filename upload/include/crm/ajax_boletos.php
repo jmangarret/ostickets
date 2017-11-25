@@ -4,61 +4,25 @@ $_SESSION['totTarifaBs'] =0;
 $_SESSION['totTarifaDol']=0;
 $_SESSION['totPagosDol']=0;
 $_SESSION['totPagosBs']=0;
+$_SESSION['boletosid']=0;
+$_SESSION['pagosid']=array();
 
 $dir_actual=getcwd(); //upload/include/crm
 $include_dir=dirname($dir_actual); //devuelve directorio padre o anterior
 define("INCLUDE_DIR",$include_dir."/");
 require_once INCLUDE_DIR.'ost-config.php';
-$conex=mysql_connect(DBHOST, DBUSER, DBPASS);   
 include("../funciones/commons.php");
 include("../funciones/crm.functions.php");
 include("../funciones/pagos.functions.php");
-//Consultamos los email de los usuarios de la organizacion filtrar los boletos.
-$org_id =$_REQUEST["org_id"];
-$org_name =$_REQUEST["org_name"];
-$isStaff=$_REQUEST["isStaff"];
-$strbus =trim($_REQUEST["strbus"]);
-$fecha1 =trim($_REQUEST["fecha1"]);
-$fecha2 =trim($_REQUEST["fecha2"]);
-//Pasar funcion al popup de pagos para buscar contacto crm segun organizacion
-/*
-$sqlEmail=" SELECT address FROM osticket1911.ost_user_email 
-            WHERE user_id IN (SELECT id FROM osticket1911.ost_user WHERE org_id=$org_id)";
-$qryEmail= mysql_query($sqlEmail);
-$emails=array();
-while ($rowEmail=mysql_fetch_row($qryEmail)) {
-    $emails[]=$rowEmail[0];                    
-}        
-$matches = "'".implode("','",$emails)."'";
-*/
-$matches=getOrgEmails($org_id);
 
-/// $db Colocar nombre de base de datos del CRM en Produccion ///
-$bd="crmtuagencia24";
-$bd="vtigercrm600";
-$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency  
-		      FROM $bd.vtiger_account as a 
-			     INNER JOIN $bd.vtiger_contactdetails as c ON a.accountid=c.accountid
-			     INNER JOIN $bd.vtiger_localizadores as l ON l.contactoid=c.contactid
-				    AND localizadoresid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Localizadores') 
-			     INNER JOIN $bd.vtiger_boletos as b ON b.localizadorid=l.localizadoresid 
-				    AND boletosid NOT IN (SELECT crmid FROM $bd.vtiger_crmentity WHERE deleted=1 AND setype='Boletos')
-		      WHERE (email1 IN ($matches) OR email IN ($matches))";
+$conex=mysql_connect(DBHOST, DBUSER, DBPASS);   
+$org_id     =$_REQUEST["org_id"];
+$org_name   =$_REQUEST["org_name"];
+$isStaff    =$_REQUEST["isStaff"];
+$strbus     =trim($_REQUEST["strbus"]);
+$fecha1     =trim($_REQUEST["fecha1"]);
+$fecha2     =trim($_REQUEST["fecha2"]);
 
-if (!$strbus && !$fecha1 && !$fecha2){
-    $criterio = " Todos los boletos ";
-}
-if ($strbus){
-    $query.=" AND (l.localizador LIKE '%$strbus%' OR boleto1 LIKE '%$strbus%' OR passenger LIKE '%$strbus%') ";
-    $criterio = " Coincidencias de $strbus ";
-}
-if ($fecha1 && $fecha2){
-    $query.=" AND fecha_emision BETWEEN '$fecha1' AND '$fecha2' ";
-    $criterio.= " Desde ".date("d/m/Y", strtotime($fecha1))." - Hasta ".date("d/m/Y", strtotime($fecha2));
-}
-$query.=" ORDER BY fecha_emision DESC";
-$result = mysql_query($query);
-$totreg = mysql_num_rows($result);
 $totTarifa=0;
 $totBaseBs=0;
 $totBaseDol=0;
@@ -77,15 +41,6 @@ if ($org_id==4 || $org_id==8){
     $porcentaje=1.5;
 }
 ?>
-<!--CONSOLE.LOG PARA DEBUG-->
-<script type="text/javascript">
-<?php 
-//Elimnamos satos de linea, break line, tabulaciones para poder mostrarlos en el console.log
-$LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
-echo "console.log(\"".$LOG."\")"; 
-?>
-</script>
-
 <div id="basic_search">
     <table border="0">
         <tbody>
@@ -127,41 +82,23 @@ echo "console.log(\"".$LOG."\")";
             <td><input type="hidden" name="org_id" id="org_id" value="<?php echo $org_id; ?>"></td>   
             <td><input type="hidden" name="org_name" id="org_name" value="<?php echo $org_name; ?>"></td>   
             <td><input type="hidden" name="isStaff" id="isStaff" value="<?php echo $isStaff; ?>"></td>   
-            <script type="text/javascript">
-            $("#buscar").click(function(){
-                var org_id = $("#org_id").val();
-                var org_name = $("#org_name").val();
-                var strbus = $("#strbus").val();
-                var fecha1 = $("#fecha1").val();
-                var fecha2 = $("#fecha2").val();
-                var isStaff= $("#isStaff").val();
-                $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
-                $.ajax({
-                    data: { 
-                        org_id : org_id,
-                        org_name : org_name,
-                        strbus : strbus,
-                        fecha1 : fecha1,
-                        fecha2 : fecha2,
-                        isStaff: isStaff
-                    },
-                    type: "POST",
-                    url: '<?php echo $urlAjax; ?>',
-                    success: function(response){                                                                  
-                      $("#content").html(response);
-                    }
-                });
-            });
-            </script>            
         </tr>
         </tbody>
     </table>
 </div>
 
 <br>
+<?php
+//Obtenemos los emails de la org //Consultamos los boletos segun los criterios seleccionados
+$emails =getOrgEmails($org_id);
+$boletos=getBoletosSatelites($strbus,$fecha1,$fecha2,$emails);
+$totreg = count($boletos);
+$criterio = " Todos los boletos ";
+if ($strbus)             $criterio = " Coincidencias de $strbus ";
+if ($fecha1 && $fecha2)  $criterio.= " Desde ".date("d/m/Y", strtotime($fecha1))." - Hasta ".date("d/m/Y", strtotime($fecha2));
+?>
 <details open="open">
 <summary><b>Detalle de Boletos - Mostrando 1 - <?php echo $totreg . $criterio . " - " . $org_name; ?></b></summary>
-
 <table id="ticketTable" class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
@@ -186,7 +123,8 @@ echo "console.log(\"".$LOG."\")";
     </thead>
     <tbody>
    <?php
-   while ($row=mysql_fetch_array($result)){ 
+   $arrayBoletos=array();
+   foreach ($boletos as $row) {
         $fecha = date("d/m/Y", strtotime($row["fecha_emision"]));     
         $total =$row["amount"] + $row["fee"]; 
         if ($row["currency"]=="VEF"){
@@ -233,7 +171,10 @@ echo "console.log(\"".$LOG."\")";
             <td nowrap><?php echo $row["currency"]; ?></td>        
         </tr>    
 	<?php
+    $arrayBoletos[]=$row["boletosid"];
+    $accountid=$row["accountid"];
 	} //Fin While         
+    $_SESSION['boletosid']=$arrayBoletos;
     ?>
     <tr>
         <td colspan="6"><b>Total USD.</b></td>        
@@ -248,7 +189,6 @@ echo "console.log(\"".$LOG."\")";
         <td><b><?php echo number_format($totGeneralDol,2); ?></b></td>
         <td><b>USD</b></td>        
     </tr>
-
     <tr>
         <td colspan="6"><b>Total VEF.</b></td>        
         <td><b><?php echo number_format($totTarifa,2); ?></b></td>        
@@ -271,8 +211,7 @@ $_SESSION["totTarifaDol"]=$totGeneralDol;
 ?>
 <!-- TABLA RESUMEN DE PAGOS -->
 <details open="open">
-    <summary><b>Detalle de Pagos - <?php echo $org_name; ?></b></summary>
-    <a href="javascript:openPagos()"><b>Agregar pago</b></a>
+    <summary><b>Detalle de Pagos - <?php echo $org_name; ?></b></summary>    
     <hr>
     <table class="table" width="90%" cellspacing="0" cellpadding="0">
     <thead>
@@ -286,67 +225,126 @@ $_SESSION["totTarifaDol"]=$totGeneralDol;
         </tr>
     </thead>
     <tbody id="tablapagos">    
-
+        <!-- SECCION PARA PAGOS SELECCIONADOS DESDE EL POPUP -->
     </tbody>    
     <tbody id="totalpagos">    
-
+        <!-- SECCION PARA TOTAL PAGOS SELECCIONADOS DESDE EL POPUP -->
     </tbody>    
     </table>
 </details>
 <!-- FIN TABLA RESUMEN DE PAGOS -->
-
+<div align="center">
+    <td><input type="hidden" name="accountid" id="accountid" value="<?php echo $accountid; ?>"></td>   
+    <input type="button" name="addPago" value="Agregar Pago" onclick="javascript:openPagos()">
+    <input type="button" name="closeReport" id="closeReport" value="Cerrar Reporte">
+</div>
+<div align="center" id="success-cierre"></div>
 <script>
-function openPagos(){
-    var idOrg=$("#org_id").val();    
-    if (idOrg>0){
-        popupwindow('../include/pagos/popup_pagos.php?id='+idOrg,'Pagos',800,600);
-        return true;        
-    }else{
-        alert("Debe Seleccionar un Satelite para poder ver sus Pagos...");
-        return false;
-    }
-}
-function popupwindow(url, title, w, h) {
-  var left = (screen.width/2)-(w/2);
-  var top = (screen.height/2)-(h/2);
-  return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-} 
-$(document).ready(function(){
+    /*tooltip para datos del pasajero al señalar localizador*/
     $('.tooltip').tooltip(); 
-});
-function setOrganizacion(elem){
-    document.getElementById("org_id").value=elem.value;
-    document.getElementById("org_name").value=elem.options[elem.selectedIndex].text;
-}
-$(function() {
-    $("#fecha1").datepicker();
-    $("#fecha1").datepicker('option', {dateFormat: 'yy-mm-dd'});
-  });
+    $("#select_satelites").val("<?php echo $org_id; ?>");
+    /*Boton buscar boletos segun filtros*/
+    $("#buscar").click(function(){
+        var org_id = $("#org_id").val();
+        var org_name = $("#org_name").val();
+        var strbus = $("#strbus").val();
+        var fecha1 = $("#fecha1").val();
+        var fecha2 = $("#fecha2").val();
+        var isStaff= $("#isStaff").val();
+        $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+        $.ajax({
+            data: { 
+                org_id : org_id,
+                org_name : org_name,
+                strbus : strbus,
+                fecha1 : fecha1,
+                fecha2 : fecha2,
+                isStaff: isStaff
+            },
+            type: "POST",
+            url: '<?php echo $urlAjax; ?>',
+            success: function(response){                                                                  
+              $("#content").html(response);
+            }
+        });
+    });
+    /*Modal para agregar pagos*/
+    function openPagos(){
+        var idOrg=$("#org_id").val();    
+        if (idOrg>0){
+            popupwindow('../include/pagos/popup_pagos.php?id='+idOrg,'Pagos',800,600);
+            return true;        
+        }else{
+            alert("Debe Seleccionar un Satelite para poder ver sus Pagos...");
+            return false;
+        }
+    }
+    function popupwindow(url, title, w, h) {
+      var left = (screen.width/2)-(w/2);
+      var top = (screen.height/2)-(h/2);
+      return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+    }     
+    function setOrganizacion(elem){
+        document.getElementById("org_id").value=elem.value;
+        document.getElementById("org_name").value=elem.options[elem.selectedIndex].text;
+    }
+    $(function() {
+        $("#fecha1").datepicker();
+        $("#fecha1").datepicker('option', {dateFormat: 'yy-mm-dd'});
+        $("#fecha1").val("<?php echo $fecha1; ?>");
+      });
 
-$(function() {
-    $("#fecha2").datepicker();
-    $("#fecha2").datepicker('option', {dateFormat: 'yy-mm-dd'});
-  });
-
-$(function($){
-    $.datepicker.regional['es'] = {
-        closeText: 'Cerrar',
-        prevText: '<Ant',
-        nextText: 'Sig>',
-        currentText: 'Hoy',
-        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-        weekHeader: 'Sm',
-        dateFormat: 'dd/mm/yy',
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ''
-    };
-    $.datepicker.setDefaults($.datepicker.regional['es']);
-});
-
+    $(function() {
+        $("#fecha2").datepicker();
+        $("#fecha2").datepicker('option', {dateFormat: 'yy-mm-dd'});
+        $("#fecha2").val("<?php echo $fecha2; ?>");
+      });
+    $(function($){
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+            dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+    });
+    /*Boton Cerrar Reporte*/
+    $("#closeReport").click(function(){
+        var accountid   = $("#accountid").val();    
+        var fecha1      = $("#fecha1").val();
+        var fecha2      = $("#fecha2").val();
+        $.ajax({
+            data: {
+                "accountid":accountid,
+                "desde":fecha1,
+                "hasta":fecha2,
+            },
+            type: "post",
+            url: "../include/pagos/cerrar_reporte.php",
+            success:function(response){
+                $("#success-cierre").html(response);
+            }
+        });
+    });
 </script>
+
+<!--CONSOLE.LOG PARA DEBUG-->
+<script type="text/javascript">
+<?php 
+//Elimnamos satos de linea, break line, tabulaciones para poder mostrarlos en el console.log
+$LOG = str_replace(array("\r\n", "\r", "\n"), "", $query);
+echo "console.log(\"".$LOG."\")"; 
+?>
+</script>
+

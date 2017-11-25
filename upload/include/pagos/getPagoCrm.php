@@ -29,6 +29,8 @@ $fila.="</tr>";
 if ($pago["moneda"]=="VEF") $_SESSION['totPagosBs'] +=str_replace(",", "", $pago["total"]);
 if ($pago["moneda"]=="USD") $_SESSION['totPagosDol']+=$pago["total"];
 
+$_SESSION['pagosid'][]=$_REQUEST["id"];
+
 echo $fila;
 
 ?>
