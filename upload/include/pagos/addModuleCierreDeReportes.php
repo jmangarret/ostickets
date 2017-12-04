@@ -3,7 +3,7 @@ include_once ('vtlib/Vtiger/Module.php');
 $Vtiger_Utils_Log = true;
 
 // Module Create
-$MODULENAME = 'CierreDeReportes';
+$MODULENAME = 'Cierres';
 $TABLENAME = 'vtiger_cierres';
 $moduleInstance = new Vtiger_Module(); 
 $moduleInstance->name = $MODULENAME;     
@@ -29,19 +29,20 @@ $fieldInstance1  = new Vtiger_Field();
 $fieldInstance1->name = 'accountid';                                       
 $fieldInstance1->label = 'Cuenta/Satelite';                                      
 $fieldInstance1->table = $TABLENAME;                      
-$fieldInstance1->uitype = 33;                                            
+$fieldInstance1->uitype = 10;                                            
 $fieldInstance1->column = 'accountid';                                     
 $fieldInstance1->columntype = 'INT(11)';           
 $fieldInstance1->typeofdata = 'I~M';                            
 $blockInstance->addField($fieldInstance1); 
 
+$fieldInstance1->setRelatedModules(Array('Accounts'));
 
 $fieldInstance2  = new Vtiger_Field();                          
 $fieldInstance2->name = 'nombre';                                     
 $fieldInstance2->label = 'Nombre del Reporte';                            
 $fieldInstance2->table = $TABLENAME;                      
 $fieldInstance2->uitype = 1;                                            
-$fieldInstance2->column = 'modulo';                           
+$fieldInstance2->column = 'nombre';                           
 $fieldInstance2->columntype = 'VARCHAR(255)';           
 $fieldInstance2->typeofdata = 'V~M';                            
 $blockInstance->addField($fieldInstance2);   
@@ -151,7 +152,7 @@ $moduleInstance->setDefaultSharing();
 //// Webservice Setup
 $moduleInstance->initWebservice();
 
-$moduleInstance = Vtiger_Module::getInstance('CierreDeReportes');
+$moduleInstance = Vtiger_Module::getInstance('Cierres');
 $moduleInstance->setRelatedList(Vtiger_Module::getInstance('Boletos'), 'Boletos',Array('ADD','SELECT'),'get_related_list');
 $moduleInstance->setRelatedList(Vtiger_Module::getInstance('RegistroDePagos'), 'Pagos',Array('ADD','SELECT'),'get_related_list');
 

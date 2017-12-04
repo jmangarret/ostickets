@@ -7,7 +7,7 @@ $bd="vtigercrm600";
 $host="localhost";
 $user="root";
 $pass="root";
-$bd="crmtuagencia24";
+//$bd="crmtuagencia24";
 
 $mysqli_crm = new mysqli($host, $user, $pass, $bd);
 $mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
@@ -112,7 +112,7 @@ function getLocalizadores($contactoid){
 	return $array;
 }
 
-function getBoletosSatelites($strbus,$fecha1,$fecha2,$emails){
+function getBoletosSatelites($strbus="",$fecha1="",$fecha2="",$emails=""){
 	global $mysqli_crm;
 	$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency,boletosid,a.accountid,contactid  
 	      FROM vtiger_account as a 
