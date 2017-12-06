@@ -3,12 +3,12 @@ $host="localhost";
 $user="vtigercrm";
 $pass="AvzHricg4ejxA";
 $bd="vtigercrm600";
-/*
+
 $host="localhost";
 $user="root";
 $pass="root";
-$bd="crmtuagencia24";
-*/
+//$bd="crmtuagencia24";
+
 $mysqli_crm = new mysqli($host, $user, $pass, $bd);
 $mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
 
@@ -112,6 +112,30 @@ function getLocalizadores($contactoid){
 	return $array;
 }
 
+function getBoletosSatelites($strbus="",$fecha1="",$fecha2="",$emails=""){
+	global $mysqli_crm;
+	$query	= "SELECT fecha_emision, l.localizador, passenger, boleto1, gds, b.status, paymentmethod, amount, b.monto_base, b.fee, currency,boletosid,a.accountid,contactid  
+	      FROM vtiger_account as a 
+		     INNER JOIN vtiger_contactdetails as c ON a.accountid=c.accountid
+		     INNER JOIN vtiger_localizadores as l ON l.contactoid=c.contactid
+			    AND localizadoresid NOT IN (SELECT crmid FROM vtiger_crmentity WHERE deleted=1 AND setype='Localizadores') 
+		     INNER JOIN vtiger_boletos as b ON b.localizadorid=l.localizadoresid 
+			    AND boletosid NOT IN (SELECT crmid FROM vtiger_crmentity WHERE deleted=1 AND setype='Boletos')
+	      WHERE (email1 IN ($emails) OR email IN ($emails))";
+
+	if ($strbus){
+		$query.=" AND (l.localizador LIKE '%$strbus%' OR boleto1 LIKE '%$strbus%' OR passenger LIKE '%$strbus%') ";	
+	}
+	if ($fecha1 && $fecha2){
+		$query.=" AND fecha_emision BETWEEN '$fecha1' AND '$fecha2' ";		
+	}
+	$query.=" ORDER BY fecha_emision DESC";
+	$qry= $mysqli_crm->query($query);	
+	$rows=$qry->fetch_all(MYSQLI_ASSOC);
+
+	return $rows;
+
+}
 function getPagosCrm($contactoid){
 	global $mysqli_crm;
 	$sql= "SELECT * FROM vtiger_registrodepagos WHERE contactoid=$contactoid AND observacion LIKE '%Pago de reporte%' ORDER BY registrodepagosid DESC";
@@ -161,5 +185,14 @@ function getCrmEntity($id,$modulo,$campo){
 	return $val;	
 }
 
+function getCuentaCrm($id){
+	global $mysqli_crm;
+	$sql 	= "SELECT accountname FROM vtiger_account WHERE accountid=$id";
+	$qry 	= $mysqli_crm->query($sql);
+	$row 	= $qry->fetch_array();
+	$val 	= $row[$campo];
+	
+	return $val;	
+}
 
 ?>
