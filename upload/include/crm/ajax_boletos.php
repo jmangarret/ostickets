@@ -1,5 +1,7 @@
 <?php
 session_start();
+ini_set("display_errors", 1);
+ini_set("error_reporting", 1);
 $_SESSION['totTarifaBs'] =0;
 $_SESSION['totTarifaDol']=0;
 $_SESSION['totPagosDol']=0;
@@ -52,7 +54,7 @@ if ($org_id==4 || $org_id==8){
                 $urlAjax="../include/crm/ajax_boletos.php";
                 echo "<td>";
                 echo "<strong>Satelite:</strong> ";
-                echo "<select name='satelite' id='select_satelites' onchange='setOrganizacion(this)' style=width:300px>";
+                echo "<select name='satelite' id='select_satelites' style=width:300px>";
                 echo "<option value=0>Seleccionar</option>";
                 echo "</select>";
                 echo "</td>";  
@@ -318,9 +320,15 @@ $_SESSION["totTarifaDol"]=$totGeneralDol;
             yearSuffix: ''
         };
         $.datepicker.setDefaults($.datepicker.regional['es']);
+    });     
+    /*Click al seleccionar satelite*/
+    $("#select_satelites").change(function(){
+        console.log("select_satelites");
+        setOrganizacion(this);
     });
     /*Boton Cerrar Reporte*/
-    $("#closeReport").click(function(){
+    $("#closeReport").click(function(){        
+        $("#success-cierre").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
         var accountid   = $("#accountid").val();    
         var fecha1      = $("#fecha1").val();
         var fecha2      = $("#fecha2").val();

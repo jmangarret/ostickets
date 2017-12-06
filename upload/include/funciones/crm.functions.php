@@ -5,12 +5,12 @@ $pass="AvzHricg4ejxA";
 $bd="vtigercrm600";
 
 $host="localhost";
-$user="root";
-$pass="root";
+//$user="root";
+//$pass="root";
 //$bd="crmtuagencia24";
 
 $mysqli_crm = new mysqli($host, $user, $pass, $bd);
-$mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
+//$mysqli_crm = mysqli_connect($host, $user, $pass, $bd);
 
 function getContactoPorEmails($emails){
 	global $mysqli_crm;	
@@ -131,7 +131,11 @@ function getBoletosSatelites($strbus="",$fecha1="",$fecha2="",$emails=""){
 	}
 	$query.=" ORDER BY fecha_emision DESC";
 	$qry= $mysqli_crm->query($query);	
-	$rows=$qry->fetch_all(MYSQLI_ASSOC);
+	//$rows=$qry->fetch_all(MYSQLI_ASSOC);
+	if ($qry->num_rows>0)
+	while ($row = $qry->fetch_assoc()) {
+	  $rows[] = $row;
+	}
 
 	return $rows;
 
