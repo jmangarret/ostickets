@@ -397,125 +397,32 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 </table>
 
 <?php
+//jmangarret - archivo de funciones para centralizar y reducir codigo
+include_once("../include/functions.custom.php");
 
-    /*
-    /* Nombre: Anthony Parisi
-    /* Fecha: 11-11-2015
-    /* Descripción: Se agrega el siguiente código para visualizar los campos Límite de Crédito Total y Disponible de la Organización
-    /* 
-    /* INICIO
-    */
+$limite=getLimiteCredito($user->getId());
 
-    //include("../ost-config.php");
-    $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
+$limite2=getLimiteDisponible($user->getId());
 
-    $query = "  SELECT 
-                    a.value 
-                FROM 
-                    ost_form_entry_values a,
-                    ost_form_entry b,
-                    ost_user c
-                WHERE
-                    b.object_type = 'O'
-                    AND b.object_id = c.org_id
-                    AND a.entry_id = b.id
-                    AND a.field_id = 90
-                    AND c.id = ".$user->getId();
-    $result = $mysqli->query($query);
-    $filas  = $result->fetch_array();
-    $limite = number_format($filas[0],2,",",".");
+$nacional=getFeeNacional($user->getId());
 
-    $query = "  SELECT 
-                    a.value 
-                FROM 
-                    ost_form_entry_values a,
-                    ost_form_entry b,
-                    ost_user c
-                WHERE
-                    b.object_type = 'O'
-                    AND b.object_id = c.org_id
-                    AND a.entry_id = b.id
-                    AND a.field_id = 91
-                    AND c.id = ".$user->getId();
-    $result = $mysqli->query($query);
-    $filas  = $result->fetch_array();
-    $limite2 = number_format($filas[0],2,",",".");
+$internacional=getFeeNacional($user->getId());
 
-//6/02/2017 RURIEPE - CONSULTA PARA OBTENER LOS VALORES DEL CAMPO FEE NACIONAL/INTERNACIONAL
+$ultimaFecha=getFechaModificacionSaldo($user->getId());
 
-    $query = "  SELECT a.value FROM 
-    ost_form_entry_values a,
-    ost_form_entry b,
-    ost_user c
-    WHERE
-    b.object_type = 'O'
-    AND b.object_id = c.org_id
-    AND a.entry_id = b.id
-    AND a.field_id = 95
-    AND c.id = ".$user->getId();
-    $result = $mysqli->query($query);
-    $filas  = $result->fetch_array();
-    $nacional = $filas[0];
+$semaforo=getTipoSatelite($user->getId());
 
-    $query = "  SELECT a.value FROM 
-    ost_form_entry_values a,
-    ost_form_entry b,
-    ost_user c
-    WHERE
-    b.object_type = 'O'
-    AND b.object_id = c.org_id
-    AND a.entry_id = b.id
-    AND a.field_id = 96
-    AND c.id = ".$user->getId();
-    $result = $mysqli->query($query);
-    $filas  = $result->fetch_array();
-    $internacional = $filas[0];
-
-//6/02/2017 RURIEPE - FIN
-
-//Inicio Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
-
-$limit="select b.date from ost_user as a inner join ost_auditoria_limite_credito as b on a.org_id=b.org_id where a.id=". $user->getId()." ORDER BY b.date DESC Limit 1";  //Query para consultar en la base de datos la ultima fecha de actualizacion 
-
-$limit2 = $mysqli->query($limit);
-$row = $limit2->fetch_array();
-
-//Fin Billy 11/02/2016 Se agrego la fecha de la ultima modificacion del saldo disponible
-
-// 7/02/2017 RURIEPE - CONSULTA PARA OBTENER EL TIPO DE SATELITE
-    $query = "  SELECT 
-                    a.value 
-                FROM 
-                    ost_form_entry_values a,
-                    ost_form_entry b,
-                    ost_user c
-                WHERE
-                    b.object_type = 'O'
-                    AND b.object_id = c.org_id
-                    AND a.entry_id = b.id
-                    AND a.field_id = 97
-                    AND c.id = ".$user->getId();
-    $result = $mysqli->query($query);
-    $filas  = $result->fetch_array();
-    $semaforo = $filas[0];
-
-// 7/02/2017 RURIEPE - FIN
-
-
-    if($semaforo == '{"Emision Rapida":"Emision Rapida"}') 
-    {
+//if($semaforo == '{"Emision Rapida":"Emision Rapida"}') 
+if($semaforo == 'Emision Rapida') 
+{
 
 ?>
 <div style='text-align:right;display:inline-block;background-color:#4CAF50;width:100%;border:3px solid #000;border-radius:4px;'>
 <?php
 }
 else
- if($semaforo == '{"Verificar Credito":"Verificar Credito"}') 
+ //if($semaforo == '{"Verificar Credito":"Verificar Credito"}') 
+ if($semaforo == 'Verificar Credito') 
     {
 ?>
 <div style='text-align:right;display:inline-block;background-color:yellow;width:100%; border:3px solid #000;border-radius:4px;'>
@@ -523,7 +430,8 @@ else
 <?php
 }
 else
- if($semaforo == '{"Pago Adjunto":"Pago Adjunto"}') 
+ //if($semaforo == '{"Pago Adjunto":"Pago Adjunto"}') 
+ if($semaforo == 'Pago Adjunto') 
     {
 ?>
 <div style='text-align:right;display:inline-block;background-color:#F44336;width:100%; border:3px solid #000;border-radius:4px;'>
@@ -578,7 +486,9 @@ else
                 <b>Actualizado al</b>:
             </td>
             <td align="left">
-                 <?=date("d-m-Y h:i:s a",strtotime($row['date']))?> <!--Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
+
+                 <?php echo date("d-m-Y h:i:s a",strtotime($ultimaFecha)); ?> 
+                 <!--jmangarret - 22ago $ultimaFecha - Billy 11/02/2016 Muesto la fecha de la ultima modificacion del saldo disponible-->
             </td>   
         </tr>
     </table>
@@ -861,29 +771,7 @@ print $response_form->getField('attachments')->render();
             </tr>
 <?php
 
-    $mysqli = new mysqli("localhost", "osticket", "0571ck37", "osticket1911");
-
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
-
-    $query = "  SELECT c.entry_id
-                FROM ost_ticket a, ost_form_entry b, ost_form_entry_values c
-                WHERE a.ticket_id = '".$_REQUEST["id"]."'
-                AND a.ticket_id = b.object_id
-                AND b.id = c.entry_id
-                AND c.field_id ='86'";
-    $result = $mysqli->query($query);
-    $row = $result->fetch_array();
-    $obj = $row[0];
-
-    $query2 = "SELECT value FROM  `ost_form_entry_values` WHERE entry_id = '$obj' AND field_id ='86'";
-    $result2 = $mysqli->query($query2);
-    $row2 = $result2->fetch_array();
-    $loc = $row2[0];
-
+    $loc=getLocalizadorStatus($_REQUEST["id"]);
 ?>
             <tr>
                 <td width="120">

@@ -106,7 +106,7 @@ if (($lang = Internationalization::getCurrentLanguage())
             $qryCintaCrm= mysql_query($sqlCintaCrm);
             $rowCintaCrm=mysql_fetch_row($qryCintaCrm);            
             mysql_close($conex);
-            echo "<div style='color:#184E81; background-color:#fcfc96; font-family:Arial; font-weight:bold; position:relative'>";
+            echo "<div style='color:#184E81; background-color:#FEFE4C; font-family:Arial; font-weight:bold; position:relative'>";
             echo "<marquee scrolldelay=200>";
             echo "Administrador: ";
             echo $rowCintaCrm[0];            
@@ -155,24 +155,20 @@ if (($lang = Internationalization::getCurrentLanguage())
         $.ajax({
             data: { org_id : <?php echo $org_id ? $org_id : 5; ?>, isStaff : true},
             type: "POST",
-            url: '../include/client/ajax_boletos.php',
+            url: '../include/crm/ajax_boletos.php',
             success: function(response){                                                                  
                 $("#content").html(response);
                 }
             });
-    });
-    </script>   
-    <!-- Fin pestaña -->
-
-    <!--jmangarret - 09-07-2017 - Pestaña Buscador SOTO - Perfil agentes -->    
-    <script type="text/javascript">
-        $("#buscadorsoto").click(function(){        
+    });    
+    //jmangarret - 09-07-2017 - Pestaña Buscador SOTO - Perfil agentes -->    
+    $("#buscadorsoto").click(function(){        
         $("ul#nav li").removeClass("active");
         $("ul#nav li").addClass("inactive");
         $("ul#nav li:nth-child(6)").addClass("active");             
         $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
         $("#content").html("<iframe width=100% height=600 frameborder=0 align=middle src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
-    });
+    });    
     </script>  
     <!-- Fin buscador soto -->
 
