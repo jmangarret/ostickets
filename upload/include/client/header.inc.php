@@ -36,8 +36,13 @@ if (($lang = Internationalization::getCurrentLanguage())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?c1b5a33"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?c1b5a33"/>
 
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.8.3.min.js?c1b5a33"></script>
+    <!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.8.3.min.js?c1b5a33"></script>-->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.10.3.custom.min.js?c1b5a33"></script>  
     <script src="<?php echo ROOT_PATH; ?>js/osticket.js?c1b5a33"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/filedrop.field.js?c1b5a33"></script>
@@ -49,7 +54,7 @@ if (($lang = Internationalization::getCurrentLanguage())
     
     <script src="<?php echo ROOT_PATH; ?>js/bootstrap.min.js"></script>    
     <script src="<?php echo ROOT_PATH; ?>js/jquery-ui.js"></script>
-
+    
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -155,6 +160,8 @@ if (($all_langs = Internationalization::availableLanguages())
 
                 //<!-- jmangarret - 06/07/2017 Pestaña Buscador SOTO -->                
                 echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
+                //<!-- jmangarret - 06/07/2017 Pestaña Pagos -->                
+                echo '<li><a id="pagos" href="#"><img src="assets/default/images/icons/pagos.png"> Registro de Pagos</a></li>'; 
             } 
             ?>
         </ul>
@@ -183,11 +190,11 @@ if (($all_langs = Internationalization::availableLanguages())
             $.ajax({
                 data: { org_id : <?php echo $org_id; ?>},
                 type: "POST",
-                url: 'include/client/ajax_boletos.php',
+                url: 'include/crm/ajax_boletos.php',
                 success: function(response){                                                                  
                     $("#content").html(response);
-                    }
-                });
+                }
+            });
         });        
         $("#buscadorsoto").click(function(){
             $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
@@ -203,5 +210,18 @@ if (($all_langs = Internationalization::availableLanguages())
             //function(htmlexterno){
               //  $("#content").html(htmlexterno);
             //});
+        });        
+        $("#pagos").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#pagos").parent().prev().children("a").removeClass("active");
+            $("#pagos").addClass("active");
+            $.ajax({
+                data: {},
+                type: "POST",
+                url: 'include/client/pagos.php',
+                success: function(response){                                                                  
+                    $("#content").html(response);
+                }
+            });
         });
         </script>   

@@ -1,0 +1,16 @@
+Formulario Pago
+	upload/open.php
+	upload/include/client/open.inc.php
+	upload/include/client/open.validate.js
+	upload/include/pagos/form_pagos.php
+	upload/js/pagos.js
+	upload/include/funciones/selects.crm.php
+
+Guardar Pago Temp (pago.js):
+	upload/include/pagos/guardar_pago_temp.php
+
+Guardar Pago en CRM (open.php):
+	upload/include/pagos/guardar_pago_crm.php
+	upload/include/funciones/crm.functions.php
+	upload/include/funciones/pagos.functions.php
+	upload/include/funciones/commons.php
