@@ -398,7 +398,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 
 <?php
 //jmangarret - archivo de funciones para centralizar y reducir codigo
-include_once("../include/functions.custom.php");
+include_once("../include/funciones/commons.php");
 
 $limite=getLimiteCredito($user->getId());
 
