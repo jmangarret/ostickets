@@ -40,7 +40,7 @@ if ($mysqli->affected_rows>0){
 		echo "</tr>";
 	}
 }else{
-	echo "SQL Error: ". $sql_pagos_list;
+	//echo "SQL Error: ". $sql_pagos_list;
 }
 echo "</tbody>";
 echo "</table>";
