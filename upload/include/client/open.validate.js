@@ -193,6 +193,7 @@
                 $('#modalPagos').modal('show');          
                 if ($(this).val()==27) $("#concepto_de_pago").val("Pago de reporte en curso");
                 if ($(this).val()==28) $("#concepto_de_pago").val("Pago de reporte pasado");
+                $('#concepto_de_pago').attr('readonly', true);
             }            
         }                
         //opciones emitir localizador (pago adjunto)
@@ -202,7 +203,11 @@
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
-                if ($(this).val()==19) $("#concepto_de_pago").val("Emision con pago adjunto");                
+                if ($(this).val()==19) {
+                    $("#concepto_de_pago").val("Emision con pago adjunto");   
+                    $('#concepto_de_pago').attr('readonly', true);
+                }
+
             }            
         }
 
