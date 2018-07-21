@@ -69,5 +69,5 @@ foreach ($_SESSION['pagosid'] as $key => $value) {
 
 echo "Reporte Procesado! ";
 echo "<br>";
-echo '<a href="http://crmtest.tuagencia24.com/index.php?module=Cierres&view=Detail&record='.$idCierre.'">VER EN CRM</a>';
+echo '<a href="http://registro.tuagencia24.com/index.php?module=Cierres&view=Detail&record='.$idCierre.'"><label class="btn btn-primary"> VER EN CRM </label></a>';
 ?>

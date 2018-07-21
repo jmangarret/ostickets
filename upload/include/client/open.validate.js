@@ -187,7 +187,7 @@
         //opciones pago de reporte en curso y pago de reporte pasado (credito)
         if ($(this).val()==27 || $(this).val()==28){            
             //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
-            if ($("#tipoSatelite").text()=="Verificar Credito"){
+            if ($("#tipoSatelite").text()=="Emision Rapida"){
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
