@@ -78,11 +78,14 @@ $(document).ready(function() {
                         url: "include/pagos/listar_pago_temp.php",
                         data: parametros,
                         success: function(response){
+                            if ($('.modal-backdrop').is(':visible')) {
+                              $('body').removeClass('modal-open'); 
+                              $('.modal-backdrop').remove(); 
+                            };
                             $("#result_pagos").html(response);  
                             $("input[name='reset2']").click();
                         }
-                    });
-                    
+                    });                    
                 }else{
                     $("#result_pagos").html(response);
                 }            
@@ -98,7 +101,12 @@ $(document).ready(function() {
             url: "include/pagos/listar_pago_temp.php",
             data: parametros,
             success: function(response){
-                $("#listadoPagos").html(response);                              
+                if (response=='false'){
+                    alert('Debe registrar algun Pago obligatoriamente!');
+                    $('#modalPagos').modal('show');
+                }else{
+                    $("#listadoPagos").html(response);
+                }
             }
         });     
     });    
@@ -109,7 +117,12 @@ $(document).ready(function() {
             url: "include/pagos/listar_pago_temp.php",
             data: parametros,
             success: function(response){
-                $("#listadoPagos").html(response);                              
+                if (response=='false'){
+                    alert('Debe registrar algun Pago obligatoriamente!');
+                    $('#modalPagos').modal('show');
+                }else{
+                    $("#listadoPagos").html(response);
+                }
             }
         });     
     });
