@@ -4,47 +4,48 @@ define("INCLUDE_DIR","../");
 require_once '../ost-config.php';
 $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
 //Listar pago
-echo "<table class=table>";
-echo "<thead>";
-echo "<tr>";
-echo "<th>Fecha del Pago</th>";
-echo "<th>Forma de Pago</th>";
-echo "<th>Referencia</th>";
-echo "<th>Origen del Pago</th>";
-echo "<th>Destino del Pago</th>";
-echo "<th>Moneda</th>";
-echo "<th>Monto</th>";
-echo "<th>Accion</th>";
-echo "</tr>";
-echo "</thead>";
-echo "<tbody>";
+$tabla = "<table class=table>";
+$tabla.= "<thead>";
+$tabla.= "<tr>";
+$tabla.= "<th>Fecha del Pago</th>";
+$tabla.= "<th>Forma de Pago</th>";
+$tabla.= "<th>Referencia</th>";
+$tabla.= "<th>Origen del Pago</th>";
+$tabla.= "<th>Destino del Pago</th>";
+$tabla.= "<th>Moneda</th>";
+$tabla.= "<th>Monto</th>";
+$tabla.= "<th>Accion</th>";
+$tabla.= "</tr>";
+$tabla.= "</thead>";
+$tabla.= "<tbody>";
 $user_id		=$_REQUEST["user_id"];
 $sql_pagos_list	="SELECT * FROM ost_pagos_temp WHERE ticket_id=0 AND user_id=$user_id";
 $qry_pagos_list	=$mysqli->query($sql_pagos_list);
 if ($mysqli->affected_rows>0){
 	while ($result=$qry_pagos_list->fetch_assoc()) {
 		$id=$result['id'];
-		echo "<tr>";
-		echo "<td>".$result['fechadepago']."</td>";
-		echo "<td>".$result['formadepago']."</td>";
-		echo "<td>".$result['referencia']."</td>";
-		echo "<td>".$result['emisor']."</td>";
-		echo "<td>".$result['receptor']."</td>";
-		echo "<td>".$result['moneda']."</td>";
-		echo "<td>".$result['monto']."</td>";	
-		echo "<td>";
-			echo "<a onclick='eliminarPago($id);'>";
-			echo "<img src='assets/default/images/icons/b_drop.png'>";
-			echo "</a>";
-		echo "</td>";	
-		echo "</tr>";
+		$tabla.= "<tr>";
+		$tabla.= "<td>".$result['fechadepago']."</td>";
+		$tabla.= "<td>".$result['formadepago']."</td>";
+		$tabla.= "<td>".$result['referencia']."</td>";
+		$tabla.= "<td>".$result['emisor']."</td>";
+		$tabla.= "<td>".$result['receptor']."</td>";
+		$tabla.= "<td>".$result['moneda']."</td>";
+		$tabla.= "<td>".$result['monto']."</td>";	
+		$tabla.= "<td>";
+			$tabla.= "<a onclick='eliminarPago($id);'>";
+			$tabla.= "<img src='assets/default/images/icons/b_drop.png'>";
+			$tabla.= "</a>";
+		$tabla.= "</td>";	
+		$tabla.= "</tr>";
 	}
 }else{
-	//echo "SQL Error: ". $sql_pagos_list;
+	echo 'false';
+	die();
 }
-echo "</tbody>";
-echo "</table>";
-
+$tabla.= "</tbody>";
+$tabla.= "</table>";
+echo $tabla;
 //Cerramos conexion
 $mysqli->close();
 ?>
