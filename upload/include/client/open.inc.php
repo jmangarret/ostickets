@@ -149,7 +149,7 @@ $limiteDisponible=getLimiteDisponible();
 $fechaDeSaldo=getFechaModificacionSaldo();
 
 if($limiteDisponible <= 0){
-    $limite2 = "<font color='FF0000'>BsF ".number_format($limiteDisponible,2,",",".")."<br>Saldo deudor pendiente. </font>";
+    $limite2 = "<font color='FF0000'>Bs.S ".number_format($limiteDisponible,2,",",".")."<br>Saldo deudor pendiente. </font>";
     ?>
     <script>
         //$("#ticketForm p").prepend('<input type="submit" value="<?php echo __("Create Ticket");?>" id="create">');
@@ -158,7 +158,6 @@ if($limiteDisponible <= 0){
 
         //Inicio Billy 10/02/2016 Si el select de detalle su solicitud es igual a emitir  localizador el boton de crear tickets se oculta si no es emitir localizador aparece
         $("select:eq(1)").change(function(){
-            alert(this.value);
             if($("select:eq(1)").val() != 19){
                 $("#create").fadeIn('slow');
             }
@@ -170,7 +169,7 @@ if($limiteDisponible <= 0){
     </script>
     <?php
 }else{
-    $limite2 = "BsF ".number_format($limiteDisponible,2,",",".");      
+    $limite2 = "Bs.S ".number_format($limiteDisponible,2,",",".");      
 }
 ?>
 <!--Inicio Billy 29/01/2016-->

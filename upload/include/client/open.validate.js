@@ -202,7 +202,6 @@
         if ($(this).val()==19){            
             //jmangarret 23ago2017 -  Condicion tipo de satelite - function getTipoSatelite
             if ($("#tipoSatelite").text()=="Pago Adjunto"){                
-            }            
                 $('.modal-content').css('width','800px');
                 $('.modal-dialog').css( 'margin-left','25%');
                 $('#modalPagos').modal('show');          
@@ -210,6 +209,7 @@
                     $("#concepto_de_pago").val("Emision con pago adjunto");   
                     $('#concepto_de_pago').attr('readonly', true);
                 }
+            }            
         }
 
     });

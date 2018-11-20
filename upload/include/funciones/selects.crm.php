@@ -27,7 +27,7 @@ switch ($_REQUEST["select"]) {
 		break;
 	
 	case 'currency':
-		$qry=$mysqli_crm->query("SELECT * from vtiger_currency");
+		$qry=$mysqli_crm->query("SELECT * from vtiger_currency order by sortorderid");
 		while ($res=$qry->fetch_assoc()) {
 			$data.="<option value='".$res["currency"]."'>".$res["currency"]."</option>";
 		}

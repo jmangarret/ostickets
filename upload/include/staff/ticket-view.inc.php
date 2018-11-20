@@ -453,7 +453,7 @@ else
                 <b>Freelance Plus Fee Nacional</b>:
             </td>
             <td align="left">
-                BsF <?=$nacional;?>
+                Bs.S <?=$nacional;?>
             </td>   
         </tr>
          <tr>
@@ -461,7 +461,7 @@ else
                 <b>Freelance Plus Fee Internacional</b>:
             </td>
             <td align="left">
-                BsF <?=$internacional;?>
+                Bs.S <?=$internacional;?>
             </td>   
         </tr>
     <!--6/02/2017 RUEIEPE - SE MUESTRAN LOS VALORES-->
@@ -470,7 +470,7 @@ else
                 <b>L&iacute;mite de Cr&eacute;dito Total</b>:
             </td>
             <td align="left">
-                BsF <?=$limite;?>
+                Bs.S <?=$limite;?>
             </td>   
         </tr>
         <tr>
@@ -478,7 +478,7 @@ else
                 <b>Disponible</b>:
             </td>
             <td align="left">
-                BsF <?=$limite2;?>
+                Bs.S <?=$limite2;?>
             </td>   
         </tr>
         <tr>
