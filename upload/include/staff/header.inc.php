@@ -145,6 +145,7 @@ if (($lang = Internationalization::getCurrentLanguage())
     <!--jmangarret - 09-06-2017 - Pestaña para consultar emisiones por satelites - Perfil agentes -->
     <li class="inactive"><a id="emisiones" class="tickets" href="#">Emisiones CRM</a></li>
     <li class="inactive"><a id="buscadorsoto" class="tickets" href="#">Buscador SOTO</a></li>
+    <li class="inactive"><a id="cryptoCalculator" class="tickets" href="#">Crypto Calculator</a></li>
     <script type="text/javascript">
     $("#emisiones").click(function(){    
         $("ul#nav li").removeClass("active");
@@ -168,7 +169,16 @@ if (($lang = Internationalization::getCurrentLanguage())
         $("ul#nav li:nth-child(6)").addClass("active");             
         $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
         $("#content").html("<iframe width=100% height=600 frameborder=0 align=middle src=http://humbermar.aramix.es/AereoBuscador/AereoBuscadorPaso1.aspx?SesionInactiva=1></iframe>");
-    });    
+    });  
+     //yohenig - 20-11-2018 - Pestaña Crypto Calculator - Perfil agentes -->   
+    $("#cryptoCalculator").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#cryptoCalculator").parent().prev().children("a").removeClass("active");
+            $("#cryptoCalculator").addClass("active");
+
+            $("#content").html("<iframe width=100% height=800 frameborder=0 align=middle src=http://calc.tuagencia24.com/></iframe>");
+
+    });  
     </script>  
     <!-- Fin buscador soto -->
 

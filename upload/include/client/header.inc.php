@@ -162,6 +162,9 @@ if (($all_langs = Internationalization::availableLanguages())
                 echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
                 //<!-- jmangarret - 06/07/2017 Pestaña Pagos -->                
                 //echo '<li><a id="pagos" href="#"><img src="assets/default/images/icons/pagos.png"> Registro de Pagos</a></li>'; 
+
+                 //<!-- yohenig - 20/11/2018 Pestaña Crypto Calculadora -->                
+                echo '<li><a id="cryptoCalculator" href="#"><img src="assets/default/images/icons/search.png"> Crypto Calculator</a></li>'; 
             } 
             ?>
         </ul>
@@ -224,4 +227,13 @@ if (($all_langs = Internationalization::availableLanguages())
                 }
             });
         });
+
+        $("#cryptoCalculator").click(function(){
+            $("#content").html("Cargando... <img src='images/FhHRx-Spinner.gif'>");
+            $("#cryptoCalculator").parent().prev().children("a").removeClass("active");
+            $("#cryptoCalculator").addClass("active");
+
+            $("#content").html("<iframe width=1240 height=600 frameborder=0 src=http://calc.tuagencia24.com/></iframe>");
+
+        });     
         </script>   
