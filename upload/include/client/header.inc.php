@@ -159,7 +159,7 @@ if (($all_langs = Internationalization::availableLanguages())
                 $org_id=$rowOrg[0];               
 
                 //<!-- jmangarret - 06/07/2017 Pestaña Buscador SOTO -->                
-                //echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
+                echo '<li><a id="buscadorsoto" href="#"><img src="assets/default/images/icons/search.png"> Buscador SOTO</a></li>'; 
                 //<!-- jmangarret - 06/07/2017 Pestaña Pagos -->                
                 //echo '<li><a id="pagos" href="#"><img src="assets/default/images/icons/pagos.png"> Registro de Pagos</a></li>'; 
 
