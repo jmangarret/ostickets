@@ -144,7 +144,7 @@ if (($lang = Internationalization::getCurrentLanguage())
 
     <!--jmangarret - 09-06-2017 - Pestaña para consultar emisiones por satelites - Perfil agentes -->
     <li class="inactive"><a id="emisiones" class="tickets" href="#">Emisiones CRM</a></li>
-    <li class="inactive"><a id="buscadorsoto" class="tickets" href="#">Buscador SOTO</a></li>
+   <!-- <li class="inactive"><a id="buscadorsoto" class="tickets" href="#">Buscador SOTO</a></li>-->
     <li class="inactive"><a id="cryptoCalculator" class="tickets" href="#">Crypto Calculator</a></li>
     <script type="text/javascript">
     $("#emisiones").click(function(){    
